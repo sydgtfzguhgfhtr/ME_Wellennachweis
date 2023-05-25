@@ -1,7 +1,8 @@
 # Importe:
-from Werkstoffdaten import Werkstoff_liste
+from Werkstoffdaten_alternativ import Werkstoff
 import numpy as np
 
+Werkstoff.aus_csv_laden() # Werkstoffdaten laden
 
 # Benötigte gegebene Größen:
 Durchmesser = 50
