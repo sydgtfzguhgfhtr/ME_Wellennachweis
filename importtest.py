@@ -8,4 +8,5 @@ Werkstoff.aus_csv_laden()
 
 testws: Werkstoff
 testws = Werkstoff.Werkstoffe["S235JR"]
-print(testws.name,testws.sigma_zdW,testws.sigma_bW,testws.tau_tW,testws.art)
+
+testws.data_sheet()

@@ -14,6 +14,18 @@ class Werkstoff():
         Werkstoff.Werkstoffe[name] = self
     def __repr__(self) -> str:
         return self.name
+    def data_sheet(self):
+        print(
+            f"""
+---------------------------------------------------
+Name:                           {self.name}
+Art:                            {self.art}
+Zug-Druck-Wechselfestigkeit:    {self.sigma_zdW}
+Biegewechselfestigkeit:         {self.sigma_bW}
+Torsionswechselfestigkeit:      {self.tau_tW}
+---------------------------------------------------
+            """
+        )
     def aus_csv_laden():
         """
         Lädt die Werkstoffdaten aus `'\\Werkstoffdaten.csv'` in `Werkstoff.Werkstoffe`.
