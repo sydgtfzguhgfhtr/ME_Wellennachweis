@@ -1,5 +1,5 @@
 # Importe:
-from Werkstoffdaten import Werkstoff_liste
+from Werkstoffdaten import Werkstoff_liste, Baustähle, Nitrierstähle, Einsatzstähle, Vergütungsstähle
 import numpy as np
 
 
@@ -10,6 +10,9 @@ Art_der_Schwächung = "Wellenabsatz"
 
 # Formzahl für Absätze, und Ringnuten:
 def Formzahl(Absatzart, Belastung, grosser_Durchmesser, kleiner_Durchmesser, Radius):
+    def Formzahl_Unterfunktion_Formel(A,B,C,z,d,D,r,t):
+        a = 1+ 1/(np.sqrt(A*r/t+2*B*r/d*(1+2*r/d)**2+C*(r/t)**z*d/D))
+        return a
     t = (grosser_Durchmesser-kleiner_Durchmesser)/2
     if Absatzart == "umlaufende Rundnut":
         match Belastung:
@@ -29,7 +32,3 @@ def Formzahl(Absatzart, Belastung, grosser_Durchmesser, kleiner_Durchmesser, Rad
                 alpha = Formzahl_Unterfunktion_Formel(3.4,19,1,2,kleiner_Durchmesser,grosser_Durchmesser,Radius,t)
     return alpha
 
-# nicht einzeln benutzen; nur für Funktion Formzahl!!
-def Formzahl_Unterfunktion_Formel(A,B,C,z,d,D,r,t):
-    alpha = 1+ 1/(np.sqrt(A*r/t+2*B*r/d*(1+2*r/d)**2+C*(r/t)**z*d/D))
-    return alpha

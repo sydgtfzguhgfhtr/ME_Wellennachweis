@@ -40,3 +40,9 @@ for i in range(len(Namen)):
 #for Werkstoff in Werkstoff_liste:
 #    if Werkstoff.name == "S235JR":
 #        print(Werkstoff.sigma_bW)
+
+# Werkstoffarten:
+Baustähle = ["S235JR","S275JR","E295","S355J0","E335","E360","S275N","S355N","S420N","S460N"]
+Einsatzstähle = ["C10E", "17Cr3", "16MnCr5", "20MnCr5", "18MoCrS4", "18CrNiMo7-6"]
+Nitrierstähle = ["31CrMo12", "31CrMoV9", "15CrMoV59", "34CrAlMo5", "34CrAlNi7"]
+Vergütungsstähle = ["1 C22", "2 C22", "1 C25", "1 C30", "1 C35", "1 C35", "1 C40", "1 C45", "2 C45", "1 C50", "1 C60", "46Cr2", "41Cr4", "34CrMo4", "42CrMo4", "50CrMo4", "36CrNiMo4", "30CrNiMo8", "34CrNiMo6"]
