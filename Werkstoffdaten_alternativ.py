@@ -20,5 +20,5 @@ class Werkstoff():
         for line in rohdaten:
             if line[0] != "#":
                 name,zdw,bwf,twf = line.strip().split(",")
-                Werkstoff(name,zdw,bwf,twf)
+                Werkstoff(name,float(zdw),float(bwf),float(twf))
         return 1
