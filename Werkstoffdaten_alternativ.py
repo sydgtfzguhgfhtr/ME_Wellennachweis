@@ -5,20 +5,25 @@ Klassendefinition für Werkstoffe
 class Werkstoff():
     Werkstoffe = {} # Dictionary mit allen erzeugten Werkstoffen
 
-    def __init__(self, name, sigma_zdW, sigma_bW, tau_tW):
+    def __init__(self, name, sigma_zdW, sigma_bW, tau_tW,art="NA"):
         self.name = name
-        self.sigma_zdW = sigma_zdW
-        self.sigma_bW = sigma_bW
-        self.tau_tW = tau_tW
+        self.sigma_zdW = float(sigma_zdW)
+        self.sigma_bW = float(sigma_bW)
+        self.tau_tW = float(tau_tW)
+        self.art = art
         Werkstoff.Werkstoffe[name] = self
     def __repr__(self) -> str:
         return self.name
     def aus_csv_laden():
+        """
+        Lädt die Werkstoffdaten aus `'\Werkstoffdaten.csv'` in `Werkstoff.Werkstoffe`.
+        Bei Dopplung werden alte Einträge mit neuen Überschrieben.
+        """
         with open("Werkstoffdaten.csv","r",encoding="utf8") as datei:
             rohdaten = datei.readlines()
 
         for line in rohdaten:
             if line[0] != "#":
-                name,zdw,bwf,twf = line.strip().split(",")
-                Werkstoff(name,float(zdw),float(bwf),float(twf))
+                args = line.strip().split(",")
+                Werkstoff(*args)
         return 1

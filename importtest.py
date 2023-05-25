@@ -4,4 +4,6 @@ Werkstoff.aus_csv_laden()
 
 Werkstoff("Wasser",0,0,0)
 
-print(Werkstoff.Werkstoffe)
+testws: Werkstoff
+testws = Werkstoff.Werkstoffe["S235JR"]
+print(testws.name,testws.sigma_zdW,testws.sigma_bW,testws.tau_tW,testws.art)
