@@ -1,7 +1,10 @@
+"""
+Funktionssammlung zur Durchführung eines Wellennachweis.
+"""
+
 # Importe:
-from Werkstoffdaten import Werkstoff_liste, Baustähle, Nitrierstähle, Einsatzstähle, Vergütungsstähle
-from Werkstoffdaten_alternativ import Werkstoff
 import numpy as np
+from Klassen import Werkstoff
 
 Werkstoff.aus_csv_laden() # Werkstoffdaten laden
 

@@ -1,8 +1,10 @@
-from Werkstoffdaten_alternativ import Werkstoff
+"""
+Dient zum testen der Klassen außerhalb der eigenen Datei.
+"""
+
+from Klassen import Werkstoff
 
 Werkstoff.aus_csv_laden()
-
-Werkstoff("Wasser",0,0,0)
 
 testws: Werkstoff
 testws = Werkstoff.Werkstoffe["S235JR"]

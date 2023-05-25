@@ -1,5 +1,5 @@
 """
-Klassendefinition für Werkstoffe
+Klassendefinitionen
 """
 
 class Werkstoff():
@@ -16,7 +16,7 @@ class Werkstoff():
         return self.name
     def aus_csv_laden():
         """
-        Lädt die Werkstoffdaten aus `'\Werkstoffdaten.csv'` in `Werkstoff.Werkstoffe`.
+        Lädt die Werkstoffdaten aus `'\\Werkstoffdaten.csv'` in `Werkstoff.Werkstoffe`.
         Bei Dopplung werden alte Einträge mit neuen Überschrieben.
         """
         with open("Werkstoffdaten.csv","r",encoding="utf8") as datei:
