@@ -36,7 +36,7 @@ Werkstoff_liste = []
 for i in range(len(Namen)):
     Werkstoff_liste.append(Werkstoff(Namen[i], int(Sigma_zdW[i]), int(Sigma_bW[i]), int(Tau_tW[i])))
 
-# Beispiel:
-#for Werkstoff in Werkstoff_liste:
+#Beispiel:
+# for Werkstoff in Werkstoff_liste:
 #    if Werkstoff.name == "S235JR":
 #        print(Werkstoff.sigma_bW)
