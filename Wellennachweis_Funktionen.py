@@ -38,42 +38,59 @@ def Formzahl(Absatzart, Belastung, grosser_Durchmesser, kleiner_Durchmesser, Rad
                 alpha = Formzahl_Unterfunktion_Formel(3.4,19,1,2,kleiner_Durchmesser,grosser_Durchmesser,Radius,t)
     return alpha
 
-def Kerbwirkungszahl_nach_Bezugsdurchmesser(Art, sigma_B, *argv):
+def K3(d, alpha_dBK_beta_dBK):
+    """
+    Größenfaktor K_3
+    d in mm
+    """
+    if d >= 7.5 and d < 150:
+        K_3 = 1-0.2*np.log10(alpha_dBK_beta_dBK)*(np.log10(d/7.5)/np.log10(20))
+    elif d >= 150:
+        K_3 = 1-0.2*np.log10(alpha_dBK_beta_dBK)
+
+
+def Kerbwirkungszahl_ohne_Formzahl(Art, sigma_B, *argv):
     """
     bei umlaufender Rechtecknut : argv = (D, d, r, Breite_der_Nut, sigma_S)
     Kerbwirkungszahl für Passfedern, Keilwellen, Kerbzahnwellen und Zahnwellen
     returns: (Kerbwirkungszahl für Zug/Druck, Kerbwirkungszahl für Biegung, Kerbwirkungszahl für Torsion)
     """
     if Art == "eine Passfeder":
-        beta_sigma = 3*(sigma_B/1000)**0.38
-        beta_tau = 0.56*beta_sigma+0.1
-        beta_zd = 1
+        beta_sigma_dBK = 3*(sigma_B/1000)**0.38
+        beta_tau_dBK = 0.56*beta_sigma_dBK+0.1
+        beta_zd_dBK = 1
+        d_BK = 15
     elif Art == "zwei Passfedern":
-        beta_sigma = (3*(sigma_B/1000)**0.38)*1.15
-        beta_tau = 0.56*beta_sigma+0.1
-        beta_zd = 1
+        beta_sigma_dBK = (3*(sigma_B/1000)**0.38)*1.15
+        beta_tau_dBK = 0.56*beta_sigma_dBK+0.1
+        beta_zd_dBK = 1
+        d_BK = 15
     elif Art == "Pressverband":
-        beta_sigma = 2.7*(sigma_B/1000)**0.43
-        beta_tau = 0.65*beta_sigma
-        beta_zd = 1
+        beta_sigma_dBK = 2.7*(sigma_B/1000)**0.43
+        beta_tau_dBK = 0.65*beta_sigma_dBK
+        beta_zd_dBK = 1
+        d_BK = 40
     elif Art == "Keilwelle" or Art == "Kerbzahnwelle" or Art == "Zahnwelle":
         beta_tau_stern = math.e**(4.2*10**(-7)*(sigma_B)**2)
-        beta_zd = 1
+        beta_zd_dBK = 1
+        d_BK = 29
         match Art:
             case "Keilwelle":
-                beta_sigma = 1+0.45*(beta_tau_stern-1)
-                beta_tau = beta_tau_stern
+                beta_sigma_dBK = 1+0.45*(beta_tau_stern-1)
+                beta_tau_dBK = beta_tau_stern
             case "Kerbzahnwelle":
-                beta_sigma = 1+0.65*(beta_tau_stern-1)
-                beta_tau = beta_tau_stern
+                beta_sigma_dBK = 1+0.65*(beta_tau_stern-1)
+                beta_tau_dBK = beta_tau_stern
             case "Zahnwelle":
-                beta_sigma = 1+0.49*(beta_tau_stern-1)
-                beta_tau = 1+0.75*(beta_tau_stern-1)
+                beta_sigma_dBK = 1+0.49*(beta_tau_stern-1)
+                beta_tau_dBK = 1+0.75*(beta_tau_stern-1)
     elif Art == "Spitzkerbe":
-        beta_zd = 0.109*sigma_B
-        beta_sigma = 0.0923 * sigma_B
-        beta_tau = 0.8*beta_sigma
+        beta_zd_dBK = 0.109*sigma_B
+        beta_sigma_dBK = 0.0923 * sigma_B
+        beta_tau_dBK = 0.8*beta_sigma_dBK
+        d_BK = 15
     elif Art == "umlaufende Rechtecknut":
+        d_BK = 30
         (D,d,r,m,sigma_S) = argv
         t = (D-d)/2
         Zug_Druck = (0.9, 1.27, 1.17, 2.9)
@@ -85,13 +102,13 @@ def Kerbwirkungszahl_nach_Bezugsdurchmesser(Art, sigma_B, *argv):
         beta_tau_stern = Torsion[0]*(Torsion[1]+Torsion[2]*np.sqrt(t/(r+Torsion[3]*rho)))
         m_t = m/t
         if m_t >= 1.4:
-            beta_zd = beta_zd_stern
-            beta_sigma = beta_sigma_stern
-            beta_tau = beta_tau_stern
+            beta_zd_dBK = beta_zd_stern
+            beta_sigma_dBK = beta_sigma_stern
+            beta_tau_dBK = beta_tau_stern
         else:
-            beta_zd = beta_zd_stern*1.08*(m_t)**(-0.2)
-            beta_sigma = beta_sigma_stern*1.08*(m_t)**(-0.2)
-            beta_tau = beta_tau_stern*1.08*(m_t)**(-0.2)    
+            beta_zd_dBK = beta_zd_stern*1.08*(m_t)**(-0.2)
+            beta_sigma_dBK = beta_sigma_stern*1.08*(m_t)**(-0.2)
+            beta_tau_dBK = beta_tau_stern*1.08*(m_t)**(-0.2)    
     Ergebnis = (beta_zd, beta_sigma, beta_tau)
     return Ergebnis
 
