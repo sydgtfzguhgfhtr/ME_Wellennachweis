@@ -49,30 +49,43 @@ def K3(d, alpha_dBK_beta_dBK):
         K_3 = 1-0.2*np.log10(alpha_dBK_beta_dBK)
 
 
-def Kerbwirkungszahl_ohne_Formzahl(Art, sigma_B, *argv):
+def Kerbwirkungszahl_ohne_Formzahl(Art, d, sigma_B, *argv):
     """
-    bei umlaufender Rechtecknut : argv = (D, d, r, Breite_der_Nut, sigma_S)
+    d = kleiner Durchmesser oder Kerbgrunddurchmesser
+    bei umlaufender Rechtecknut : argv = (D, r, Breite_der_Nut, sigma_S)
     Kerbwirkungszahl für Passfedern, Keilwellen, Kerbzahnwellen und Zahnwellen
     returns: (Kerbwirkungszahl für Zug/Druck, Kerbwirkungszahl für Biegung, Kerbwirkungszahl für Torsion)
     """
     if Art == "eine Passfeder":
+        # Werte auf d_BK bezogen
         beta_sigma_dBK = 3*(sigma_B/1000)**0.38
         beta_tau_dBK = 0.56*beta_sigma_dBK+0.1
-        beta_zd_dBK = 1
         d_BK = 15
+        # Werte auf Bauteildurchmesser bezogen:
+        beta_sigma = beta_sigma_dBK*K3(d_BK)/K3(d)
+        beta_tau = beta_tau_dBK*K3(d_BK)/K3(d)
+        beta_zd = 1
     elif Art == "zwei Passfedern":
+        # Werte auf d_BK bezogen
         beta_sigma_dBK = (3*(sigma_B/1000)**0.38)*1.15
         beta_tau_dBK = 0.56*beta_sigma_dBK+0.1
-        beta_zd_dBK = 1
         d_BK = 15
+        # Werte auf Bauteildurchmesser bezogen
+        beta_sigma = beta_sigma_dBK*K3(d_BK)/K3(d)
+        beta_tau = beta_tau_dBK*K3(d_BK)/K3(d)
+        beta_zd = 1
     elif Art == "Pressverband":
+        # Werte auf d_BK bezogen
         beta_sigma_dBK = 2.7*(sigma_B/1000)**0.43
         beta_tau_dBK = 0.65*beta_sigma_dBK
-        beta_zd_dBK = 1
         d_BK = 40
+        # Werte auf Bauteildurchmesser bezogen
+        beta_sigma = beta_sigma_dBK*K3(d_BK)/K3(d)
+        beta_tau = beta_tau_dBK*K3(d_BK)/K3(d)
+        beta_zd = 1
     elif Art == "Keilwelle" or Art == "Kerbzahnwelle" or Art == "Zahnwelle":
+        # Werte auf d_BK bezogen:
         beta_tau_stern = math.e**(4.2*10**(-7)*(sigma_B)**2)
-        beta_zd_dBK = 1
         d_BK = 29
         match Art:
             case "Keilwelle":
@@ -84,14 +97,24 @@ def Kerbwirkungszahl_ohne_Formzahl(Art, sigma_B, *argv):
             case "Zahnwelle":
                 beta_sigma_dBK = 1+0.49*(beta_tau_stern-1)
                 beta_tau_dBK = 1+0.75*(beta_tau_stern-1)
+        # Werte auf Bauteildurchmesser bezogen
+        beta_sigma = beta_sigma_dBK*K3(d_BK)/K3(d)
+        beta_tau = beta_tau_dBK*K3(d_BK)/K3(d)
+        beta_zd = 1
     elif Art == "Spitzkerbe":
+        # Werte auf d_BK bezogen
         beta_zd_dBK = 0.109*sigma_B
         beta_sigma_dBK = 0.0923 * sigma_B
         beta_tau_dBK = 0.8*beta_sigma_dBK
         d_BK = 15
+        # Werte auf Bauteildurchmesser bezogen
+        beta_sigma = beta_sigma_dBK*K3(d_BK)/K3(d)
+        beta_tau = beta_tau_dBK*K3(d_BK)/K3(d)
+        beta_zd = beta_zd_dBK*K3(d_BK)/K3(d)
     elif Art == "umlaufende Rechtecknut":
+        # Werte aud d_BK bezogen
         d_BK = 30
-        (D,d,r,m,sigma_S) = argv
+        (D,r,m,sigma_S) = argv
         t = (D-d)/2
         Zug_Druck = (0.9, 1.27, 1.17, 2.9)
         Biegung = (0.9, 1.14, 1.08, 2.9)
@@ -109,6 +132,10 @@ def Kerbwirkungszahl_ohne_Formzahl(Art, sigma_B, *argv):
             beta_zd_dBK = beta_zd_stern*1.08*(m_t)**(-0.2)
             beta_sigma_dBK = beta_sigma_stern*1.08*(m_t)**(-0.2)
             beta_tau_dBK = beta_tau_stern*1.08*(m_t)**(-0.2)    
+        # Werte auf Bauteildurchmesser bezogen
+        beta_sigma = beta_sigma_dBK*K3(d_BK)/K3(d)
+        beta_tau = beta_tau_dBK*K3(d_BK)/K3(d)
+        beta_zd = beta_zd_dBK*K3(d_BK)/K3(d)
     Ergebnis = (beta_zd, beta_sigma, beta_tau)
     return Ergebnis
 
