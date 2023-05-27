@@ -139,3 +139,38 @@ def Kerbwirkungszahl_ohne_Formzahl(Art, d, sigma_B, *argv):
     Ergebnis = (beta_zd, beta_sigma, beta_tau)
     return Ergebnis
 
+def Kerbwirkungszahl_mit_formzahl(alpha_sigma, alpha_tau, Werkstoff, Art, r, D, d, sigma_S):
+    """
+    returns = [
+    beta_sigma,
+    beta_tau
+    ]
+    """
+    def n(G_s, W):
+        """
+        Stützzahl berechnen
+        """
+        Material: Werkstoff
+        Material = Werkstoff.Werkstoffe[W]
+        if Material.art in ("Vergütungsstahl", "Einatzstahl"):
+            n = 1 + np.sqrt(G_s)*10**(-(0.33+(sigma_S)/712))
+        elif Material.art == "Nitrierstahl":
+            n = 1 + np.sqrt(G_s)*10**(-0.7)
+        else:
+            n = 1
+
+    if (D-d)/d <= 0.5:
+        phi = 1/(np.sqrt(8*(D-d)/r)+2)
+    else:
+        phi = 0
+
+    if Art == "Absatz":
+        G_s_sigma = 2.3/r*(1/phi)
+        G_s_tau = 1.15/r
+    elif Art == "umlaufende Rundnut":
+        G_s_sigma = 2/r*(1+phi)
+        G_s_tau = 1/r
+
+    beta_sigma = alpha_sigma/n(G_s_sigma, Werkstoff)
+    beta_tau = alpha_tau/n(G_s_tau,Werkstoff)
+    return (beta_sigma, beta_tau)
