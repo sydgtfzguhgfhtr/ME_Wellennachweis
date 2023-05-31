@@ -14,7 +14,50 @@ Durchmesser = 50
 Art_der_Schwächung = "Absatz"
 
 
-# Formzahl für Absätze, und Ringnuten:
+
+"""
+Spannungsverläufe:
+"""
+def Spannungsverlaeufe():
+    pass
+        
+"""
+Größeneinflussfaktoren:
+"""
+def K1():
+    pass
+
+def K2():
+    pass
+
+def Kf():
+    pass
+
+def KV():
+    pass
+
+def K3(d, alpha_dBK_beta_dBK):
+    """
+    Größenfaktor K_3
+    d in mm
+    """
+    if d >= 7.5 and d < 150:
+        K_3 = 1-0.2*np.log10(alpha_dBK_beta_dBK)*(np.log10(d/7.5)/np.log10(20))
+    elif d >= 150:
+        K_3 = 1-0.2*np.log10(alpha_dBK_beta_dBK)
+
+def Gesamteinflussfaktoren():
+    pass
+
+def Mittelspannungseinfluss():
+    pass
+
+
+
+
+"""
+Formzahl für Absätze, und Ringnuten:
+"""
 def Formzahl(Absatzart, Belastung, grosser_Durchmesser, kleiner_Durchmesser, Radius):
     def Formzahl_Unterfunktion_Formel(A,B,C,z,d,D,r,t):
         a = 1+ 1/(np.sqrt(A*r/t+2*B*r/d*(1+2*r/d)**2+C*(r/t)**z*d/D))
@@ -38,17 +81,10 @@ def Formzahl(Absatzart, Belastung, grosser_Durchmesser, kleiner_Durchmesser, Rad
                 alpha = Formzahl_Unterfunktion_Formel(3.4,19,1,2,kleiner_Durchmesser,grosser_Durchmesser,Radius,t)
     return alpha
 
-def K3(d, alpha_dBK_beta_dBK):
-    """
-    Größenfaktor K_3
-    d in mm
-    """
-    if d >= 7.5 and d < 150:
-        K_3 = 1-0.2*np.log10(alpha_dBK_beta_dBK)*(np.log10(d/7.5)/np.log10(20))
-    elif d >= 150:
-        K_3 = 1-0.2*np.log10(alpha_dBK_beta_dBK)
 
-
+"""
+Kerbwirkungszahlen:
+"""
 def Kerbwirkungszahl_ohne_Formzahl(Art, d, sigma_B, *argv):
     """
     d = kleiner Durchmesser oder Kerbgrunddurchmesser
@@ -174,3 +210,28 @@ def Kerbwirkungszahl_mit_formzahl(alpha_sigma, alpha_tau, Werkstoff, Art, r, D, 
     beta_sigma = alpha_sigma/n(G_s_sigma, Werkstoff)
     beta_tau = alpha_tau/n(G_s_tau,Werkstoff)
     return (beta_sigma, beta_tau)
+
+"""
+Sicherheiten:
+"""
+def Sicherheit_gegen_bleibende_Verformung():
+    pass
+
+def Sicherheit_gegen_Anriss_oder_Gewaltbruch():
+    pass
+
+def Sicherheit_gegen_Dauerbruch():
+    pass
+
+
+
+# vielleicht?:
+def Bauteilwechselfestigkeit():
+    pass
+
+def Bauteilfliessgrenze():
+    pass
+
+def Gestaltfestigkeit():
+    pass
+
