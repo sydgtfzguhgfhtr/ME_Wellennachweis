@@ -121,6 +121,11 @@ def Kerbwirkungszahl_ohne_Formzahl(Art, d, sigma_B, *argv):
     Kerbwirkungszahl für Passfedern, Keilwellen, Kerbzahnwellen und Zahnwellen
     returns: (Kerbwirkungszahl für Zug/Druck, Kerbwirkungszahl für Biegung, Kerbwirkungszahl für Torsion)
     """
+    """
+    !!!!!!!!!!!!!!!!
+    braucht noch abhängigkeit zu K1 
+    K_1*sigma_irgendwas
+    """
     if Art == "eine Passfeder":
         # Werte auf d_BK bezogen
         beta_sigma_dBK = 3*(sigma_B/1000)**0.38
