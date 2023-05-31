@@ -28,6 +28,11 @@ def K1(d, werkstoff, B_S):
     """
     B_S: mit sigma_b oder sigma_S
     """
+    """
+    !!!!!!!!!!:
+    noch Unterteilung Einsatzstahl Cr-Ni...Stahl und sigma_S /-_B irgendwie
+    --->  wahrscheinlich besser if/else als match/case -_-
+    """
     def UNTER_K1(dB, dmax, d, A):
         if d <= dB:
             K_1 = 1
