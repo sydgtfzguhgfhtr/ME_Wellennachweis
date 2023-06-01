@@ -154,13 +154,56 @@ def Kerbwirkungszahl_ohne_Formzahl(Art, sigma_B, D, werkstoff):
     sigma_B_d = Zugfestigkeit(D, werkstoff, sigma_B)
     match Art:
         case "eine Passfeder":
-            beta_sigma_dBK = 3*(sigma_B/1000)**0.38
+            beta_sigma_dBK = 3*(sigma_B_d/1000)**0.38
             print(beta_sigma_dBK)
             beta_tau_dBK = 0.56*beta_sigma_dBK+0.1
             beta_zd = 1
             beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
+            beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
+        case "zwei Passfedern":
+            beta_sigma_dBK = 3*(sigma_B_d/1000)**0.38
+            print(beta_sigma_dBK)
+            beta_tau_dBK = 0.56*beta_sigma_dBK+0.1
+            beta_zd = 1
+            beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
+            beta_sigma = 1.15*beta_sigma*K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
             beta_tau = beta_tau_dBK
-            
+        case "Pressverbindung":
+            beta_sigma_dBK = 2.7*(sigma_B_d/1000)**0.43
+            print(beta_sigma_dBK)
+            beta_tau_dBK = 0.65*beta_sigma_dBK+0.1
+            beta_zd = 1
+            beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
+            beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
+        case "Keilwelle":
+            beta_tau_dBK_stern = math.e**(4.2*10**(-7)*sigma_B_d**2)
+            beta_tau_dBK = beta_tau_dBK_stern
+            beta_sigma_dBK = 1+0.45*(beta_tau_dBK_stern-1)
+            beta_zd = 1
+            beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
+            beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
+        case "Kerbzahnwelle":
+            beta_tau_dBK_stern = math.e**(4.2*10**(-7)*sigma_B_d**2)
+            beta_tau_dBK = beta_tau_dBK_stern
+            beta_sigma_dBK = 1+0.65*(beta_tau_dBK_stern-1)
+            beta_zd = 1
+            beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
+            beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
+        case "Zahnwelle":
+            beta_tau_dBK_stern = math.e**(4.2*10**(-7)*sigma_B_d**2)
+            beta_tau_dBK = 1+0.75*(beta_tau_dBK_stern-1)
+            beta_sigma_dBK = 1+0.49*(beta_tau_dBK_stern-1)
+            beta_zd = 1
+            beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
+            beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
+        case "Spitzkerbe":
+            beta_zd_dBK = 0.109*sigma_B_d
+            beta_sigma_dBK = 0.0923*sigma_B_d
+            beta_tau_dBK = 0.8*beta_sigma_dBK
+            beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 15, beta_sigma_dBK)
+            beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(D, 15, beta_sigma_dBK)
+            beta_zd = beta_zd_dBK*K3_dBK_durch_K3_D(D, 159, beta_sigma_dBK)
+
     return(beta_sigma, beta_tau, beta_zd)
 
 
@@ -227,4 +270,4 @@ def Bauteilfliessgrenze():
 def Gestaltfestigkeit():
     pass
 
-print(Formzahl("Absatz", "Torsion", 50,42,5))
+print(Kerbwirkungszahl_ohne_Formzahl("eine Passfeder", 1100, 50, "42CrMo4"))
