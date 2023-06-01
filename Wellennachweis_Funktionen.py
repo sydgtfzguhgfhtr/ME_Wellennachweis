@@ -235,19 +235,6 @@ def Kerbwirkungszahl_für_Rechtecknut(sigma_S ,grosser_Durchmesser, kleiner_Durc
     beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(d, 30, beta_tau_dBK)
 
     return(beta_sigma, beta_tau, beta_zd)
-"""
-Größeneinflussfaktoren:
-"""
-
-
-def K2():
-    pass
-
-def Kf():
-    pass
-
-def KV():
-    pass
 
 def K3_dBK_durch_K3_D(d, dBK, alpha_dBK_beta_dBK):
     """
@@ -266,36 +253,14 @@ def K3_dBK_durch_K3_D(d, dBK, alpha_dBK_beta_dBK):
         K_3_d = 1-0.2*np.log10(alpha_dBK_beta_dBK)
     return(K_3_dBK/K_3_d)
 
-def Gesamteinflussfaktoren():
-    pass
+def K2(d):
+    """
+    !fertig!
+    """
+    if d < 150:
+        K_2 = 1-0.2*(math.log10(d/7.5))/math.log10(20)
+    else:
+        K_2 = 0.8
+    return(K_2)
 
-def Mittelspannungseinfluss():
-    pass
-
-
-
-"""
-Sicherheiten:
-"""
-def Sicherheit_gegen_bleibende_Verformung():
-    pass
-
-def Sicherheit_gegen_Anriss_oder_Gewaltbruch():
-    pass
-
-def Sicherheit_gegen_Dauerbruch():
-    pass
-
-
-
-# vielleicht?:
-def Bauteilwechselfestigkeit():
-    pass
-
-def Bauteilfliessgrenze():
-    pass
-
-def Gestaltfestigkeit():
-    pass
-
-print(Kerbwirkungszahl_für_Rechtecknut(335, 80, 76.5, 0.25, 2.65))
+print(K2(50))
