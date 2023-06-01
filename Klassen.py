@@ -5,12 +5,13 @@ Klassendefinitionen
 class Werkstoff():
     Werkstoffe = {} # Dictionary mit allen erzeugten Werkstoffen
 
-    def __init__(self, name, sigma_zdW, sigma_bW, tau_tW,art="NA"):
+    def __init__(self, name, sigma_zdW, sigma_bW, tau_tW,art, Cr_Ni_Einsatzstahl):
         self.name = name
         self.sigma_zdW = float(sigma_zdW)
         self.sigma_bW = float(sigma_bW)
         self.tau_tW = float(tau_tW)
         self.art = art
+        self.Cr_Ni_Einsatzstahl = int(Cr_Ni_Einsatzstahl)
         Werkstoff.Werkstoffe[name] = self
     def __repr__(self) -> str:
         return self.name

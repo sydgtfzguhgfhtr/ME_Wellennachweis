@@ -1,56 +1,56 @@
-# Name,sigma_zdW (Zug-Druck-Wechselfestigkeit),sigma_bW (Biegewechselfestigkeit),tau_tW (Torsionswechselfestigkeit),Art
-S235JR,140,180,105,Baustahl
-S275J0,170,215,125,Baustahl
-E295,195,245,145,Baustahl
-S355J0,205,255,150,Baustahl
-E335,235,290,180,Baustahl
-E360,275,345,205,Baustahl
-S275N,150,185,110,Baustahl
-S355N,190,235,140,Baustahl
-S420N,210,260,155,Baustahl
-S460,220,275,165,Baustahl
-C10E,200,250,150,Einsatzstahl
-C15,300,375,225,Einsatzstahl
-20Cr4,360,450,270,Einsatzstahl
-21NiCrMo2,360,450,270,Einsatzstahl
-17Cr3,320,400,240,Einsatzstahl
-16MnCr5,400,500,300,Einsatzstahl
-20MnCr5,480,600,360,Einsatzstahl
-18MnCrS4,440,550,330,Einsatzstahl
-18CrNiMo7-6,480,600,360,Einsatzstahl
-31CrMo12,400,500,300,Nitrierstahl
-31CrMoV9,400,500,300,Nitrierstahl
-15CrMoV59,360,450,270,Nitrierstahl
-34CrAlMo5,320,400,240,Nitrierstahl
-34CrAlNi7,340,425,255,Nitrierstahl
-1 C22,200,250,150,Vergütungsstahl
-2 C22,200,250,150,Vergütungsstahl
-1 C25,220,275,165,Vergütungsstahl
-1 C30,240,300,180,Vergütungsstahl
-1 C35,250,315,190,Vergütungsstahl
-1 C40,260,325,200,Vergütungsstahl
-1 C45,280,350,210,Vergütungsstahl
-2 C45,280,350,210,Vergütungsstahl
-1 C50,300,375,220,Vergütungsstahl
-1 C60,340,425,250,Vergütungsstahl
-46Cr2,360,450,270,Vergütungsstahl
-41Cr4,400,500,300,Vergütungsstahl
-34CrMo4,400,500,300,Vergütungsstahl
-42CrMo4,440,550,330,Vergütungsstahl
-50CrMo4,440,550,330,Vergütungsstahl
-36CrNiMo4,440,550,330,Vergütungsstahl
-30CrNiMo8,500,625,375,Vergütungsstahl
-34CrNiMo6,480,600,360,Vergütungsstahl
-9SMn28,205,255,150,Automatenstahl
-9SMnPb28,205,255,150,Automatenstahl
-9SMn36,215,270,160,Automatenstahl
-9SMnPb36,215,270,160,Automatenstahl
-15S10,200,250,150,Automatenstahl
-10S20,195,245,145,Automatenstahl
-10SPb20,195,245,145,Automatenstahl
-35S20,235,295,175,Automatenstahl
-35SPb20,235,295,175,Automatenstahl
-45S20,275,345,205,Automatenstahl
-45SPb20,275,345,205,Automatenstahl
-60S20,310,390,235,Automatenstahl
-60SPb20,310,390,235,Automatenstahl
+# Name,sigma_zdW (Zug-Druck-Wechselfestigkeit),sigma_bW (Biegewechselfestigkeit),tau_tW (Torsionswechselfestigkeit),Art,Cr-Ni-Einsatzstahl (0=nein;1=ja)
+S235JR,140,180,105,Baustahl,0
+S275J0,170,215,125,Baustahl,0
+E295,195,245,145,Baustahl,0
+S355J0,205,255,150,Baustahl,0
+E335,235,290,180,Baustahl,0
+E360,275,345,205,Baustahl,0
+S275N,150,185,110,Baustahl,0
+S355N,190,235,140,Baustahl,0
+S420N,210,260,155,Baustahl,0
+S460,220,275,165,Baustahl,0
+C10E,200,250,150,Einsatzstahl,0
+C15,300,375,225,Einsatzstahl,0
+20Cr4,360,450,270,Einsatzstahl,0
+21NiCrMo2,360,450,270,Einsatzstahl,1
+17Cr3,320,400,240,Einsatzstahl,0
+16MnCr5,400,500,300,Einsatzstahl,0
+20MnCr5,480,600,360,Einsatzstahl,0
+18MnCrS4,440,550,330,Einsatzstahl,0
+18CrNiMo7-6,480,600,360,Einsatzstahl,1
+31CrMo12,400,500,300,Nitrierstahl,0
+31CrMoV9,400,500,300,Nitrierstahl,0
+15CrMoV59,360,450,270,Nitrierstahl,0
+34CrAlMo5,320,400,240,Nitrierstahl,0
+34CrAlNi7,340,425,255,Nitrierstahl,0
+1 C22,200,250,150,Vergütungsstahl,0
+2 C22,200,250,150,Vergütungsstahl,0
+1 C25,220,275,165,Vergütungsstahl,0
+1 C30,240,300,180,Vergütungsstahl,0
+1 C35,250,315,190,Vergütungsstahl,0
+1 C40,260,325,200,Vergütungsstahl,0
+1 C45,280,350,210,Vergütungsstahl,0
+2 C45,280,350,210,Vergütungsstahl,0
+1 C50,300,375,220,Vergütungsstahl,0
+1 C60,340,425,250,Vergütungsstahl,0
+46Cr2,360,450,270,Vergütungsstahl,0
+41Cr4,400,500,300,Vergütungsstahl,0
+34CrMo4,400,500,300,Vergütungsstahl,0
+42CrMo4,440,550,330,Vergütungsstahl,0
+50CrMo4,440,550,330,Vergütungsstahl,0
+36CrNiMo4,440,550,330,Vergütungsstahl,0
+30CrNiMo8,500,625,375,Vergütungsstahl,0
+34CrNiMo6,480,600,360,Vergütungsstahl,0
+9SMn28,205,255,150,Automatenstahl,0
+9SMnPb28,205,255,150,Automatenstahl,0
+9SMn36,215,270,160,Automatenstahl,0
+9SMnPb36,215,270,160,Automatenstahl,0
+15S10,200,250,150,Automatenstahl,0
+10S20,195,245,145,Automatenstahl,0
+10SPb20,195,245,145,Automatenstahl,0
+35S20,235,295,175,Automatenstahl,0
+35SPb20,235,295,175,Automatenstahl,0
+45S20,275,345,205,Automatenstahl,0
+45SPb20,275,345,205,Automatenstahl,0
+60S20,310,390,235,Automatenstahl,0
+60SPb20,310,390,235,Automatenstahl,0

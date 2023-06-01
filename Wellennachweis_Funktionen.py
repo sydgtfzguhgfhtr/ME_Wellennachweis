@@ -21,39 +21,93 @@ Spannungsverläufe:
 def Spannungsverlaeufe():
     pass
         
+
+"""
+Bauteilwechselfestigkeiten
+"""
+def K1(D, Art, B_oder_S, werkstoff):
+    w = Werkstoff.Werkstoffe[werkstoff]
+    if B_oder_S == "B":
+        if w.art == "Nitrierstahl" or w.art == "Baustahl":
+            if D <= 100:
+                K_1 = 1
+            elif D <= 300:
+                K_1 = 1-0.23*math.log10(D/100)
+            elif D >= 500:
+                K_1 = 0.89
+            else:
+                raise ValueError("Welle nicht über 500mm bei K1\nsigma_B und Nitrierstahl oder Baustahl")
+        elif w.art == "Vergütungsstahl" or (w.art == "Einsatzstahl" and w.Cr_Ni_Einsatzstahl == 1):
+            if D <= 16:
+                K_1 = 1
+            elif D <= 300:
+                K_1 = 1-0.26*math.log10(D/16)
+            elif D >= 500:
+                K_1 = 0.67
+            else:
+                raise ValueError("Welle nicht über 500mm bei K1\nsigma_B und Vergütungsstahl und Cr-Ni-Einsatzstahl")
+        elif w.art == "Einsatzstahl" and w.Cr_Ni_Einsatzstahl == 0:
+            if D <= 16:
+                K_1 = 1
+            elif D <= 150:
+                K_1 = 1-0.41*math.log10(D/16)
+            elif D >= 500:
+                K_1 = 0.6
+            else:
+                raise ValueError("Welle nicht über 500mm bei K1\nsigma_B und Einsatzstahl ohne Cr-Ni-Einsatzstahl")
+    elif B_oder_S == "S":
+        if w.art == "Nitrierstahl":
+            if D <= 100:
+                K_1 = 1
+            elif D <= 300:
+                K_1 = 1-0.23*math.log10(D/100)
+            elif D >= 500:
+                K_1 = 0.89
+            else:
+                raise ValueError("Welle nicht über 500mm bei K1\nsigma_S und Nitrierstahl")
+        elif w.art == "Baustahl":
+            if D <= 32:
+                K_1 = 1
+            elif D <= 300:
+                K_1 = 1-0.26*math.log10(D/100)
+            elif D >= 500:
+                K_1 = 0.75
+            else:
+                raise ValueError("Welle nicht über 500mm bei K1\nsigma_S und Baustahl")
+        elif w.art == "Einstazstahl" and w.Cr_Ni_Einsatzstahl == 1:
+            if D <= 16:
+                K_1 = 1
+            elif D <= 300:
+                K_1 = 1-0.26*math.log10(D/16)
+            elif D >= 500:
+                K_1 = 0.67
+            else:
+                raise ValueError("Welle nicht über 500mm bei K1\nsigma_S und Cr-Ni-Einsatzstahl")
+        elif w.art == "Vergütungsstahl":
+            if D <= 16:
+                K_1 = 1
+            elif D <= 300:
+                K_1 = 1-0.34*math.log10(D/16)
+            elif D >= 500:
+                K_1 = 0.57
+            else:
+                raise ValueError("Welle nicht über 500mm bei K1\nsigma_S und Vergütungsstahl")
+        elif w.art == "Einsatzstahl" and w.Cr_Ni_Einsatzstahl == 0:
+            if D <= 16:
+                K_1 = 1
+            elif D <= 150:
+                K_1 = 1-0.41*math.log10(D/16)
+            elif D >= 500:
+                K_1 = 0.6
+            else:
+                raise ValueError("Welle nicht über 500mm bei K1\nsigma_S und Einsatzstahl ohne Cr-Ni-Einsatzstahl")
+    else:
+        raise ValueError("bei K1 Werkstoff wurde nicht zugeordnet")
+
 """
 Größeneinflussfaktoren:
 """
-def K1(d, werkstoff, B_S):
-    """
-    B_S: mit sigma_b oder sigma_S
-    """
-    """
-    !!!!!!!!!!:
-    noch Unterteilung Einsatzstahl Cr-Ni...Stahl und sigma_S /-_B irgendwie
-    --->  wahrscheinlich besser if/else als match/case -_-
-    """
-    def UNTER_K1(dB, dmax, d, A):
-        if d <= dB:
-            K_1 = 1
-        elif dB < d and d <= dmax:
-            K_1 = 1-A*math.log10(d/dB)
-        elif d <= 500:
-            K_1 = 0.89
-        else:
-            raise ValueError("Welle zu groß!\n Maximal 500 mm Durchmesser!!!")
-        return K_1
-    m = Werkstoff.Werkstoffe[werkstoff]
-    Art = m.art
-    match Art:
-        case "Nitrierstahl":
-            K_1 = UNTER_K1(100,300,d,0.23)
-        case "Baustahl":
-            K_1 = UNTER_K1(32,300,d,0.26)
-        case "Einsatzstahl":
-            UNTER_K1(16,300,d,0.26)
 
-    return(K_1)
 
 def K2():
     pass
