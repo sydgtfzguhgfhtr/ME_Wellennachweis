@@ -206,7 +206,35 @@ def Kerbwirkungszahl_ohne_Formzahl(Art, sigma_B, D, werkstoff):
 
     return(beta_sigma, beta_tau, beta_zd)
 
+def Kerbwirkungszahl_für_Rechtecknut(sigma_S ,grosser_Durchmesser, kleiner_Durchmesser, Radius, Breite_der_Nut):
+    """
+    !fertig!
+    """
+    D = grosser_Durchmesser
+    d = kleiner_Durchmesser
+    m = Breite_der_Nut
+    t = (D-d)/2
+    r = Radius
 
+    rho_s = 10**(-(0.514+0.00152*sigma_S))
+    beta_zd_stern = 0.9*(1.27+1.17*(np.sqrt(t/(r+2.9*rho_s))))
+    beta_sigma_stern = 0.9*(1.14+1.08*(np.sqrt(t/(r+2.9*rho_s))))
+    beta_tau_stern = 1*(1.48+0.45*(np.sqrt(t/(r+1*rho_s))))
+    
+    if m/t >= 1.4:
+        beta_zd_dBK = beta_zd_stern
+        beta_sigma_dBK = beta_sigma_stern
+        beta_tau_dBK = beta_tau_stern
+    else:
+        beta_zd_dBK = beta_zd_stern*1.08*(m/t)**(-0.2)
+        beta_sigma_dBK = beta_sigma_stern*1.08*(m/t)**(-0.2)
+        beta_tau_dBK = beta_tau_stern*1.08*(m/t)**(-0.2)
+
+    beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(d, 30, beta_sigma_dBK)
+    beta_zd = beta_zd_dBK*K3_dBK_durch_K3_D(d, 30, beta_zd_dBK)
+    beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(d, 30, beta_tau_dBK)
+
+    return(beta_sigma, beta_tau, beta_zd)
 """
 Größeneinflussfaktoren:
 """
@@ -270,4 +298,4 @@ def Bauteilfliessgrenze():
 def Gestaltfestigkeit():
     pass
 
-print(Kerbwirkungszahl_ohne_Formzahl("eine Passfeder", 1100, 50, "42CrMo4"))
+print(Kerbwirkungszahl_für_Rechtecknut(335, 80, 76.5, 0.25, 2.65))
