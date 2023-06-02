@@ -109,17 +109,19 @@ def K1(D, B_oder_S, werkstoff):
         raise ValueError("bei K1 Werkstoff wurde nicht zugeordnet")
     return K_1
 
-def Zugfestigkeit(D, werkstoff, sigma_B):
+def Zugfestigkeit(D, werkstoff):
     """
     !fertig!
     """
+    sigma_B = Werkstoff.Werkstoffe[werkstoff].sigma_B
     K_1 = K1(D, "B", werkstoff)
     return(sigma_B*K_1)
 
-def Streckgrenze(D, werkstoff, sigma_S):
+def Streckgrenze(D, werkstoff):
     """
     !fertig!
     """
+    sigma_S = Werkstoff.Werkstoffe[werkstoff].sigma_S
     K_1 = K1(D, "S", werkstoff)
     return(sigma_S*K_1)
 
@@ -150,8 +152,8 @@ def Formzahl(Absatzart, Belastung, grosser_Durchmesser, kleiner_Durchmesser, Rad
                 alpha = Formzahl_Unterfunktion_Formel(3.4,19,1,2,kleiner_Durchmesser,grosser_Durchmesser,Radius,t)
     return alpha
 
-def Kerbwirkungszahl_ohne_Formzahl(Art, sigma_B, D, werkstoff):
-    sigma_B_d = Zugfestigkeit(D, werkstoff, sigma_B)
+def Kerbwirkungszahl_ohne_Formzahl(Art, D, werkstoff):
+    sigma_B_d = Zugfestigkeit(D, werkstoff)
     match Art:
         case "eine Passfeder":
             beta_sigma_dBK = 3*(sigma_B_d/1000)**0.38
@@ -206,10 +208,11 @@ def Kerbwirkungszahl_ohne_Formzahl(Art, sigma_B, D, werkstoff):
 
     return(beta_sigma, beta_tau, beta_zd)
 
-def Kerbwirkungszahl_für_Rechtecknut(sigma_S ,grosser_Durchmesser, kleiner_Durchmesser, Radius, Breite_der_Nut):
+def Kerbwirkungszahl_für_Rechtecknut(werkstoff ,grosser_Durchmesser, kleiner_Durchmesser, Radius, Breite_der_Nut):
     """
     !fertig!
     """
+    sigma_S = Werkstoff.Werkstoffe[werkstoff].sigma_S
     D = grosser_Durchmesser
     d = kleiner_Durchmesser
     m = Breite_der_Nut
@@ -236,11 +239,11 @@ def Kerbwirkungszahl_für_Rechtecknut(sigma_S ,grosser_Durchmesser, kleiner_Durc
 
     return(beta_sigma, beta_tau, beta_zd)
 
-def Kerbwirkungszahl_mit_Fromzahl(werkstoff, sigma_S, alpha_zd, alpha_sigma, alpha_tau, Art, D, d, r):
+def Kerbwirkungszahl_mit_Fromzahl(werkstoff, alpha_zd, alpha_sigma, alpha_tau, Art, D, d, r):
     """
     !fertig!
     """
-    sigma_S = Streckgrenze(D, werkstoff, sigma_S)
+    sigma_S = Streckgrenze(D, werkstoff)
     if ((D-d)/d <= 0.5):
         phi = 1/(np.sqrt(8*(D-d)/r)+2)
     else: 
@@ -298,12 +301,12 @@ def K2(d):
         K_2 = 0.8
     return(K_2)
 
-def KF(Rz, sigma_B, werkstoff, D):
+def KF(Rz, werkstoff, D):
     """
     !fertig! 
     aber in Übungspdf steht nichts weiter aber in gelösten Übungsaufgaben manchmal anders gemacht (keine Ahnung warum?)
     """
-    sigma_B = Zugfestigkeit(D, werkstoff, sigma_B)
+    sigma_B = Zugfestigkeit(D, werkstoff)
     K_F_sigma = 1-0.22*math.log10(Rz)*(math.log10(sigma_B/20)-1)
     K_F_tau = 0.575*K_F_sigma+0.425
 
@@ -365,11 +368,11 @@ def KV(Oberflächenverfestigung, D, Art):
                 K_V = 1
     return(K_V)
 
-def Gesamtgrößeneinflussfaktor(D, d, sigma_B, beta_sigma, beta_tau, Rz, werkstoff, Oberflächenverfetigung, Art):
+def Gesamtgrößeneinflussfaktor(D, d, beta_sigma, beta_tau, Rz, werkstoff, Oberflächenverfetigung, Art):
     """
     !fertig!
     """
-    sigma_B = Zugfestigkeit(D, werkstoff, sigma_B)
+    sigma_B = Zugfestigkeit(D, werkstoff)
     K_2 = K2(d)
     K_V = KV(Oberflächenverfetigung, D, Art)
     (K_F_sigma, K_F_tau) = KF(Rz, sigma_B, werkstoff, D)
@@ -378,9 +381,10 @@ def Gesamtgrößeneinflussfaktor(D, d, sigma_B, beta_sigma, beta_tau, Rz, werkst
 
     return(K_sigma, K_tau)
 
-def Bauteilwechselfestigkeiten(D, werkstoff, K_sigma, K_tau, sigma_bW, tau_tW):
+def Bauteilwechselfestigkeiten(D, werkstoff, K_sigma, K_tau):
     K_1 = K1(D, "B", werkstoff)
-
+    sigma_bW = Werkstoff.Werkstoffe[werkstoff].sigma_bW
+    tau_tW = Werkstoff.Werkstoffe[werkstoff].tau_tW
     sigma_bWK = (K_1*sigma_bW)/K_sigma
     tau_tWK = (K_1*tau_tW)/K_tau
 
