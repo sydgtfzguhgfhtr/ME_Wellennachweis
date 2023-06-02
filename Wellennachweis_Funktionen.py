@@ -447,6 +447,20 @@ def Vergleichsmittelspannungen(sigma_zdm, sigma_bm, tau_tm):
     sigma_mv = np.sqrt((sigma_zdm+sigma_bm)**2+3*tau_tm**2)
     tau_mv = sigma_mv/np.sqrt(3)
 
+    if tau_tm == 0:
+        tau_mv = 0
+
     return(sigma_mv, tau_mv)
 
-print(Bauteilfließgrenzen(1.557, 1.283, 50, "34CrMo4"))
+def Mittelspannungsempfindlichkeit(D, tau_tWK, sigma_zd_bWK, werkstoff):
+    """
+    !fertig!
+    """
+    sigma_B = int(Werkstoff.Werkstoffe[werkstoff].sigma_B)
+    K_1 = K1(D, "B", werkstoff)
+    Psi_zd_b_sigma_K = (sigma_zd_bWK)/(2*K_1*sigma_B-sigma_zd_bWK)
+    Psi_tauK = (tau_tWK)/(2*K_1*sigma_B-tau_tWK)
+
+    return(Psi_zd_b_sigma_K, Psi_tauK)
+
+print(Mittelspannungsempfindlichkeit(50, 0, 140.732, "42CrMo4"))
