@@ -23,7 +23,7 @@ def Spannungsverlaeufe():
         
 
 """
-Bauteilwechselfestigkeiten
+1. Bauteilwechselfestigkeiten
 """
 # Zugfestigkeit und Streckgrenze in Abhängigkeit des technologische Größeneinflussfaktors
 def K1(D, B_oder_S, werkstoff):
@@ -378,4 +378,13 @@ def Gesamtgrößeneinflussfaktor(D, d, sigma_B, beta_sigma, beta_tau, Rz, werkst
 
     return(K_sigma, K_tau)
 
-print(Gesamtgrößeneinflussfaktor(50, 42, 1000, 1.497, 1.25, 5, "34CrMo4", "nein", "Absatz"))
+def Bauteilwechselfestigkeiten(D, werkstoff, K_sigma, K_tau, sigma_bW, tau_tW):
+    K_1 = K1(D, "B", werkstoff)
+
+    sigma_bWK = (K_1*sigma_bW)/K_sigma
+    tau_tWK = (K_1*tau_tW)/K_tau
+
+    return(sigma_bWK, tau_tWK)
+
+
+print(Bauteilwechselfestigkeiten(50, "34CrMo4", 1.801, 1.473, 500, 300))
