@@ -309,4 +309,56 @@ def KF(Rz, sigma_B, werkstoff, D):
 
     return(K_F_sigma, K_F_tau)
 
+def KV(Oberflächenverfestigung, D, Art):
+    if Art == "umlaufende Rundnut" or Art == "Absatz":
+        K_V = 1
+    match Oberflächenverfestigung:
+        case "nein":
+            K_V = 1
+        case "Nitrieren":
+            if D < 25:
+                K_V = 1.5
+            elif D < 40:
+                K_V = 1.2
+            else:
+                K_V = 1
+        case "Einsatzhärten":
+            if D < 25:
+                K_V = 1.5
+            elif D < 40:
+                K_V = 1.2
+            else:
+                K_V = 1
+        case "Karbonierhärten":
+            if D < 25:
+                K_V = 1.4
+            elif D <40:
+                K_V = 1.1
+            else:
+                K_V = 1
+        case "Festwalzen":
+            if D < 25:
+                K_V = 1.5
+            elif D < 40:
+                K_V = 1.3
+            else:
+                K_V = 1
+        case "Kugelstrahlen":
+            if D < 25:
+                K_V = 1.4
+            elif D < 40:
+                K_V = 1.1
+            else:
+                K_V = 1
+        case "Flammhärten":
+            if D < 25:
+                K_V = 1.4
+            elif D < 40:
+                K_V = 1.2
+            elif D < 250:
+                K_V = 1.1
+            else:
+                K_V = 1
+    return(K_V)
+
 print(KF(25, 590, "E335", 80))
