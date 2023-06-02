@@ -310,6 +310,10 @@ def KF(Rz, sigma_B, werkstoff, D):
     return(K_F_sigma, K_F_tau)
 
 def KV(Oberflächenverfestigung, D, Art):
+    """
+    !fertig!: 
+    irgendwie komisch beschrieben in pdf, vielleicht ist KV auch immer 1?
+    """
     if Art == "umlaufende Rundnut" or Art == "Absatz":
         K_V = 1
     match Oberflächenverfestigung:
@@ -361,4 +365,17 @@ def KV(Oberflächenverfestigung, D, Art):
                 K_V = 1
     return(K_V)
 
-print(KF(25, 590, "E335", 80))
+def Gesamtgrößeneinflussfaktor(D, d, sigma_B, beta_sigma, beta_tau, Rz, werkstoff, Oberflächenverfetigung, Art):
+    """
+    !fertig!
+    """
+    sigma_B = Zugfestigkeit(D, werkstoff, sigma_B)
+    K_2 = K2(d)
+    K_V = KV(Oberflächenverfetigung, D, Art)
+    (K_F_sigma, K_F_tau) = KF(Rz, sigma_B, werkstoff, D)
+    K_sigma = ((beta_sigma/K_2)+(1/K_F_sigma)-1)*(1/K_V)
+    K_tau = ((beta_tau/K_2)+(1/K_F_tau)-1)*(1/K_V)
+
+    return(K_sigma, K_tau)
+
+print(Gesamtgrößeneinflussfaktor(50, 42, 1000, 1.497, 1.25, 5, "34CrMo4", "nein", "Absatz"))
