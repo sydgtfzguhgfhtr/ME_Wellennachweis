@@ -393,41 +393,41 @@ def Bauteilwechselfestigkeiten(D, werkstoff, K_sigma, K_tau):
 """
 2. Bauteilfließgrenzen
 """
+def K2F(Belastungsart):
+    """
+    Vollwelle
+    !fertig!
+    """
+    match Belastungsart:
+        case "Zug/Druck":
+            K_2F = 1
+        case "Biegung":
+            K_2F = 1.2
+        case "Torsion":
+            K_2F = 1.2
+    return(K_2F)
+
+def Erhöhungsfaktor_der_Fließgrenze(Form_Kerbzahl, Belastungsart):
+    """
+    !fertig!
+    """
+    if Belastungsart == "Zug/Druck" or Belastungsart == "Biegung":
+        if Form_Kerbzahl <= 1.5:
+            gamma_F = 1
+        elif Form_Kerbzahl <= 2:
+            gamma_F = 1.05
+        elif Form_Kerbzahl <= 3:
+            gamma_F = 1.1
+        else:
+            gamma_F = 1.15
+    else:
+        gamma_F = 1
+    return(gamma_F)
+
 def Bauteilfließgrenzen(Form_Kerbzahl_sigma, Form_Kerbzahl_tau, D, werkstoff):
     """
     !fertig!
     """
-    def K2F(Belastungsart):
-        """
-        Vollwelle
-        !fertig!
-        """
-        match Belastungsart:
-            case "Zug/Druck":
-                K_2F = 1
-            case "Biegung":
-                K_2F = 1.2
-            case "Torsion":
-                K_2F = 1.2
-        return(K_2F)
-
-    def Erhöhungsfaktor_der_Fließgrenze(Form_Kerbzahl, Belastungsart):
-        """
-        !fertig!
-        """
-        if Belastungsart == "Zug/Druck" or Belastungsart == "Biegung":
-            if Form_Kerbzahl <= 1.5:
-                gamma_F = 1
-            elif Form_Kerbzahl <= 2:
-                gamma_F = 1.05
-            elif Form_Kerbzahl <= 3:
-                gamma_F = 1.1
-            else:
-                gamma_F = 1.15
-        else:
-            gamma_F = 1
-        return(gamma_F)
-
     K_1 = K1(D, "S", werkstoff)
     K_2F_sigma = K2F("Biegung")
     gamma_F_sigma = Erhöhungsfaktor_der_Fließgrenze(Form_Kerbzahl_sigma, "Biegung")
@@ -439,5 +439,14 @@ def Bauteilfließgrenzen(Form_Kerbzahl_sigma, Form_Kerbzahl_tau, D, werkstoff):
     tau_tFK = K_1*K_2F_tau*gamma_F_tau*(sigma_S/np.sqrt(3))
 
     return(sigma_zd_bFK, tau_tFK)
+
+"""
+3. Gestaltfestigkeiten
+"""
+def Vergleichsmittelspannungen(sigma_zdm, sigma_bm, tau_tm):
+    sigma_mv = np.sqrt((sigma_zdm+sigma_bm)**2+3*tau_tm**2)
+    tau_mv = sigma_mv/np.sqrt(3)
+
+    return(sigma_mv, tau_mv)
 
 print(Bauteilfließgrenzen(1.557, 1.283, 50, "34CrMo4"))
