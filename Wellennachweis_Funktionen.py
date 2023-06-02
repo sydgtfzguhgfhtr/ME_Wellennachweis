@@ -236,6 +236,37 @@ def Kerbwirkungszahl_für_Rechtecknut(sigma_S ,grosser_Durchmesser, kleiner_Durc
 
     return(beta_sigma, beta_tau, beta_zd)
 
+def Kerbwirkungszahl_mit_Fromzahl(werkstoff, sigma_S, alpha_zd, alpha_sigma, alpha_tau, Art, D, d, r):
+    if ((D-d)/d <= 0.5):
+        phi = 1/(np.sqrt(8*(D-d)/r)+2)
+    else: 
+        phi = 0
+
+    if Art == "Absatz":
+        G_s_zd = 2.3/r*(1+phi)
+        G_s_sigma = G_s_zd
+        G_s_tau = 1.15/r
+    elif Art == "umlaufende Rundnut":
+        G_s_zd = 2/r*(1+phi)
+        G_s_sigam = G_s_zd
+        G_s_tau = 1/r
+
+    w = Werkstoff.Werkstoffe[werkstoff]
+    if w.art == "Vergütungsstahl" or w.art == "Einsatzstahl" or w.art == "Automatenstahl" or w.art == "Baustahl":
+        n_zd = 1+np.sqrt(G_s_zd)*10**(-(0.33+sigma_S/712))
+        n_sigma = 1+np.sqrt(G_s_sigma)*10**(-(0.33+sigma_S/712))
+        n_tau = 1+np.sqrt(G_s_tau)*10**(-(0.33+sigma_S/712))
+    elif w.art == "Nitrierstahl":
+        n_zd = 1+np.sqrt(G_s_zd)*10**(-0.7)
+        n_sigma = 1+np.sqrt(G_s_sigma)*10**(-0.7)
+        n_tau = 1+np.sqrt(G_s_tau)*10**(-0.7)
+
+    beta_zd = alpha_zd/n_zd
+    beta_sigma = alpha_sigma/n_sigma
+    beta_tau = alpha_tau/n_tau
+
+    return(beta_zd, beta_sigma, beta_tau)
+
 def K3_dBK_durch_K3_D(d, dBK, alpha_dBK_beta_dBK):
     """
     Größenfaktor K_3
@@ -263,4 +294,4 @@ def K2(d):
         K_2 = 0.8
     return(K_2)
 
-print(K2(50))
+print(Kerbwirkungszahl_mit_Fromzahl("34CrMo4", 800, 1, 1.557, 1.257, "Absatz", 50, 42, 5))
