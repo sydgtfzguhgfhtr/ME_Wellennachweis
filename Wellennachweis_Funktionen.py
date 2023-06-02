@@ -390,5 +390,3 @@ def Bauteilwechselfestigkeiten(D, werkstoff, K_sigma, K_tau):
 
     return(sigma_bWK, tau_tWK)
 
-
-print(Bauteilwechselfestigkeiten(50, "34CrMo4", 1.801, 1.473, 500, 300))
