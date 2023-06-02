@@ -237,6 +237,10 @@ def Kerbwirkungszahl_für_Rechtecknut(sigma_S ,grosser_Durchmesser, kleiner_Durc
     return(beta_sigma, beta_tau, beta_zd)
 
 def Kerbwirkungszahl_mit_Fromzahl(werkstoff, sigma_S, alpha_zd, alpha_sigma, alpha_tau, Art, D, d, r):
+    """
+    !fertig!
+    """
+    sigma_S = Streckgrenze(D, werkstoff, sigma_S)
     if ((D-d)/d <= 0.5):
         phi = 1/(np.sqrt(8*(D-d)/r)+2)
     else: 
@@ -294,4 +298,15 @@ def K2(d):
         K_2 = 0.8
     return(K_2)
 
-print(Kerbwirkungszahl_mit_Fromzahl("34CrMo4", 800, 1, 1.557, 1.257, "Absatz", 50, 42, 5))
+def KF(Rz, sigma_B, werkstoff, D):
+    """
+    !fertig! 
+    aber in Übungspdf steht nichts weiter aber in gelösten Übungsaufgaben manchmal anders gemacht (keine Ahnung warum?)
+    """
+    sigma_B = Zugfestigkeit(D, werkstoff, sigma_B)
+    K_F_sigma = 1-0.22*math.log10(Rz)*(math.log10(sigma_B/20)-1)
+    K_F_tau = 0.575*K_F_sigma+0.425
+
+    return(K_F_sigma, K_F_tau)
+
+print(KF(25, 590, "E335", 80))
