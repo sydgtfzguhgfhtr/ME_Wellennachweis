@@ -109,20 +109,18 @@ def K1(D, B_oder_S, werkstoff):
         raise ValueError("bei K1 Werkstoff wurde nicht zugeordnet")
     return K_1
 
-def Zugfestigkeit(D, werkstoff):
+def Zugfestigkeit(D, K_1, werkstoff):
     """
     !fertig!
     """
-    sigma_B = Werkstoff.Werkstoffe[werkstoff].sigma_B
-    K_1 = K1(D, "B", werkstoff)
+    sigma_B = int(Werkstoff.Werkstoffe[werkstoff].sigma_B)
     return(sigma_B*K_1)
 
-def Streckgrenze(D, werkstoff):
+def Streckgrenze(D, K_1, werkstoff):
     """
     !fertig!
     """
-    sigma_S = Werkstoff.Werkstoffe[werkstoff].sigma_S
-    K_1 = K1(D, "S", werkstoff)
+    sigma_S = int(Werkstoff.Werkstoffe[werkstoff].sigma_S)
     return(sigma_S*K_1)
 
 # Kerbwirkungszahlen
@@ -485,6 +483,3 @@ def Gestaltfestigkeit(D, werkstoff, gamma_F_sigma, gamma_F_tau, sigma_mv, tau_mv
     
     return(sigma_bADK, tau_tADK)
 
-
-
-print(Vergleichsmittelspannungen(0, 500, 100))
