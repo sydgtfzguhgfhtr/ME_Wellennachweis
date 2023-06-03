@@ -109,18 +109,20 @@ def K1(D, B_oder_S, werkstoff):
         raise ValueError("bei K1 Werkstoff wurde nicht zugeordnet")
     return K_1
 
-def Zugfestigkeit(D, K_1, werkstoff):
+def Zugfestigkeit(D, werkstoff):
     """
     !fertig!
     """
     sigma_B = int(Werkstoff.Werkstoffe[werkstoff].sigma_B)
+    K_1 = K1(D, "B", werkstoff)
     return(sigma_B*K_1)
 
-def Streckgrenze(D, K_1, werkstoff):
+def Streckgrenze(D, werkstoff):
     """
     !fertig!
     """
     sigma_S = int(Werkstoff.Werkstoffe[werkstoff].sigma_S)
+    K_1 = K1(D, "S", werkstoff)
     return(sigma_S*K_1)
 
 # Kerbwirkungszahlen
@@ -373,7 +375,7 @@ def Gesamtgrößeneinflussfaktor(D, d, beta_sigma, beta_tau, Rz, werkstoff, Ober
     sigma_B = Zugfestigkeit(D, werkstoff)
     K_2 = K2(d)
     K_V = KV(Oberflächenverfetigung, D, Art)
-    (K_F_sigma, K_F_tau) = KF(Rz, sigma_B, werkstoff, D)
+    (K_F_sigma, K_F_tau) = KF(Rz, werkstoff, D)
     K_sigma = ((beta_sigma/K_2)+(1/K_F_sigma)-1)*(1/K_V)
     K_tau = ((beta_tau/K_2)+(1/K_F_tau)-1)*(1/K_V)
 
