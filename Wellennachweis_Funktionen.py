@@ -484,4 +484,3 @@ def Gestaltfestigkeit(D, werkstoff, gamma_F_sigma, gamma_F_tau, sigma_mv, tau_mv
         tau_tADK = tau_tWK-Psi_tau_K*tau_mv
     
     return(sigma_bADK, tau_tADK)
-
