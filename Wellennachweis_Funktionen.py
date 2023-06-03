@@ -444,6 +444,9 @@ def Bauteilfließgrenzen(Form_Kerbzahl_sigma, Form_Kerbzahl_tau, D, werkstoff):
 3. Gestaltfestigkeiten
 """
 def Vergleichsmittelspannungen(sigma_zdm, sigma_bm, tau_tm):
+    """
+    !fertig!
+    """
     sigma_mv = np.sqrt((sigma_zdm+sigma_bm)**2+3*tau_tm**2)
     tau_mv = sigma_mv/np.sqrt(3)
 
@@ -464,6 +467,9 @@ def Mittelspannungsempfindlichkeit(D, tau_tWK, sigma_zd_bWK, werkstoff):
     return(Psi_zd_b_sigma_K, Psi_tauK)
 
 def Gestaltfestigkeit(D, werkstoff, gamma_F_sigma, gamma_F_tau, sigma_mv, tau_mv, sigma_bWK, Psi_b_sigma_K, tau_tWK, Psi_tau_K):
+    """
+    !fertig!
+    """
     sigma_S = int(Werkstoff.Werkstoffe[werkstoff].sigma_S)
     sigma_bFK = K1(D, "S", werkstoff)*K2F("Biegung")*gamma_F_sigma*sigma_S
     tau_tFK = K1(D, "S", werkstoff)*K2F("Torsion")*gamma_F_tau*(sigma_S/np.sqrt(3))
@@ -481,4 +487,4 @@ def Gestaltfestigkeit(D, werkstoff, gamma_F_sigma, gamma_F_tau, sigma_mv, tau_mv
 
 
 
-print(Gestaltfestigkeit(50, "34CrMo4", 1, 1, 529.15, 305.505, 241.917, 0.161, 177.462, 0.113))
+print(Vergleichsmittelspannungen(0, 500, 100))
