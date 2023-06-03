@@ -435,10 +435,10 @@ def Bauteilfließgrenzen(Form_Kerbzahl_sigma, Form_Kerbzahl_tau, D, werkstoff):
     gamma_F_tau = Erhöhungsfaktor_der_Fließgrenze(Form_Kerbzahl_tau, "Torsion")
     K_2F_tau = K2F("Torsion")
 
-    sigma_zd_bFK = K_1*K_2F_sigma*gamma_F_sigma*sigma_S
+    sigma_bFK = K_1*K_2F_sigma*gamma_F_sigma*sigma_S
     tau_tFK = K_1*K_2F_tau*gamma_F_tau*(sigma_S/np.sqrt(3))
 
-    return(sigma_zd_bFK, tau_tFK)
+    return(sigma_bFK, tau_tFK)
 
 """
 3. Gestaltfestigkeiten
