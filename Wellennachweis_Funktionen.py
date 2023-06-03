@@ -463,4 +463,22 @@ def Mittelspannungsempfindlichkeit(D, tau_tWK, sigma_zd_bWK, werkstoff):
 
     return(Psi_zd_b_sigma_K, Psi_tauK)
 
-print(Mittelspannungsempfindlichkeit(50, 0, 140.732, "42CrMo4"))
+def Gestaltfestigkeit(D, werkstoff, gamma_F_sigma, gamma_F_tau, sigma_mv, tau_mv, sigma_bWK, Psi_b_sigma_K, tau_tWK, Psi_tau_K):
+    sigma_S = int(Werkstoff.Werkstoffe[werkstoff].sigma_S)
+    sigma_bFK = K1(D, "S", werkstoff)*K2F("Biegung")*gamma_F_sigma*sigma_S
+    tau_tFK = K1(D, "S", werkstoff)*K2F("Torsion")*gamma_F_tau*(sigma_S/np.sqrt(3))
+
+    if sigma_mv <= (sigma_bFK-sigma_bWK)/(1-Psi_b_sigma_K) and tau_mv <= (tau_tFK-tau_tWK)/(1-Psi_tau_K):
+        sigma_bADK = sigma_bWK-Psi_b_sigma_K*sigma_mv
+        tau_tADK = tau_tWK-Psi_tau_K*tau_mv
+    else: 
+        Psi_b_sigma_K = 1
+        Psi_tau_K = 1
+        sigma_bADK = sigma_bWK-Psi_b_sigma_K*sigma_mv
+        tau_tADK = tau_tWK-Psi_tau_K*tau_mv
+    
+    return(sigma_bADK, tau_tADK)
+
+
+
+print(Gestaltfestigkeit(50, "34CrMo4", 1, 1, 529.15, 305.505, 241.917, 0.161, 177.462, 0.113))
