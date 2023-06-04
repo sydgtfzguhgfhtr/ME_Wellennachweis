@@ -27,8 +27,15 @@ def Spannungsverlaeufe():
 """
 # Zugfestigkeit und Streckgrenze in Abhängigkeit des technologische Größeneinflussfaktors
 def K1(D, B_oder_S, werkstoff):
-    """
-    !fertig!
+    """Einflussfaktor K1
+
+    Args:
+        D (int): großer Durchmesser
+        B_oder_S (str): S: Zugfestigkeit; B: Strekcgrenze 
+        werkstoff (str): Werkstoff der Welle
+
+    Returns:
+        K_1 (float): Einflussfaktor K1
     """
     w = Werkstoff.Werkstoffe[werkstoff]
     if B_oder_S == "B":
@@ -110,62 +117,42 @@ def K1(D, B_oder_S, werkstoff):
     return K_1
 
 def Zugfestigkeit(D, werkstoff):
-    """
-    !fertig!
+    """Zugfestigkeit für Durchmesser
+
+    Args:
+        D (int): großer Durchmesser der Welle
+        werkstoff (str): Werkstoff der Welle
+    
+    Returns:
+        sigma_B: Zugfestigkeit für D
     """
     sigma_B = int(Werkstoff.Werkstoffe[werkstoff].sigma_B)
     K_1 = K1(D, "B", werkstoff)
     return(sigma_B*K_1)
 
 def Streckgrenze(D, werkstoff):
-    """
-    !fertig!
+    """Streckgrenze für Durchmesser
+
+    Args:
+        D (int): großer Durchmesser der Welle
+        werkstoff (str): Werkstoff der Welle
+    Returns:
+        sigma_s: Streckgrenze für D
     """
     sigma_S = int(Werkstoff.Werkstoffe[werkstoff].sigma_S)
     K_1 = K1(D, "S", werkstoff)
     return(sigma_S*K_1)
 
 # Kerbwirkungszahlen
-def Kerbwirkungszahl_mit_Fromzahl(werkstoff, alpha_zd, alpha_sigma, alpha_tau, Art, D, d, r):
-    """
-    !fertig!
-    """
-    sigma_S = Streckgrenze(D, werkstoff)
-    if ((D-d)/d <= 0.5):
-        phi = 1/(np.sqrt(8*(D-d)/r)+2)
-    else: 
-        phi = 0
-
-    if Art == "Absatz":
-        G_s_zd = 2.3/r*(1+phi)
-        G_s_sigma = G_s_zd
-        G_s_tau = 1.15/r
-    elif Art == "umlaufende Rundnut":
-        G_s_zd = 2/r*(1+phi)
-        G_s_sigam = G_s_zd
-        G_s_tau = 1/r
-
-    w = Werkstoff.Werkstoffe[werkstoff]
-    if w.art == "Vergütungsstahl" or w.art == "Einsatzstahl" or w.art == "Automatenstahl" or w.art == "Baustahl":
-        n_zd = 1+np.sqrt(G_s_zd)*10**(-(0.33+sigma_S/712))
-        n_sigma = 1+np.sqrt(G_s_sigma)*10**(-(0.33+sigma_S/712))
-        n_tau = 1+np.sqrt(G_s_tau)*10**(-(0.33+sigma_S/712))
-    elif w.art == "Nitrierstahl":
-        n_zd = 1+np.sqrt(G_s_zd)*10**(-0.7)
-        n_sigma = 1+np.sqrt(G_s_sigma)*10**(-0.7)
-        n_tau = 1+np.sqrt(G_s_tau)*10**(-0.7)
-
-    beta_zd = alpha_zd/n_zd
-    beta_sigma = alpha_sigma/n_sigma
-    beta_tau = alpha_tau/n_tau
-
-    return(beta_zd, beta_sigma, beta_tau)
-
 def K3_dBK_durch_K3_D(d, dBK, alpha_dBK_beta_dBK):
-    """
-    Größenfaktor K_3
-    d in mm
-    !fertig!
+    """K3(dBK)/K3(d)
+
+    Args:
+        d (int): Durchmesser der Welle
+        dBK (int): Bezugsdurchmesser
+        alpha_dBK_beta_dBK (float): Form- oder Kerbwirkungszahl
+    Returns:
+        K3(dBK/K3(d))
     """
     if d >= 7.5 and d < 150:
         K_3_dBK = 1-0.2*np.log10(alpha_dBK_beta_dBK)*(np.log10(dBK/7.5)/np.log10(20))
@@ -323,13 +310,14 @@ def Kerbwirkungszahl(Art, werkstoff, D, *argv):
         beta_tau = alpha_t/n_tau
     return(beta_sigma, beta_tau, beta_zd)
 
-print(Kerbwirkungszahl("umlaufende Rechtecknut", "E335", 80, 76.5, 0.25, 2.65))
-
-
-
 def K2(d):
-    """
-    !fertig!
+    """Einflussfaktor K2
+
+    Args:
+        d (int): Durchmesser der Welle
+    
+    Returns:
+        K2
     """
     if d < 150:
         K_2 = 1-0.2*(math.log10(d/7.5))/math.log10(20)
@@ -338,8 +326,18 @@ def K2(d):
     return(K_2)
 
 def KF(Rz, werkstoff, D):
+    """Einflussfaktor KF
+
+    Args:
+        Rz (float): Rz
+        werkstoff (str): Werkstoff der Welle
+        D (int): Durchmesser der Welle
+
+    Returns:
+        K_F_sigma (float): KF bei Biegung
+        K_F_tau (float): KF bei Torsion
     """
-    !fertig! 
+    """
     aber in Übungspdf steht nichts weiter aber in gelösten Übungsaufgaben manchmal anders gemacht (keine Ahnung warum?)
     """
     sigma_B = Zugfestigkeit(D, werkstoff)
@@ -349,8 +347,17 @@ def KF(Rz, werkstoff, D):
     return(K_F_sigma, K_F_tau)
 
 def KV(Oberflächenverfestigung, D, Art):
+    """Einflussfaktor KV
+
+    Args:
+        Oberfl (str): Art der Oberflächenverfestigung, falls nicht vorhanden: "nein"
+        D (int): Durchmesser der Welle
+        Art (str): Art der Querschnittsschwächung
+    
+    Returns:
+        KV
     """
-    !fertig!: 
+    """
     irgendwie komisch beschrieben in pdf, vielleicht ist KV auch immer 1?
     """
     if Art == "umlaufende Rundnut" or Art == "Absatz":
@@ -405,8 +412,21 @@ def KV(Oberflächenverfestigung, D, Art):
     return(K_V)
 
 def Gesamtgrößeneinflussfaktor(D, d, beta_sigma, beta_tau, Rz, werkstoff, Oberflächenverfetigung, Art):
-    """
-    !fertig!
+    """Gesamtgößeneinflussfaktor
+
+    Args:
+        D (int): großer Duchmesser
+        d (int): kleiner Durchmesser
+        beta_sigma (float): Kerbwirkungszahl Biegung
+        beta_tau (float): Kerbwirkungszahl Torsion
+        Rz (float): Rz
+        werkstoff (str): Werkstoff der Welle
+        Oberflächenverfestigung (str): Art der Oberflächenverfestigung, falls nicht vorhanden: "nein"
+        Art (str): Art der Querschnittsschwächung
+
+    Returns:
+        K_Sigma (float): Gesamteinflussfaktor Biegung
+        K_tau (float): Gesamteinflussfaktor Torsion
     """
     sigma_B = Zugfestigkeit(D, werkstoff)
     K_2 = K2(d)
@@ -418,6 +438,18 @@ def Gesamtgrößeneinflussfaktor(D, d, beta_sigma, beta_tau, Rz, werkstoff, Ober
     return(K_sigma, K_tau)
 
 def Bauteilwechselfestigkeiten(D, werkstoff, K_sigma, K_tau):
+    """Bauteilwechselfestigkeiten
+    
+    Args:
+        D (int): großer Durchmesser der Welle
+        werkstoff (str): Werkstoff der Welle
+        K_sigma (float): Gesamteinflussfaktor Biegung
+        K_tau (float): Gesamteinflussfaktor Torsion
+
+    Returns:
+        sigma_bWK (float): Biegewechselfestigkeit
+        tau_tWK (float): Torsionswechselfestigkeit
+    """
     K_1 = K1(D, "B", werkstoff)
     sigma_bW = Werkstoff.Werkstoffe[werkstoff].sigma_bW
     tau_tW = Werkstoff.Werkstoffe[werkstoff].tau_tW
@@ -430,9 +462,13 @@ def Bauteilwechselfestigkeiten(D, werkstoff, K_sigma, K_tau):
 2. Bauteilfließgrenzen
 """
 def K2F(Belastungsart):
-    """
-    Vollwelle
-    !fertig!
+    """Einflussfaktor K2F
+
+    Args:
+        Belastungsart (str): Art der Belastung
+    
+    Returns:
+        K2F
     """
     match Belastungsart:
         case "Zug/Druck":
@@ -443,16 +479,22 @@ def K2F(Belastungsart):
             K_2F = 1.2
     return(K_2F)
 
-def Erhöhungsfaktor_der_Fließgrenze(Form_Kerbzahl, Belastungsart):
-    """
-    !fertig!
+def Erhöhungsfaktor_der_Fließgrenze(Kerbzahl, Belastungsart):
+    """gamma_F
+
+    Args:
+        Kerbzahl (float): Kerbwirkungszahl
+        Belastungsart (str): Art der Belastung (Biegung, Torsion oder Zug/Druck)
+
+    Returns:
+        gamma_F
     """
     if Belastungsart == "Zug/Druck" or Belastungsart == "Biegung":
-        if Form_Kerbzahl <= 1.5:
+        if Kerbzahl <= 1.5:
             gamma_F = 1
-        elif Form_Kerbzahl <= 2:
+        elif Kerbzahl <= 2:
             gamma_F = 1.05
-        elif Form_Kerbzahl <= 3:
+        elif Kerbzahl <= 3:
             gamma_F = 1.1
         else:
             gamma_F = 1.15
@@ -460,15 +502,20 @@ def Erhöhungsfaktor_der_Fließgrenze(Form_Kerbzahl, Belastungsart):
         gamma_F = 1
     return(gamma_F)
 
-def Bauteilfließgrenzen(Form_Kerbzahl_sigma, Form_Kerbzahl_tau, D, werkstoff):
-    """
-    !fertig!
+def Bauteilfließgrenzen(Kerbzahl_sigma, Kerbzahl_tau, D, werkstoff):
+    """Bauteilfließgrenzen
+    
+    Args:
+        Kerbzahl_sigma (float): Kerbzahl Biegung
+        Kerbzahl_tau (float): Kerbzahl Torsion
+        D (int): Wellendurchmesser
+        werkstoff (str): Werkstoff der Welle
     """
     K_1 = K1(D, "S", werkstoff)
     K_2F_sigma = K2F("Biegung")
-    gamma_F_sigma = Erhöhungsfaktor_der_Fließgrenze(Form_Kerbzahl_sigma, "Biegung")
+    gamma_F_sigma = Erhöhungsfaktor_der_Fließgrenze(Kerbzahl_sigma, "Biegung")
     sigma_S = int(Werkstoff.Werkstoffe[werkstoff].sigma_S)
-    gamma_F_tau = Erhöhungsfaktor_der_Fließgrenze(Form_Kerbzahl_tau, "Torsion")
+    gamma_F_tau = Erhöhungsfaktor_der_Fließgrenze(Kerbzahl_tau, "Torsion")
     K_2F_tau = K2F("Torsion")
 
     sigma_bFK = K_1*K_2F_sigma*gamma_F_sigma*sigma_S
@@ -480,8 +527,16 @@ def Bauteilfließgrenzen(Form_Kerbzahl_sigma, Form_Kerbzahl_tau, D, werkstoff):
 3. Gestaltfestigkeiten
 """
 def Vergleichsmittelspannungen(sigma_zdm, sigma_bm, tau_tm):
-    """
-    !fertig!
+    """Vergleichsmittelspannungen
+
+    Args:
+        sigma_zdm (float): mittlere Zug/Druck-Spannung
+        sigma_bm (float): mittlere Biegespannung
+        tau_tm (float): mittlere Torsionsspannung
+
+    Returns:
+        sigma_mv (float): Vergleichsmittelspannung Biegung
+        tau_mv (float): Vergleichsmittelspannung Torsion
     """
     sigma_mv = np.sqrt((sigma_zdm+sigma_bm)**2+3*tau_tm**2)
     tau_mv = sigma_mv/np.sqrt(3)
@@ -492,8 +547,17 @@ def Vergleichsmittelspannungen(sigma_zdm, sigma_bm, tau_tm):
     return(sigma_mv, tau_mv)
 
 def Mittelspannungsempfindlichkeit(D, tau_tWK, sigma_zd_bWK, werkstoff):
-    """
-    !fertig!
+    """Mittelspannungsempfindlichkeit
+
+    Args:
+        D (int): Wellendurchmesser
+        tau_tWK (float): Torsionswechselfestigkeit
+        sigma_zd_bWK (float): Biegewechselfestigkeit
+        werkstoff (str): Werkstoff der Welle
+
+    Returns:
+        Psi_zd_b_sigma (float): Mittelspannungsempfindlichkeit Biegung
+        Psi_tauK (float): Mittelspannungsempfindlichkeit Torsion
     """
     sigma_B = int(Werkstoff.Werkstoffe[werkstoff].sigma_B)
     K_1 = K1(D, "B", werkstoff)
@@ -503,8 +567,23 @@ def Mittelspannungsempfindlichkeit(D, tau_tWK, sigma_zd_bWK, werkstoff):
     return(Psi_zd_b_sigma_K, Psi_tauK)
 
 def Gestaltfestigkeit(D, werkstoff, gamma_F_sigma, gamma_F_tau, sigma_mv, tau_mv, sigma_bWK, Psi_b_sigma_K, tau_tWK, Psi_tau_K):
-    """
-    !fertig!
+    """Gestaltfestigkeit
+
+    Args:
+        D (int): Wellendurchmesser
+        werkstoff (str): Werkstoff der Welle
+        gamma_F_sigma (float): Erhöhungsfaktor der Fließgrenze Biegung
+        gamma_F_tau (float): Erhöhungsfaktor der Fließgrenze Torsion
+        sigma_mv (float): Vergleichsmittelspannung Biegung
+        tau_mv (float): Vergleichsmittelspannung Torsion
+        sigma_bWK (float): Biegewechselfestigkeit
+        Psi_b_sigma_K (float): Mittelspannungsempfindlichkeit Biegung
+        tau_tWK (float): Torsionswechselfestigkeit
+        Psi_tau_K (float): Mittelspannungsempfindlichkeit Torsion
+
+    Returns:
+        sigma_bADK (float): Gestaltfestigkeit Biegung
+        tau_tADK (float): Gestaltfestigkeit Torsion
     """
     sigma_S = int(Werkstoff.Werkstoffe[werkstoff].sigma_S)
     sigma_bFK = K1(D, "S", werkstoff)*K2F("Biegung")*gamma_F_sigma*sigma_S
