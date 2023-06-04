@@ -126,119 +126,6 @@ def Streckgrenze(D, werkstoff):
     return(sigma_S*K_1)
 
 # Kerbwirkungszahlen
-def Formzahl(Absatzart, Belastung, grosser_Durchmesser, kleiner_Durchmesser, Radius):
-    """
-    !fertig!
-    """
-    def Formzahl_Unterfunktion_Formel(A,B,C,z,d,D,r,t):
-        a = 1+ 1/(np.sqrt(A*r/t+2*B*r/d*(1+2*r/d)**2+C*(r/t)**z*d/D))
-        return a
-    t = (grosser_Durchmesser-kleiner_Durchmesser)/2
-    if Absatzart == "umlaufende Rundnut":
-        match Belastung:
-            case "Zug/Druck":
-                alpha = Formzahl_Unterfunktion_Formel(0.22,1.37,0,0,kleiner_Durchmesser,grosser_Durchmesser,Radius,t)
-            case "Biegung":
-                alpha = Formzahl_Unterfunktion_Formel(0.2,2.75,0,0,kleiner_Durchmesser,grosser_Durchmesser,Radius,t)
-            case "Torsion":
-                alpha = Formzahl_Unterfunktion_Formel(0.7,10.3,0,0,kleiner_Durchmesser,grosser_Durchmesser,Radius,t)
-    elif Absatzart == "Absatz":
-        match Belastung:
-            case "Zug/Druck":
-                alpha = Formzahl_Unterfunktion_Formel(0.62,3.5,0,0,kleiner_Durchmesser,grosser_Durchmesser,Radius,t)
-            case "Biegung":
-                alpha = Formzahl_Unterfunktion_Formel(0.62,5.8,0.2,3,kleiner_Durchmesser,grosser_Durchmesser,Radius,t)
-            case "Torsion":
-                alpha = Formzahl_Unterfunktion_Formel(3.4,19,1,2,kleiner_Durchmesser,grosser_Durchmesser,Radius,t)
-    return alpha
-
-def Kerbwirkungszahl_ohne_Formzahl(Art, D, werkstoff):
-    sigma_B_d = Zugfestigkeit(D, werkstoff)
-    match Art:
-        case "eine Passfeder":
-            beta_sigma_dBK = 3*(sigma_B_d/1000)**0.38
-            print(beta_sigma_dBK)
-            beta_tau_dBK = 0.56*beta_sigma_dBK+0.1
-            beta_zd = 1
-            beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
-            beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
-        case "zwei Passfedern":
-            beta_sigma_dBK = 3*(sigma_B_d/1000)**0.38
-            print(beta_sigma_dBK)
-            beta_tau_dBK = 0.56*beta_sigma_dBK+0.1
-            beta_zd = 1
-            beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
-            beta_sigma = 1.15*beta_sigma*K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
-            beta_tau = beta_tau_dBK
-        case "Pressverbindung":
-            beta_sigma_dBK = 2.7*(sigma_B_d/1000)**0.43
-            print(beta_sigma_dBK)
-            beta_tau_dBK = 0.65*beta_sigma_dBK+0.1
-            beta_zd = 1
-            beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
-            beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
-        case "Keilwelle":
-            beta_tau_dBK_stern = math.e**(4.2*10**(-7)*sigma_B_d**2)
-            beta_tau_dBK = beta_tau_dBK_stern
-            beta_sigma_dBK = 1+0.45*(beta_tau_dBK_stern-1)
-            beta_zd = 1
-            beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
-            beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
-        case "Kerbzahnwelle":
-            beta_tau_dBK_stern = math.e**(4.2*10**(-7)*sigma_B_d**2)
-            beta_tau_dBK = beta_tau_dBK_stern
-            beta_sigma_dBK = 1+0.65*(beta_tau_dBK_stern-1)
-            beta_zd = 1
-            beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
-            beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
-        case "Zahnwelle":
-            beta_tau_dBK_stern = math.e**(4.2*10**(-7)*sigma_B_d**2)
-            beta_tau_dBK = 1+0.75*(beta_tau_dBK_stern-1)
-            beta_sigma_dBK = 1+0.49*(beta_tau_dBK_stern-1)
-            beta_zd = 1
-            beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
-            beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
-        case "Spitzkerbe":
-            beta_zd_dBK = 0.109*sigma_B_d
-            beta_sigma_dBK = 0.0923*sigma_B_d
-            beta_tau_dBK = 0.8*beta_sigma_dBK
-            beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 15, beta_sigma_dBK)
-            beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(D, 15, beta_sigma_dBK)
-            beta_zd = beta_zd_dBK*K3_dBK_durch_K3_D(D, 159, beta_sigma_dBK)
-
-    return(beta_sigma, beta_tau, beta_zd)
-
-def Kerbwirkungszahl_für_Rechtecknut(werkstoff ,grosser_Durchmesser, kleiner_Durchmesser, Radius, Breite_der_Nut):
-    """
-    !fertig!
-    """
-    sigma_S = Werkstoff.Werkstoffe[werkstoff].sigma_S
-    D = grosser_Durchmesser
-    d = kleiner_Durchmesser
-    m = Breite_der_Nut
-    t = (D-d)/2
-    r = Radius
-
-    rho_s = 10**(-(0.514+0.00152*sigma_S))
-    beta_zd_stern = 0.9*(1.27+1.17*(np.sqrt(t/(r+2.9*rho_s))))
-    beta_sigma_stern = 0.9*(1.14+1.08*(np.sqrt(t/(r+2.9*rho_s))))
-    beta_tau_stern = 1*(1.48+0.45*(np.sqrt(t/(r+1*rho_s))))
-    
-    if m/t >= 1.4:
-        beta_zd_dBK = beta_zd_stern
-        beta_sigma_dBK = beta_sigma_stern
-        beta_tau_dBK = beta_tau_stern
-    else:
-        beta_zd_dBK = beta_zd_stern*1.08*(m/t)**(-0.2)
-        beta_sigma_dBK = beta_sigma_stern*1.08*(m/t)**(-0.2)
-        beta_tau_dBK = beta_tau_stern*1.08*(m/t)**(-0.2)
-
-    beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(d, 30, beta_sigma_dBK)
-    beta_zd = beta_zd_dBK*K3_dBK_durch_K3_D(d, 30, beta_zd_dBK)
-    beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(d, 30, beta_tau_dBK)
-
-    return(beta_sigma, beta_tau, beta_zd)
-
 def Kerbwirkungszahl_mit_Fromzahl(werkstoff, alpha_zd, alpha_sigma, alpha_tau, Art, D, d, r):
     """
     !fertig!
@@ -290,6 +177,155 @@ def K3_dBK_durch_K3_D(d, dBK, alpha_dBK_beta_dBK):
     elif d >= 150:
         K_3_d = 1-0.2*np.log10(alpha_dBK_beta_dBK)
     return(K_3_dBK/K_3_d)
+
+def Kerbwirkungszahl(Art, werkstoff, D, *argv):
+    """Berechnung der Kerbwirkungszahlen
+
+    Args:
+        Art (str): Art der Querschnittsschwächung
+        werkstoff (str): Werkstoff der Welle
+        D (int): großer Durchmesser
+
+        wenn Art == umlaufende Rechtecknut
+        argv = (kleiner Durchmesser, Radius, Breite der Nut)
+
+        wenn Art == Absatz
+        argv = (kleiner Durchmesser, Radius)
+
+        wenn Art == umlaufende Rundnut
+        argv = (kleiner Durchmesser, Radius)
+
+    Returns:
+        beta_sigma (float): Kerbwirkungszahl Biegung
+        beta_tau (float): Kerbwirkungszahl Torsion
+        beta_zd (float): Kerbwirkungszahl Zug/Druck
+    """
+    
+    def Formzahl_Unterfunktion_Formel(A,B,C,z,d,D,r,t):
+        a = 1+ 1/(np.sqrt(A*r/t+2*B*r/d*(1+2*r/d)**2+C*(r/t)**z*d/D))
+        return a
+    
+    sigma_B_d = Zugfestigkeit(D, werkstoff)
+    if Art == "eine Passfeder":
+        beta_sigma_dBK = 3*(sigma_B_d/1000)**0.38
+        print(beta_sigma_dBK)
+        beta_tau_dBK = 0.56*beta_sigma_dBK+0.1
+        beta_zd = 1
+        beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
+        beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
+    elif Art == "zwei Passfedern":
+        beta_sigma_dBK = 3*(sigma_B_d/1000)**0.38
+        print(beta_sigma_dBK)
+        beta_tau_dBK = 0.56*beta_sigma_dBK+0.1
+        beta_zd = 1
+        beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
+        beta_sigma = 1.15*beta_sigma*K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
+        beta_tau = beta_tau_dBK
+    elif Art == "Pressverbindung":
+        beta_sigma_dBK = 2.7*(sigma_B_d/1000)**0.43
+        print(beta_sigma_dBK)
+        beta_tau_dBK = 0.65*beta_sigma_dBK+0.1
+        beta_zd = 1
+        beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
+        beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
+    elif Art == "Keilwelle":
+        beta_tau_dBK_stern = math.e**(4.2*10**(-7)*sigma_B_d**2)
+        beta_tau_dBK = beta_tau_dBK_stern
+        beta_sigma_dBK = 1+0.45*(beta_tau_dBK_stern-1)
+        beta_zd = 1
+        beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
+        beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
+    elif Art == "Kerbzahnwelle":
+        beta_tau_dBK_stern = math.e**(4.2*10**(-7)*sigma_B_d**2)
+        beta_tau_dBK = beta_tau_dBK_stern
+        beta_sigma_dBK = 1+0.65*(beta_tau_dBK_stern-1)
+        beta_zd = 1
+        beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
+        beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
+    elif Art == "Zahnwelle":
+        beta_tau_dBK_stern = math.e**(4.2*10**(-7)*sigma_B_d**2)
+        beta_tau_dBK = 1+0.75*(beta_tau_dBK_stern-1)
+        beta_sigma_dBK = 1+0.49*(beta_tau_dBK_stern-1)
+        beta_zd = 1
+        beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
+        beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
+    elif Art == "umlaufende Spitzkerbe":
+            beta_zd_dBK = 0.109*sigma_B_d
+            beta_sigma_dBK = 0.0923*sigma_B_d
+            beta_tau_dBK = 0.8*beta_sigma_dBK
+            beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(D, 15, beta_sigma_dBK)
+            beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(D, 15, beta_sigma_dBK)
+            beta_zd = beta_zd_dBK*K3_dBK_durch_K3_D(D, 159, beta_sigma_dBK)
+    if Art == "umlaufende Rechtecknut":
+        (d, r, m) = argv
+        sigma_S = int(Werkstoff.Werkstoffe[werkstoff].sigma_S)
+        t = (D-d)/2
+
+        rho_s = 10**(-(0.514+0.00152*sigma_S))
+        beta_zd_stern = 0.9*(1.27+1.17*(np.sqrt(t/(r+2.9*rho_s))))
+        beta_sigma_stern = 0.9*(1.14+1.08*(np.sqrt(t/(r+2.9*rho_s))))
+        beta_tau_stern = 1*(1.48+0.45*(np.sqrt(t/(r+1*rho_s))))
+        
+        if m/t >= 1.4:
+            beta_zd_dBK = beta_zd_stern
+            beta_sigma_dBK = beta_sigma_stern
+            beta_tau_dBK = beta_tau_stern
+        else:
+            beta_zd_dBK = beta_zd_stern*1.08*(m/t)**(-0.2)
+            beta_sigma_dBK = beta_sigma_stern*1.08*(m/t)**(-0.2)
+            beta_tau_dBK = beta_tau_stern*1.08*(m/t)**(-0.2)
+
+        beta_sigma = beta_sigma_dBK*K3_dBK_durch_K3_D(d, 30, beta_sigma_dBK)
+        beta_zd = beta_zd_dBK*K3_dBK_durch_K3_D(d, 30, beta_zd_dBK)
+        beta_tau = beta_tau_dBK*K3_dBK_durch_K3_D(d, 30, beta_tau_dBK)
+    if Art == "Absatz" or Art == "umlaufende Rundnut":
+        if Art == "Absatz":
+            (d, r) = argv
+            t = (D-d)/2
+            alpha_zd = Formzahl_Unterfunktion_Formel(0.62,3.5,0,0,d,D,r,t)
+            alpha_b = Formzahl_Unterfunktion_Formel(0.62,5.8,0.2,3,d,D,r,t)
+            alpha_t = Formzahl_Unterfunktion_Formel(3.4,19,1,2,d,D,r,t)
+        if Art == "umlaufende Rundnut":
+            (d, r) = argv
+            t = (D-d)/2
+            alpha_zd = Formzahl_Unterfunktion_Formel(0.22,1.37,0,0,d,D,r,t)
+            alpha_b = Formzahl_Unterfunktion_Formel(0.2,2.75,0,0,d,D,r,t)
+            alpha_t = Formzahl_Unterfunktion_Formel(0.7,10.3,0,0,d,D,r,t)
+            sigma_S = Streckgrenze(D, werkstoff)
+
+        if ((D-d)/d <= 0.5):
+            phi = 1/(np.sqrt(8*(D-d)/r)+2)
+        else: 
+            phi = 0
+
+        if Art == "Absatz":
+            G_s_zd = 2.3/r*(1+phi)
+            G_s_sigma = G_s_zd
+            G_s_tau = 1.15/r
+        elif Art == "umlaufende Rundnut":
+            G_s_zd = 2/r*(1+phi)
+            G_s_sigam = G_s_zd
+            G_s_tau = 1/r
+
+        w = Werkstoff.Werkstoffe[werkstoff]
+        sigma_S = int(w.sigma_S)
+        if w.art == "Vergütungsstahl" or w.art == "Einsatzstahl" or w.art == "Automatenstahl" or w.art == "Baustahl":
+            n_zd = 1+np.sqrt(G_s_zd)*10**(-(0.33+sigma_S/712))
+            n_sigma = 1+np.sqrt(G_s_sigma)*10**(-(0.33+sigma_S/712))
+            n_tau = 1+np.sqrt(G_s_tau)*10**(-(0.33+sigma_S/712))
+        elif w.art == "Nitrierstahl":
+            n_zd = 1+np.sqrt(G_s_zd)*10**(-0.7)
+            n_sigma = 1+np.sqrt(G_s_sigma)*10**(-0.7)
+            n_tau = 1+np.sqrt(G_s_tau)*10**(-0.7)
+
+        beta_zd = alpha_zd/n_zd
+        beta_sigma = alpha_b/n_sigma
+        beta_tau = alpha_t/n_tau
+    return(beta_sigma, beta_tau, beta_zd)
+
+print(Kerbwirkungszahl("umlaufende Rechtecknut", "E335", 80, 76.5, 0.25, 2.65))
+
+
 
 def K2(d):
     """
