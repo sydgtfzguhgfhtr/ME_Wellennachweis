@@ -599,3 +599,21 @@ def Gestaltfestigkeit(D, werkstoff, gamma_F_sigma, gamma_F_tau, sigma_mv, tau_mv
         tau_tADK = tau_tWK-Psi_tau_K*tau_mv
     
     return(sigma_bADK, tau_tADK)
+
+def Sicherheiten(sigma_bmax, sigma_bFK, tau_tmax, tau_tFK, sigma_bq, sigma_bADK, tau_ta, tau_tADK):
+    """Sicherheiten
+
+    Args:
+        sigma_bmax (float): maximale Biegespannung
+        sigma_bFK (float): Gestaltfestigkeit Biegung
+        tau_tmax (float): maximale Torsionsspannung
+        tau_tFK (float): Gestaltfestigkeit Torsion
+        sigma_bq (float): Biegeausschlagspannung
+        sigma_bADK (float): Dauerfestigkeit Biegung
+        tau_ta (float): Torsionsausschlagspannung
+        tau_tADK (float): Dauerfestigkeit Torsion
+    """
+    S_F = 1/(np.sqrt((sigma_bmax/sigma_bFK)**2+(tau_tmax/tau_tFK)**2))
+    S_D = 1/(np.sqrt((sigma_bq/sigma_bADK)**2+(tau_ta/tau_tADK)**2))
+
+    return(S_F, S_D)
