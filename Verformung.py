@@ -1,29 +1,66 @@
 import numpy as np
-import math
 import matplotlib.pyplot as plt
 
+NUM = 1000
 
-Durchmesser = [0.130, 0.150, 0.130, 0.045]
-Längen = [0.065, 0.215, 0.280, 0.341]
+f = [20, 135]
+D = [20, 40, 55, 30]
+L = [40, 80, 160, 195]
 
-def d(x):
+F = [3.5, -4.5]
+
+F_A = 1.756
+F_B = - 2.756
+
+def Biegemoment(x):
+    if x < f[0]:
+        return(F_A*x)
+    elif x < f[1]:
+        return(F_A*x-F[0]*(x-f[0]))
+    elif x <= max(L):
+        return(F_A*x-(F[0]*(x-f[0])+F[1]*(x-f[1])))
+    
+def Wellendurchmesser(x):
     i = 0
-    while x > Längen[i]:
+    while x > L[i]:
         i += 1
-        if i == len(Längen):
+        if i == len(L):
             break
-    return(Durchmesser[i])
+    return(D[i])
 
-def Mb(x):
-    if x <= 0.215:
-        Mb = 1464.8*x
-    elif x <= 0.341:
-        Mb = 831.78-2404*x
-    return(Mb)
+def Ersatzstreckenlast(x):
+    q = (64*Biegemoment(x))/(np.pi*Wellendurchmesser(x)**4)
+    return(q)
 
-n = np.linspace(start=0, stop=0.341, num=1000)
+def Ersatzlagerkraft(x):
+    def Ersatzstreckenlast_mal_irgendwas(x):
+        return Ersatzstreckenlast(x) * (max(L) - x)
 
-MB_vec = []
+    x = np.linspace(0, max(L), num=NUM)
 
-for i in n:
-    MB_vec.append(Mb(i))
+    Integral = np.trapz(np.vectorize(Ersatzstreckenlast_mal_irgendwas)(x), x)
+    F_value = 1 / max(L) * Integral
+    return(F_value)
+
+def Neigung(x):
+    s = np.linspace(0, x, num = NUM)
+    Integral = np.trapz(np.vectorize(Ersatzstreckenlast)(s), s)
+    phi = 1/210000*(Ersatzlagerkraft(0)-Integral)
+    return(phi)
+
+def Biegung(x):
+    def UNTER_BIEGUNG_FUNKTION(s):
+        return(Ersatzstreckenlast(s)*(x-s))
+    
+    s = np.linspace(0, x, num = NUM)
+    Integral = np.trapz(np.vectorize(UNTER_BIEGUNG_FUNKTION)(s), s)
+    f = (1/210000*(Ersatzlagerkraft(0)*x-Integral))*1000000
+
+    return(f)
+
+print(Ersatzlagerkraft(0))
+
+Mb = np.fromfunction(np.vectorize(Biegung), (195, ))
+
+plt.plot(-Mb)
+plt.show()
