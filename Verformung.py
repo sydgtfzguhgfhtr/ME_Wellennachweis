@@ -38,8 +38,8 @@ def Ersatzlagerkraft(x):
 
     x = np.linspace(0, max(L), num=NUM)
 
-    Integral = np.trapz(np.vectorize(Ersatzstreckenlast_mal_irgendwas)(x), x)
-    F_value = 1 / max(L) * Integral
+    Integral = np.trapz(np.vectorize(Ersatzstreckenlast_mal_irgendwas)(x), x)       #np.trapz() -> Integrate along the given axis using the composite trapezoidal rule.
+    F_value = 1 / max(L) * Integral                                  #np.vectorize() -> geht sonst nicht mit x als Vektor
     return(F_value)
 
 def Neigung(x):
@@ -53,7 +53,7 @@ def Biegung(x):
         return(Ersatzstreckenlast(s)*(x-s))
     
     s = np.linspace(0, x, num = NUM)
-    Integral = np.trapz(np.vectorize(UNTER_BIEGUNG_FUNKTION)(s), s)
+    Integral = np.trapz(np.vectorize(UNTER_BIEGUNG_FUNKTION)(s), s)   
     f = (1/210000*(Ersatzlagerkraft(0)*x-Integral))*1000000
 
     return(f)
