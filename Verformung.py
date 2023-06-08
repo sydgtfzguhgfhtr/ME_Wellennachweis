@@ -47,7 +47,7 @@ def Verformung(f, D, L, E_Modul):
     def Biegung(x):
         def UNTER_BIEGUNG_FUNKTION(s):
             return(Ersatzstreckenlast(s)*(x-s))
-    
+
         s = np.linspace(0, x, num = NUM)
         Integral = np.trapz(np.vectorize(UNTER_BIEGUNG_FUNKTION)(s), s)   
         f = (1/E_Modul*(Ersatzlagerkraft(0)*x-Integral))*1000000
@@ -62,18 +62,18 @@ def Verformung(f, D, L, E_Modul):
     Mb_max = max(max(Mb),abs(min(Mb)))
     phi_max = max(max(phi),abs(min(phi)))
 
-    print(Mb_max)
+    print(Biegung(200))
     return(Mb, phi)
 
 
 def Diagramme(Mb, phi):
     plt.subplot(2, 1, 1)
-    plt.plot(-Mb)
+    plt.plot(Mb)
     plt.plot([0, 200],[0, 0],"black")
     plt.title("Biegung")
 
     plt.subplot(2, 1, 2)
-    plt.plot(-phi)
+    plt.plot(phi)
     plt.title("Neigung")
 
     plt.subplots_adjust(hspace=0.4)
