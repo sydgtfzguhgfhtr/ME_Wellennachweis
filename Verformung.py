@@ -65,7 +65,6 @@ def Verformung(f, D, L, E_Modul):
     print(Biegung(200))
     return(Mb, phi)
 
-
 def Diagramme(Mb, phi):
     plt.subplot(2, 1, 1)
     plt.plot(Mb)
