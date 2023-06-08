@@ -3,23 +3,18 @@ import matplotlib.pyplot as plt
 
 NUM = 1000
 
-f = [20, 135]
-D = [20, 40, 55, 30]
-L = [40, 80, 160, 195]
+f = [140, 200]
+D = [70, 90, 75, 70, 75]
+L = [40, 100, 180, 220, 300]
 
-F = [3.5, -4.5]
-
-F_A = 1.756
-F_B = - 2.756
-
-def Verformung(f, D, L, F, F_Lager, E_Modul):
+def Verformung(f, D, L, E_Modul):
     def Biegemoment(x):
         if x < f[0]:
-            return(F_A*x)
+            return(-2.332*(x-498.39))
         elif x < f[1]:
-            return(F_Lager[0]*x-F[0]*(x-f[0]))
+            return(7.307*(x-1.414))
         elif x <= max(L):
-            return(F_Lager[0]*x-(F[0]*(x-f[0])+F[1]*(x-f[1])))
+            return(1.199-2.764*x)
     
     def Wellendurchmesser(x):
         i = 0
@@ -61,8 +56,8 @@ def Verformung(f, D, L, F, F_Lager, E_Modul):
     
 
 
-    Mb = np.fromfunction(np.vectorize(Biegung), (195, ))
-    phi = np.fromfunction(np.vectorize(Neigung), (195, ))
+    Mb = np.fromfunction(np.vectorize(Biegung), (max(L), ))
+    phi = np.fromfunction(np.vectorize(Neigung), (max(L), ))
 
     Mb_max = max(max(Mb),abs(min(Mb)))
     phi_max = max(max(phi),abs(min(phi)))
@@ -85,6 +80,6 @@ def Diagramme(Mb, phi):
 
     plt.show()
 
-Mb, phi = Verformung(f, D, L, F, [1.756, -2.756], 210000)
+Mb, phi = Verformung(f, D, L, 210000)
 
 Diagramme(Mb, phi)
