@@ -4,20 +4,22 @@ import matplotlib.pyplot as plt
 NUM = 1000
 
 f = [110]
-D = [90, 90]
+D = [200, 200]
 L = [110, 480]
 
 def Biegemoment_x(x):
     if x < f[0]:
-        return(-10.298*x)
+        return((-10298*x)/1000)
     elif x <= max(L):
-        return(0.398-0.829*x)
+        return((306822.5+90819.46+398.04-829.25*x)/1000)
     
 def Biegemoment_y(x):
     if x < f[0]:
-        return(-19.372*x)
+        return((-19372*x)/1000)
     elif x <= max(L):
-        return(5.759*x-2.764)
+        return((5759.2*x-2764.4-630747.6-2111548)/1000)
+
+print(Biegemoment_x(140))
 
 def Wellendurchmesser(x):
     i = 0
@@ -105,7 +107,6 @@ def Verformung(f, D, L, E_Modul):
     Mb_y = np.fromfunction(np.vectorize(Biegung_y), (max(L), ))
     phi_y = np.fromfunction(np.vectorize(Neigung_y), (max(L), ))    
 
-    print(Biegung_x(200))
     return(Mb_x, phi_x, Biegung_x(200), Mb_y, phi_y, Biegung_y(200))
 
 
@@ -118,15 +119,15 @@ def Diagramme(Mb_x, phi_x, f_Lager_x, Lager1_x, Lager2_x, Mb_y, phi_y, f_Lager_y
 
 
     plt.subplot(2, 2, 1)
-    plt.plot(Mb_verschoben_x, label = "Mb_x")
-    plt.plot(Mb_verschoben_y, label = "Mb_y")
+    plt.plot(Mb_verschoben_x, label = "$Mb_x$")
+    plt.plot(Mb_verschoben_y, label = "$Mb_y$")
     plt.grid(True)
     plt.legend()
     plt.title("Biegung")
 
     plt.subplot(2, 2, 2)
-    plt.plot(phi_x, label = "phi_x")
-    plt.plot(phi_y, label = "phi_y")
+    plt.plot(phi_x, label = r"$\varphi_x$")
+    plt.plot(phi_y, label = r"$\varphi_y$")
     plt.grid(True)
     plt.legend()
     plt.title("Neigung")
@@ -135,8 +136,8 @@ def Diagramme(Mb_x, phi_x, f_Lager_x, Lager1_x, Lager2_x, Mb_y, phi_y, f_Lager_y
     sigma_y = np.fromfunction(np.vectorize(Spannungsverlauf_y), (max(L), ))
 
     plt.subplot(2, 2, 3)
-    plt.plot(sigma_x, label = "sigma_x")
-    plt.plot(sigma_y, label = "sigma_y")
+    plt.plot(sigma_x, label = r"$\sigma_x$")
+    plt.plot(sigma_y, label = r"$\sigma_y$")
     plt.grid(True)
     plt.legend()
     plt.title("Spannung")
