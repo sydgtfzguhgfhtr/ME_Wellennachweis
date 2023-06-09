@@ -7,22 +7,30 @@ f = [140, 200]
 D = [70, 90, 75, 70, 75]
 L = [40, 100, 180, 220, 300]
 
+def Biegemoment(x):
+    if x < f[0]:
+        return(-2.332*(x-498.39))
+    elif x < f[1]:
+        return(7.307*(x-1.414))
+    elif x <= max(L):
+        return(1.199-2.764*x)
+
+def Wellendurchmesser(x):
+    i = 0
+    while x > L[i]:
+        i += 1
+        if i == len(L):
+            break
+    return(D[i])
+
+
+def Spannungsverlauf(x):
+    Wb = np.pi/32 * Wellendurchmesser(x)**3
+    sigma = Biegemoment(x)/Wb
+    return(sigma)
+
 def Verformung(f, D, L, E_Modul):
-    def Biegemoment(x):
-        if x < f[0]:
-            return(-2.332*(x-498.39))
-        elif x < f[1]:
-            return(7.307*(x-1.414))
-        elif x <= max(L):
-            return(1.199-2.764*x)
-    
-    def Wellendurchmesser(x):
-        i = 0
-        while x > L[i]:
-            i += 1
-            if i == len(L):
-                break
-        return(D[i])
+
 
     def Ersatzstreckenlast(x):
         q = (64*Biegemoment(x))/(np.pi*Wellendurchmesser(x)**4)
@@ -53,6 +61,8 @@ def Verformung(f, D, L, E_Modul):
         return(f)
     
 
+    
+
 
     Mb = np.fromfunction(np.vectorize(Biegung), (max(L), ))
     phi = np.fromfunction(np.vectorize(Neigung), (max(L), ))
@@ -77,15 +87,23 @@ def Diagramme(Mb, phi, f_Lager, Lager_x):
 
     Mb_verschoben = Mb - y_range        # Schusslinie
 
-    plt.subplot(2, 1, 1)
+    plt.subplot(2, 2, 1)
     plt.plot(Mb_verschoben)
     plt.grid(True)
     plt.title("Biegung")
 
-    plt.subplot(2, 1, 2)
+    plt.subplot(2, 2, 2)
     plt.plot(phi)
     plt.grid(True)
     plt.title("Neigung")
+
+    sigma = np.fromfunction(np.vectorize(Spannungsverlauf), (max(L), ))
+
+
+    plt.subplot(2, 2, 3)
+    plt.plot(sigma)
+    plt.grid(True)
+    plt.title("Spannung")
 
     plt.subplots_adjust(hspace=0.4)
 
