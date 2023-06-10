@@ -73,7 +73,20 @@ class Welle:
             raise ValueError("Krafttyp wurde nicht erkannt. Erlaubt sind 'radial','tangential' und 'axial'.")
         self.belastungen.append(kraft)
         # Lagerkräfte berechnen und in Belastungen aufnehmen
-        #self.belastungen.insert(0, () )
+        # Lagerkraft Loslager
+        lges = self.z_daten[-1]
+        summe_krafthebel = 0
+        summe_kräftey,summe_kräftez = 0,0
+        for _,zk,rk,_,fx,fy,fz in self.belastungen:
+            summe_krafthebel += -fy*zk
+        self.belastungen.insert(0, (summe_krafthebel/lges,lges,0,0,0,summe_krafthebel/lges,0) ) # Lagerkraft Loslager
+        for _,zk,rk,_,fx,fy,fz in self.belastungen:
+            summe_kräftey += -fy
+            summe_kräftez += -fz
+        self.belastungen.insert(0, (summe_kräftey,0,0,0,0,summe_kräftey,0) ) # Lagerkraft Festlager Y
+        self.belastungen.insert(0, (summe_kräftez,0,0,0,0,0,summe_kräftez) ) # Lagerkraft Festlager Z
+
+
 
     def set_geometrie(self,punkte:list):
         """
