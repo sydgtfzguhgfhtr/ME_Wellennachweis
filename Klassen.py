@@ -52,7 +52,7 @@ class Welle:
         self.geometrie = []
         self.z_daten = []
         self.r_daten = []
-        self.belastungen = []
+        self.belastungen = [(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0)]
     
     def set_Kraft(self,betrag,typ:str,z=0,r=0,phi=0):
         """Legt eine Krafteinleitung an der Welle fest.
@@ -75,16 +75,16 @@ class Welle:
         # Lagerkräfte berechnen und in Belastungen aufnehmen
         # Lagerkraft Loslager
         lges = self.z_daten[-1]
-        summe_krafthebel = 0
+        summe_krafthebely = 0
         summe_kräftey,summe_kräftez = 0,0
         for _,zk,rk,_,fx,fy,fz in self.belastungen:
-            summe_krafthebel += -fy*zk
-        self.belastungen.insert(0, (summe_krafthebel/lges,lges,0,0,0,summe_krafthebel/lges,0) ) # Lagerkraft Loslager
+            summe_krafthebely += -fy*zk
+        self.belastungen[4] = (summe_krafthebely/lges,lges,0,0,0,summe_krafthebely/lges,0) # Lagerkraft Loslager Y
         for _,zk,rk,_,fx,fy,fz in self.belastungen:
             summe_kräftey += -fy
             summe_kräftez += -fz
-        self.belastungen.insert(0, (summe_kräftey,0,0,0,0,summe_kräftey,0) ) # Lagerkraft Festlager Y
-        self.belastungen.insert(0, (summe_kräftez,0,0,0,0,0,summe_kräftez) ) # Lagerkraft Festlager Z
+        self.belastungen[1] = (summe_kräftey,0,0,0,0,summe_kräftey,0) # Lagerkraft Festlager Y
+        self.belastungen[2] = (summe_kräftez,0,0,0,0,0,summe_kräftez) # Lagerkraft Festlager Z
 
 
 
