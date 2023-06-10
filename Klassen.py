@@ -91,16 +91,17 @@ class Welle:
         plt.axis("equal")
         plt.show()
 
-test = Welle("Testwelle")
-test.set_geometrie([
-    [0,30],
-    [50,30],
-    [60,35],
-    [100,35],
-    [100,40],
-    [130,40],
-    [130,25],
-    [160,25],
-])
-print(test.geometrie)
-test.plot()
+if __name__ == "__main__":
+    test = Welle("Testwelle")
+    test.set_geometrie([
+        [0,30],
+        [50,30],
+        [60,35],
+        [100,35],
+        [100,40],
+        [130,40],
+        [130,25],
+        [160,25],
+    ])
+    print(test.geometrie)
+    test.plot()
