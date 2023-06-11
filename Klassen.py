@@ -92,12 +92,6 @@ class Welle:
         self.belastungen[0] = (abs(summe_kräftex),0,0,0,summe_kräftex,0,0) # Lagerkraft Festlager X
         self.belastungen[1] = (abs(summe_kräftey),0,0,0,0,summe_kräftey,0) # Lagerkraft Festlager Y
         self.belastungen[2] = (abs(summe_kräftez),0,0,0,0,0,summe_kräftez) # Lagerkraft Festlager Z
-        print("-"*20)
-        print("Festlager X",test.belastungen[0])
-        print("Festlager Y",test.belastungen[1])
-        print("Festlager Z",test.belastungen[2])
-        print("Loslager X",test.belastungen[3])
-        print("Loslager Y",test.belastungen[4])
 
     def set_geometrie(self,punkte:list):
         """
@@ -129,9 +123,9 @@ class Welle:
         zrange = np.arange(0,max(self.z_daten),0.1)
         rrange = np.array(tuple(map(self.radius,zrange)))
 
-        fig,ax = plt.subplots(1,2)
+        fig,ax = plt.subplots(1,2,constrained_layout=True)
         fig.align_labels(ax)
-        fig.suptitle(f'Welle "{self.name}"')
+        fig.suptitle(f'Welle "{self.name}"',fontsize=18)
         ax[0].plot(zrange,rrange,"k")
         ax[0].plot(zrange,rrange*-1,"k")
         ax[0].hlines(0,-5,self.z_daten[-1]+5,linestyles="dashdot",colors="black")
@@ -146,9 +140,9 @@ class Welle:
             for kraft in self.belastungen:
                 _,z,r,phi,fx,fy,fz = kraft
                 if round(abs(fy),5)>0: # Y Kräfte zeichnen
-                    ax[0].arrow(z,r*np.cos(phi),0,l_max*-fy/max_f,head_width=2,width=1,color="green")
+                    ax[0].arrow(z,r*np.cos(phi),0,l_max*-fy/max_f,head_width=2,width=1,color="green",zorder=100)
                 if round(abs(fz),5)>0: # Z Kräfte zeichnen
-                    ax[0].arrow(z,r*np.cos(phi),l_max*fz/max_f,0,head_width=2,width=1,color="blue")
+                    ax[0].arrow(z,r*np.cos(phi),l_max*fz/max_f,0,head_width=2,width=1,color="blue",zorder=100)
 
         ax[0].grid()
         #ax[0].set_title(f'Welle "{self.name}" in YZ')
@@ -170,15 +164,16 @@ class Welle:
             for kraft in self.belastungen:
                 _,z,r,phi,fx,fy,fz = kraft
                 if round(abs(fx),5)>0: # X Kräfte zeichnen
-                    ax[1].arrow(z,r*np.sin(phi),0,l_max*-fx/max_f,head_width=2,width=1,color="red")
+                    ax[1].arrow(z,r*np.sin(phi),0,l_max*-fx/max_f,head_width=2,width=1,color="red",zorder=100)
                 if round(abs(fz),5)>0: # Z Kräfte zeichnen
-                    ax[1].arrow(z,r*np.sin(phi),l_max*fz/max_f,0,head_width=2,width=1,color="blue")
+                    ax[1].arrow(z,r*np.sin(phi),l_max*fz/max_f,0,head_width=2,width=1,color="blue",zorder=100)
 
         ax[1].grid()
         #ax[1].set_title(f'in XZ')
         ax[1].set_xlabel("$z\\,[mm]$")
         ax[1].set_ylabel("$x\\,[mm]$")
         ax[1].axis("equal")
+        fig.legend()
         plt.show()
 
 if __name__ == "__main__":
@@ -194,9 +189,8 @@ if __name__ == "__main__":
         [200,25],
     ])
     
-    test.set_Kraft(10,"r",150,70,90)
-    #test.set_Kraft(20,"a",150,70,90)
+    test.set_Kraft(10,"r",250,70,45)
+    test.set_Kraft(20,"a",150,70,45)
     test.lagerkräfte_berechnen()
+    print(test.belastungen)
     test.plot()
-
-# VORZEICHENFEHLER IM X
