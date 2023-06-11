@@ -64,36 +64,47 @@ class Welle:
         """
         phi = np.deg2rad(phi)
         if typ[0].casefold()=="r":
-            kraft = (betrag,z,r,phi,betrag*np.sin(phi),betrag*np.cos(phi),0)
+            kraft = (betrag,z,r,phi,betrag*np.sin(phi),betrag*np.cos(phi),0) # Radial
         elif typ[0].casefold()=="t":
-            kraft = (betrag,z,r,phi,betrag*np.cos(phi),betrag*np.sin(phi),0)
+            kraft = (betrag,z,r,phi,betrag*np.cos(phi),betrag*np.sin(phi),0) # Tangential
         elif typ[0].casefold()=="a":
-            kraft = (betrag,z,r,phi,0,0,betrag)
+            kraft = (betrag,z,r,phi,0,0,betrag) # Axial
         else:
-            raise ValueError("Krafttyp wurde nicht erkannt. Erlaubt sind 'radial','tangential' und 'axial'.")
+            raise ValueError("Krafttyp wurde nicht erkannt. Erlaubt sind 'radial' ('r'),'tangential' ('t') und 'axial' ('a').")
         self.belastungen.append(kraft)
+
+    def lagerkräfte_berechnen(self):
         # Lagerkräfte berechnen und in Belastungen aufnehmen
         # Lagerkraft Loslager
         lges = self.z_daten[-1]
-        summe_krafthebely = 0
-        summe_kräftey,summe_kräftez = 0,0
+        summe_krafthebelx,summe_krafthebely = 0,0
+        summe_kräftex,summe_kräftey,summe_kräftez = 0,0,0
         for _,zk,rk,_,fx,fy,fz in self.belastungen:
             summe_krafthebely += -fy*zk
-        self.belastungen[4] = (summe_krafthebely/lges,lges,0,0,0,summe_krafthebely/lges,0) # Lagerkraft Loslager Y
+            summe_krafthebelx += fx*zk
+        self.belastungen[3] = (abs(summe_krafthebelx/lges),lges,0,0,summe_krafthebelx/lges,0,0) # Lagerkraft Loslager X
+        self.belastungen[4] = (abs(summe_krafthebely/lges),lges,0,0,0,summe_krafthebely/lges,0) # Lagerkraft Loslager Y
+
         for _,zk,rk,_,fx,fy,fz in self.belastungen:
+            summe_kräftex += -fx
             summe_kräftey += -fy
             summe_kräftez += -fz
-        self.belastungen[1] = (summe_kräftey,0,0,0,0,summe_kräftey,0) # Lagerkraft Festlager Y
-        self.belastungen[2] = (summe_kräftez,0,0,0,0,0,summe_kräftez) # Lagerkraft Festlager Z
-
-
+        self.belastungen[0] = (abs(summe_kräftex),0,0,0,summe_kräftex,0,0) # Lagerkraft Festlager X
+        self.belastungen[1] = (abs(summe_kräftey),0,0,0,0,summe_kräftey,0) # Lagerkraft Festlager Y
+        self.belastungen[2] = (abs(summe_kräftez),0,0,0,0,0,summe_kräftez) # Lagerkraft Festlager Z
+        print("-"*20)
+        print("Festlager X",test.belastungen[0])
+        print("Festlager Y",test.belastungen[1])
+        print("Festlager Z",test.belastungen[2])
+        print("Loslager X",test.belastungen[3])
+        print("Loslager Y",test.belastungen[4])
 
     def set_geometrie(self,punkte:list):
         """
         Definiert die Wellengeometrie als Liste aus Punkten in der Form [[z1,r1],[z2,r2],...]
         """
         self.geometrie = punkte
-        self.z_daten,self.r_daten = zip(*self.geometrie)
+        self.z_daten,self.r_daten = zip(*self.geometrie) # Entpackt die Geometriedaten in Vektoren
 
     def radius(self,z):
         """Gibt Radius der Welle an Stelle z aus. Alle Längen werden in `mm` angegeben"""
@@ -113,7 +124,7 @@ class Welle:
     def durchmesser(self,z):
         """Gibt Durchmesser der Welle an Stelle z aus. Alle Längen werden in `mm` angegeben"""
         return self.d(z)
-    def plot(self,biegemomente=False):
+    def plot(self,kräfte=True,biegemomente=False):
         """Stellt die Welle dar."""
         zrange = np.arange(0,max(self.z_daten),0.1)
         rrange = np.array(tuple(map(self.radius,zrange)))
@@ -123,6 +134,19 @@ class Welle:
         plt.hlines(0,-5,self.z_daten[-1]+5,linestyles="dashdot",colors="black")
         for i,z in enumerate(self.z_daten):
             plt.vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
+
+        if kräfte:
+            # maximale Kraft ermitteln, zum skalieren der Vektoren
+            l_max = 50
+            max_f = max((self.belastungen[i][0] for i in range(len(self.belastungen))))
+
+            for kraft in self.belastungen:
+                _,z,r,phi,fx,fy,fz = kraft
+                if round(abs(fy),5)>0: # Y Kräfte zeichnen
+                    plt.arrow(z,r,0,l_max*-fy/max_f,head_width=2,width=1,color="green")
+                if round(abs(fz),5)>0: # Z Kräfte zeichnen
+                    plt.arrow(z,r,l_max*fz/max_f,0,head_width=2,width=1,color="blue")
+
         plt.grid()
         plt.title(f'Welle "{self.name}"')
         plt.xlabel("$z\\,[mm]$")
@@ -142,6 +166,8 @@ if __name__ == "__main__":
         [130,25],
         [200,25],
     ])
-    test.set_Kraft(1,"r",100,test.radius(100),0)
-    #test.plot()
-    print(test.belastungen)
+    
+    test.set_Kraft(10,"r",100,test.radius(100),0)
+    test.set_Kraft(20,"a",100,test.radius(100),0)
+    test.lagerkräfte_berechnen()
+    test.plot()
