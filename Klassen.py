@@ -47,8 +47,9 @@ Torsionswechselfestigkeit:      {self.tau_tW}
         return 1
 
 class Welle:
-    def __init__(self,name:str) -> None:
+    def __init__(self,name:str,lagerabstand) -> None:
         self.name = str(name)
+        self.lagerabstand = lagerabstand
         self.geometrie = []
         self.z_daten = []
         self.r_daten = []
@@ -76,7 +77,7 @@ class Welle:
     def lagerkräfte_berechnen(self):
         # Lagerkräfte berechnen und in Belastungen aufnehmen
         # Lagerkraft Loslager
-        lges = self.z_daten[-1]
+        lges = self.lagerabstand
         summe_krafthebelx,summe_krafthebely = 0,0
         summe_kräftex,summe_kräftey,summe_kräftez = 0,0,0
         for _,zk,rk,_,fx,fy,fz in self.belastungen:
@@ -130,7 +131,7 @@ class Welle:
         z_range_k = np.linspace(0,max_z_k,1000)
         rrange = np.array(tuple(map(self.radius,zrange)))
 
-        fig,ax = plt.subplots(2,2,constrained_layout=True,sharex="col",sharey="row")
+        fig,ax = plt.subplots(2,2,constrained_layout=True,sharex="col",sharey="row",num=self.name+" Belastungsplot")
         fig.set_size_inches(15,10)
         fig.suptitle(f'Welle "{self.name}"',fontsize=18)
         ax[0,0].plot(zrange,rrange,"k")
@@ -227,14 +228,16 @@ if __name__ == "__main__":
     z_rad = lab2+lz21
     r_rad = 454.94/2
 
-    test = Welle("Zwischenwelle")
+    test = Welle("Zwischenwelle",lab2)
     test.set_geometrie([
         [0,düb*0.8],
         [30,düb*0.8],
         [30,düb],
         [lab2-30,düb],
         [lab2-30,düb*0.8],
-        [lab2,düb*0.8]
+        [lab2+lz21-15,düb*0.8],
+        [lab2+lz21-15,düb*0.6],
+        [lab2+lz21+15,düb*0.6]
     ])
 
     test.set_Kraft(2191,"a",z_rad,r_rad,0)
