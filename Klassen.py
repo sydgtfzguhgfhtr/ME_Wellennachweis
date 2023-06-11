@@ -118,63 +118,96 @@ class Welle:
     def durchmesser(self,z):
         """Gibt Durchmesser der Welle an Stelle z aus. Alle Längen werden in `mm` angegeben"""
         return self.d(z)
-    def plot(self,kräfte=True,biegemomente=False):
+    def plot(self,kräfte=True,biegemomente=True):
         """Stellt die Welle dar."""
         zrange = np.arange(0,max(self.z_daten),0.1)
         rrange = np.array(tuple(map(self.radius,zrange)))
 
-        fig,ax = plt.subplots(1,2,constrained_layout=True)
+        fig,ax = plt.subplots(2,2,constrained_layout=True)
         fig.align_labels(ax)
         fig.suptitle(f'Welle "{self.name}"',fontsize=18)
-        ax[0].plot(zrange,rrange,"k")
-        ax[0].plot(zrange,rrange*-1,"k")
-        ax[0].hlines(0,-5,self.z_daten[-1]+5,linestyles="dashdot",colors="black")
+        ax[0,0].plot(zrange,rrange,"k")
+        ax[0,0].plot(zrange,rrange*-1,"k")
+        ax[0,0].hlines(0,-5,self.z_daten[-1]+5,linestyles="dashdot",colors="black")
         for i,z in enumerate(self.z_daten):
-            ax[0].vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
+            ax[0,0].vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
 
-        if kräfte:
-            # maximale Kraft ermitteln, zum skalieren der Vektoren
-            l_max = 50
-            max_f = max((self.belastungen[i][0] for i in range(len(self.belastungen))))
+        # maximale Kraft ermitteln, zum skalieren der Vektoren
+        l_max = 50
+        max_f = max((self.belastungen[i][0] for i in range(len(self.belastungen))))
 
-            for kraft in self.belastungen:
-                _,z,r,phi,fx,fy,fz = kraft
-                if round(abs(fy),5)>0: # Y Kräfte zeichnen
-                    ax[0].arrow(z,r*np.cos(phi),0,l_max*-fy/max_f,head_width=2,width=1,color="green",zorder=100)
-                if round(abs(fz),5)>0: # Z Kräfte zeichnen
-                    ax[0].arrow(z,r*np.cos(phi),l_max*fz/max_f,0,head_width=2,width=1,color="blue",zorder=100)
+        for kraft in self.belastungen:
+            _,z,r,phi,fx,fy,fz = kraft
+            if round(abs(fy),5)>0: # Y Kräfte zeichnen
+                ax[0,0].arrow(z,r*np.cos(phi),0,l_max*-fy/max_f,head_width=2,width=1,color="green",zorder=100)
+            if round(abs(fz),5)>0: # Z Kräfte zeichnen
+                ax[0,0].arrow(z,r*np.cos(phi),l_max*fz/max_f,0,head_width=2,width=1,color="blue",zorder=100)
 
-        ax[0].grid()
+        ax[0,0].grid()
         #ax[0].set_title(f'Welle "{self.name}" in YZ')
-        ax[0].set_xlabel("$z\\,[mm]$")
-        ax[0].set_ylabel("$y\\,[mm]$")
-        ax[0].axis("equal")
+        ax[0,0].set_xlabel("$z\\,[mm]$")
+        ax[0,0].set_ylabel("$y\\,[mm]$")
+        ax[0,0].axis("equal")
 
-        ax[1].plot(zrange,rrange,"k")
-        ax[1].plot(zrange,rrange*-1,"k")
-        ax[1].hlines(0,-5,self.z_daten[-1]+5,linestyles="dashdot",colors="black")
+        ax[0,1].plot(zrange,rrange,"k")
+        ax[0,1].plot(zrange,rrange*-1,"k")
+        ax[0,1].hlines(0,-5,self.z_daten[-1]+5,linestyles="dashdot",colors="black")
         for i,z in enumerate(self.z_daten):
-            ax[1].vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
+            ax[0,1].vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
 
-        if kräfte:
-            # maximale Kraft ermitteln, zum skalieren der Vektoren
-            l_max = 50
-            max_f = max((self.belastungen[i][0] for i in range(len(self.belastungen))))
+        for kraft in self.belastungen:
+            _,z,r,phi,fx,fy,fz = kraft
+            if round(abs(fx),5)>0: # X Kräfte zeichnen
+                ax[0,1].arrow(z,r*np.sin(phi),0,l_max*-fx/max_f,head_width=2,width=1,color="red",zorder=100)
+            if round(abs(fz),5)>0: # Z Kräfte zeichnen
+                ax[0,1].arrow(z,r*np.sin(phi),l_max*fz/max_f,0,head_width=2,width=1,color="blue",zorder=100)
 
-            for kraft in self.belastungen:
-                _,z,r,phi,fx,fy,fz = kraft
-                if round(abs(fx),5)>0: # X Kräfte zeichnen
-                    ax[1].arrow(z,r*np.sin(phi),0,l_max*-fx/max_f,head_width=2,width=1,color="red",zorder=100)
-                if round(abs(fz),5)>0: # Z Kräfte zeichnen
-                    ax[1].arrow(z,r*np.sin(phi),l_max*fz/max_f,0,head_width=2,width=1,color="blue",zorder=100)
+        ax[0,1].grid()
+        #ax[0,1].set_title(f'in XZ')
+        ax[0,1].set_xlabel("$z\\,[mm]$")
+        ax[0,1].set_ylabel("$x\\,[mm]$")
+        ax[0,1].axis("equal")
 
-        ax[1].grid()
-        #ax[1].set_title(f'in XZ')
-        ax[1].set_xlabel("$z\\,[mm]$")
-        ax[1].set_ylabel("$x\\,[mm]$")
-        ax[1].axis("equal")
+        # Mbx Biegemomentenverlauf
+        mbx_daten = tuple(map(self.Mbx,zrange))
+        ax[1,0].plot(zrange,mbx_daten)
+        ax[1,0].set_xlabel("$z\\,[mm]$")
+        ax[1,0].set_ylabel("$Mb_x\\,[Nmm]$")
+        ax[1,0].set_title("Biegemoment um X")
+        ax[1,0].set_xlim(ax[0,0].set_xlim())
+        ax[1,0].grid()
+
+        # Mby Biegemomentenverlauf
+        mby_daten = tuple(map(self.Mby,zrange))
+        ax[1,1].plot(zrange,mby_daten)
+        ax[1,1].set_xlabel("$z\\,[mm]$")
+        ax[1,1].set_ylabel("$Mb_y\\,[Nmm]$")
+        ax[1,1].set_title("Biegemoment um Y")
+        ax[1,1].set_xlim(ax[0,1].set_xlim())
+        ax[1,1].grid()
+        
         fig.legend()
         plt.show()
+
+    def Mbx(self,z):
+        """Berechnet numerisch den Biegemomentenverlauf um die globale X-Achse in `N*mm`"""
+        result = 0
+        for kraft in self.belastungen:
+            _,z_kraft,r,phi,fx,fy,fz = kraft
+            if z_kraft<z:
+                result += -1*fy*(z-z_kraft)
+            result += fz*r*np.cos(phi)
+        return round(result,10)
+    
+    def Mby(self,z):
+        """Berechnet numerisch den Biegemomentenverlauf um die globale Y-Achse in `N*mm`"""
+        result = 0
+        for kraft in self.belastungen:
+            _,z_kraft,r,phi,fx,fy,fz = kraft
+            if z_kraft<z:
+                result += -1*fx*(z-z_kraft)
+            result += fz*r*np.sin(phi)
+        return round(result,10)
 
 if __name__ == "__main__":
     test = Welle("Testwelle")
@@ -189,8 +222,10 @@ if __name__ == "__main__":
         [200,25],
     ])
     
-    test.set_Kraft(10,"r",250,70,45)
-    test.set_Kraft(20,"a",150,70,45)
+    test.set_Kraft(10,"r",80,0,0)
+    test.set_Kraft(25,"r",110,0,0)
+    test.set_Kraft(10,"r",100,0,90)
+    test.set_Kraft(5,"a",150,70,45)
     test.lagerkräfte_berechnen()
-    print(test.belastungen)
+    print(test.Mbx(100))
     test.plot()
