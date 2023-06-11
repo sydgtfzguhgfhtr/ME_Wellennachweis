@@ -81,7 +81,7 @@ class Welle:
         summe_kräftex,summe_kräftey,summe_kräftez = 0,0,0
         for _,zk,rk,_,fx,fy,fz in self.belastungen:
             summe_krafthebely += -fy*zk
-            summe_krafthebelx += fx*zk
+            summe_krafthebelx += -fx*zk
         self.belastungen[3] = (abs(summe_krafthebelx/lges),lges,0,0,summe_krafthebelx/lges,0,0) # Lagerkraft Loslager X
         self.belastungen[4] = (abs(summe_krafthebely/lges),lges,0,0,0,summe_krafthebely/lges,0) # Lagerkraft Loslager Y
 
@@ -129,11 +129,14 @@ class Welle:
         zrange = np.arange(0,max(self.z_daten),0.1)
         rrange = np.array(tuple(map(self.radius,zrange)))
 
-        plt.plot(zrange,rrange,"k")
-        plt.plot(zrange,rrange*-1,"k")
-        plt.hlines(0,-5,self.z_daten[-1]+5,linestyles="dashdot",colors="black")
+        fig,ax = plt.subplots(1,2)
+        fig.align_labels(ax)
+        fig.suptitle(f'Welle "{self.name}"')
+        ax[0].plot(zrange,rrange,"k")
+        ax[0].plot(zrange,rrange*-1,"k")
+        ax[0].hlines(0,-5,self.z_daten[-1]+5,linestyles="dashdot",colors="black")
         for i,z in enumerate(self.z_daten):
-            plt.vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
+            ax[0].vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
 
         if kräfte:
             # maximale Kraft ermitteln, zum skalieren der Vektoren
@@ -143,15 +146,39 @@ class Welle:
             for kraft in self.belastungen:
                 _,z,r,phi,fx,fy,fz = kraft
                 if round(abs(fy),5)>0: # Y Kräfte zeichnen
-                    plt.arrow(z,r,0,l_max*-fy/max_f,head_width=2,width=1,color="green")
+                    ax[0].arrow(z,r*np.cos(phi),0,l_max*-fy/max_f,head_width=2,width=1,color="green")
                 if round(abs(fz),5)>0: # Z Kräfte zeichnen
-                    plt.arrow(z,r,l_max*fz/max_f,0,head_width=2,width=1,color="blue")
+                    ax[0].arrow(z,r*np.cos(phi),l_max*fz/max_f,0,head_width=2,width=1,color="blue")
 
-        plt.grid()
-        plt.title(f'Welle "{self.name}"')
-        plt.xlabel("$z\\,[mm]$")
-        plt.ylabel("$r\\,[mm]$")
-        plt.axis("equal")
+        ax[0].grid()
+        #ax[0].set_title(f'Welle "{self.name}" in YZ')
+        ax[0].set_xlabel("$z\\,[mm]$")
+        ax[0].set_ylabel("$y\\,[mm]$")
+        ax[0].axis("equal")
+
+        ax[1].plot(zrange,rrange,"k")
+        ax[1].plot(zrange,rrange*-1,"k")
+        ax[1].hlines(0,-5,self.z_daten[-1]+5,linestyles="dashdot",colors="black")
+        for i,z in enumerate(self.z_daten):
+            ax[1].vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
+
+        if kräfte:
+            # maximale Kraft ermitteln, zum skalieren der Vektoren
+            l_max = 50
+            max_f = max((self.belastungen[i][0] for i in range(len(self.belastungen))))
+
+            for kraft in self.belastungen:
+                _,z,r,phi,fx,fy,fz = kraft
+                if round(abs(fx),5)>0: # X Kräfte zeichnen
+                    ax[1].arrow(z,r*np.sin(phi),0,l_max*-fx/max_f,head_width=2,width=1,color="red")
+                if round(abs(fz),5)>0: # Z Kräfte zeichnen
+                    ax[1].arrow(z,r*np.sin(phi),l_max*fz/max_f,0,head_width=2,width=1,color="blue")
+
+        ax[1].grid()
+        #ax[1].set_title(f'in XZ')
+        ax[1].set_xlabel("$z\\,[mm]$")
+        ax[1].set_ylabel("$x\\,[mm]$")
+        ax[1].axis("equal")
         plt.show()
 
 if __name__ == "__main__":
@@ -167,7 +194,9 @@ if __name__ == "__main__":
         [200,25],
     ])
     
-    test.set_Kraft(10,"r",100,test.radius(100),0)
-    test.set_Kraft(20,"a",100,test.radius(100),0)
+    test.set_Kraft(10,"r",150,70,90)
+    #test.set_Kraft(20,"a",150,70,90)
     test.lagerkräfte_berechnen()
     test.plot()
+
+# VORZEICHENFEHLER IM X
