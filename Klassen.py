@@ -130,8 +130,8 @@ class Welle:
         z_range_k = np.linspace(0,max_z_k,1000)
         rrange = np.array(tuple(map(self.radius,zrange)))
 
-        fig,ax = plt.subplots(2,2,constrained_layout=True)
-        fig.align_labels(ax)
+        fig,ax = plt.subplots(2,2,constrained_layout=True,sharex="col",sharey="row")
+        fig.set_size_inches(15,10)
         fig.suptitle(f'Welle "{self.name}"',fontsize=18)
         ax[0,0].plot(zrange,rrange,"k")
         ax[0,0].plot(zrange,rrange*-1,"k")
@@ -151,10 +151,10 @@ class Welle:
                 ax[0,0].arrow(z,r*np.cos(phi),l_max*fz/max_f,0,head_width=2,width=1,color="blue",zorder=100)
 
         ax[0,0].grid()
-        ax[0,0].set_title(f'YZ')
+        ax[0,0].set_title("YZ-Ebene")
         ax[0,0].set_xlabel("$z\\,[mm]$")
         ax[0,0].set_ylabel("$r\\,[mm]$")
-        ax[0,0].axis("equal")
+        #ax[0,0].axis("equal")
 
         ax[0,1].plot(zrange,rrange,"k")
         ax[0,1].plot(zrange,rrange*-1,"k")
@@ -170,30 +170,31 @@ class Welle:
                 ax[0,1].arrow(z,r*np.sin(phi),l_max*fz/max_f,0,head_width=2,width=1,color="blue",zorder=100)
 
         ax[0,1].grid()
-        ax[0,1].set_title(f'XZ')
+        ax[0,1].set_title("XZ-Ebene")
         ax[0,1].set_xlabel("$z\\,[mm]$")
         ax[0,1].set_ylabel("$r\\,[mm]$")
-        ax[0,1].axis("equal")
+        #ax[0,1].axis("equal")
 
         # Mbx Biegemomentenverlauf
         mbx_daten = tuple(map(self.Mbx,z_range_k))
         ax[1,0].plot(z_range_k,mbx_daten)
+        ax[1,0].fill_between(z_range_k,0,mbx_daten,alpha=0.3)
         ax[1,0].set_xlabel("$z\\,[mm]$")
         ax[1,0].set_ylabel("$Mb_x\\,[Nmm]$")
         ax[1,0].set_title("Biegemoment um X")
-        ax[1,0].set_xlim(ax[0,0].get_xlim())
         ax[1,0].grid()
+        ax[1,0].invert_yaxis()
 
         # Mby Biegemomentenverlauf
         mby_daten = tuple(map(self.Mby,z_range_k))
         ax[1,1].plot(z_range_k,mby_daten)
+        ax[1,1].fill_between(z_range_k,0,mby_daten,alpha=0.3)
         ax[1,1].set_xlabel("$z\\,[mm]$")
         ax[1,1].set_ylabel("$Mb_y\\,[Nmm]$")
         ax[1,1].set_title("Biegemoment um Y")
-        ax[1,1].set_xlim(ax[0,1].get_xlim())
         ax[1,1].grid()
-        
-        fig.legend()
+        ax[1,1].invert_yaxis()
+
         plt.show()
 
     def Mbx(self,z):
@@ -226,7 +227,7 @@ if __name__ == "__main__":
     z_rad = lab2+lz21
     r_rad = 454.94/2
 
-    test = Welle("Testwelle")
+    test = Welle("Zwischenwelle")
     test.set_geometrie([
         [0,düb*0.8],
         [30,düb*0.8],
@@ -236,13 +237,14 @@ if __name__ == "__main__":
         [lab2,düb*0.8]
     ])
 
-    test.set_Kraft(9.871e3,"r",z_ritzel,r_ritzel,0) # Ritzel z21
-    test.set_Kraft(-26.195e3,"t",z_ritzel,r_ritzel,0)
-    test.set_Kraft(-7.019e3,"a",z_ritzel,r_ritzel,0)
+    test.set_Kraft(2191,"a",z_rad,r_rad,0)
+    test.set_Kraft(2332,"r",z_rad,r_rad,0) # Rad z12
+    test.set_Kraft(-6021,"t",z_rad,r_rad,0)
 
-    test.set_Kraft(2.309e3,"r",z_rad,r_rad,0) # Rad z12
-    test.set_Kraft(-5.961e3,"t",z_rad,r_rad,0)
-    test.set_Kraft(2.17e3,"a",z_rad,r_rad,0)
+    test.set_Kraft(-7162,"a",z_ritzel,r_ritzel,0)
+    test.set_Kraft(10071,"r",z_ritzel,r_ritzel,0) # Ritzel z21
+    test.set_Kraft(-26727,"t",z_ritzel,r_ritzel,0)
 
     test.lagerkräfte_berechnen()
     test.plot()
+    #print(test.belastungen)
