@@ -84,8 +84,12 @@ class Welle:
         summe_krafthebelx,summe_krafthebely = 0,0
         summe_kräftex,summe_kräftey,summe_kräftez = 0,0,0
         for _,zk,rk,_,fx,fy,fz in self.belastungen:
-            summe_krafthebely += -fy*zk
-            summe_krafthebelx += -fx*zk
+            if self.festlager_z<self.loslager_z:
+                summe_krafthebely += -fy*(zk-self.festlager_z)
+                summe_krafthebelx += -fx*(zk-self.festlager_z)
+            else:
+                summe_krafthebely += fy*(zk-self.festlager_z)
+                summe_krafthebelx += fx*(zk-self.festlager_z)
         self.belastungen[3] = (abs(summe_krafthebelx/lges),self.loslager_z,0,0,summe_krafthebelx/lges,0,0) # Lagerkraft Loslager X
         self.belastungen[4] = (abs(summe_krafthebely/lges),self.loslager_z,0,0,0,summe_krafthebely/lges,0) # Lagerkraft Loslager Y
 
@@ -240,8 +244,8 @@ class Welle:
             print("-"*48)
 
 if __name__ == "__main__":
-    welle = Welle("Online Rechner",0,4)
-    welle.set_geometrie(((-1,1),(5,1)))
+    welle = Welle("Online Rechner",1,5)
+    welle.set_geometrie(((0,1),(5,1)))
 
     welle.set_Kraft(1,"r",-1,0,0)
     # welle.set_Kraft(1,"r",2,0,0)
