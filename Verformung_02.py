@@ -38,8 +38,10 @@ t1 = time.time()
 
 def Verformung(x, W: Welle):
     E_Modul = 210000 #Nmm^-2
-    L = max(W.z_daten) # muss noch allgemein aus Klasse Welle kommen
-    NUM = 2*L
+
+    L = W.länge
+    NUM = 10*L
+
     z = np.linspace(0, L, num = NUM)
 
     q_x = []
