@@ -223,37 +223,55 @@ class Welle:
         return np.pi/32 * self.d(z)**3
 
 if __name__ == "__main__":
-    lab2 = 290
-    lz21 = 95
-    lz22 = 115
-    düb = 75
-    z_ritzel = lab2-lz22
-    r_ritzel = 101.46/2
-    z_rad = lab2+lz21
-    r_rad = 454.94/2
+    # lab2 = 290
+    # lz21 = 95
+    # lz22 = 115
+    # düb = 75
+    # z_ritzel = lab2-lz22
+    # r_ritzel = 101.46/2
+    # z_rad = lab2+lz21
+    # r_rad = 454.94/2
 
-    test = Welle("Zwischenwelle",lab2)
-    test.set_geometrie([
-        [0,düb*0.8],
-        [30,düb*0.8],
-        [30,düb],
-        [lab2-30,düb],
-        [lab2-30,düb*0.8],
-        [lab2+lz21-15,düb*0.8],
-        [lab2+lz21-15,düb*0.6],
-        [lab2+lz21+15,düb*0.6]
-    ])
+    # test = Welle("Zwischenwelle",lab2)
+    # test.set_geometrie([
+    #     [0,düb*0.8],
+    #     [30,düb*0.8],
+    #     [30,düb],
+    #     [lab2-30,düb],
+    #     [lab2-30,düb*0.8],
+    #     [lab2+lz21-15,düb*0.8],
+    #     [lab2+lz21-15,düb*0.6],
+    #     [lab2+lz21+15,düb*0.6]
+    # ])
 
-    test.set_Kraft(2191,"a",z_rad,r_rad,0)
-    test.set_Kraft(2332,"r",z_rad,r_rad,0) # Rad z12
-    test.set_Kraft(-6021,"t",z_rad,r_rad,0)
+    # test.set_Kraft(2191,"a",z_rad,r_rad,0)
+    # test.set_Kraft(2332,"r",z_rad,r_rad,0) # Rad z12
+    # test.set_Kraft(-6021,"t",z_rad,r_rad,0)
 
-    test.set_Kraft(-7162,"a",z_ritzel,r_ritzel,0)
-    test.set_Kraft(10071,"r",z_ritzel,r_ritzel,0) # Ritzel z21
-    test.set_Kraft(-26727,"t",z_ritzel,r_ritzel,0)
+    # test.set_Kraft(-7162,"a",z_ritzel,r_ritzel,0)
+    # test.set_Kraft(10071,"r",z_ritzel,r_ritzel,0) # Ritzel z21
+    # test.set_Kraft(-26727,"t",z_ritzel,r_ritzel,0)
 
-    test.lagerkräfte_berechnen()
-    test.plot()
-    print(test.durchmesser(10))
-    print(test.Wb(10))
-    print(test.länge)
+    # test.lagerkräfte_berechnen()
+    # test.plot()
+    # print(test.durchmesser(10))
+    # print(test.Wb(10))
+    # print(test.länge)
+
+    welle = Welle("Beispielwelle",195)
+    welle.set_geometrie(
+        (
+            (0,10),
+            (40,10),
+            (40,20),
+            (80,20),
+            (80,27.5),
+            (160,27.5),
+            (160,15),
+            (195,15),
+        )
+    )
+    welle.set_Kraft(-3500,"r",20,0,0)
+    welle.set_Kraft(4500,"r",135,0,0)
+    welle.lagerkräfte_berechnen()
+    welle.plot()
