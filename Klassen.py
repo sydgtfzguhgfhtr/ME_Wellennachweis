@@ -47,9 +47,11 @@ Torsionswechselfestigkeit:      {self.tau_tW}
         return 1
 
 class Welle:
-    def __init__(self,name:str,lagerabstand) -> None:
+    def __init__(self,name:str,festlager_z,loslager_z) -> None:
         self.name = str(name)
-        self.lagerabstand = lagerabstand
+        self.festlager_z = festlager_z
+        self.loslager_z = loslager_z
+        self.lagerabstand = abs(festlager_z-loslager_z)
         self.länge = 0
         self.geometrie = []
         self.z_daten = []
@@ -84,16 +86,16 @@ class Welle:
         for _,zk,rk,_,fx,fy,fz in self.belastungen:
             summe_krafthebely += -fy*zk
             summe_krafthebelx += -fx*zk
-        self.belastungen[3] = (abs(summe_krafthebelx/lges),lges,0,0,summe_krafthebelx/lges,0,0) # Lagerkraft Loslager X
-        self.belastungen[4] = (abs(summe_krafthebely/lges),lges,0,0,0,summe_krafthebely/lges,0) # Lagerkraft Loslager Y
+        self.belastungen[3] = (abs(summe_krafthebelx/lges),self.loslager_z,0,0,summe_krafthebelx/lges,0,0) # Lagerkraft Loslager X
+        self.belastungen[4] = (abs(summe_krafthebely/lges),self.loslager_z,0,0,0,summe_krafthebely/lges,0) # Lagerkraft Loslager Y
 
         for _,zk,rk,_,fx,fy,fz in self.belastungen:
             summe_kräftex += -fx
             summe_kräftey += -fy
             summe_kräftez += -fz
-        self.belastungen[0] = (abs(summe_kräftex),0,0,0,summe_kräftex,0,0) # Lagerkraft Festlager X
-        self.belastungen[1] = (abs(summe_kräftey),0,0,0,0,summe_kräftey,0) # Lagerkraft Festlager Y
-        self.belastungen[2] = (abs(summe_kräftez),0,0,0,0,0,summe_kräftez) # Lagerkraft Festlager Z
+        self.belastungen[0] = (abs(summe_kräftex),self.festlager_z,0,0,summe_kräftex,0,0) # Lagerkraft Festlager X
+        self.belastungen[1] = (abs(summe_kräftey),self.festlager_z,0,0,0,summe_kräftey,0) # Lagerkraft Festlager Y
+        self.belastungen[2] = (abs(summe_kräftez),self.festlager_z,0,0,0,0,summe_kräftez) # Lagerkraft Festlager Z
 
     def set_geometrie(self,punkte:list):
         """
@@ -128,9 +130,11 @@ class Welle:
         _,z_kräfte,_,_,_,_,_=zip(*self.belastungen)
         max_z_k = max(z_kräfte)
         max_z = max(self.z_daten)
+        min_z = min(self.z_daten)
+        min_z_k = min(z_kräfte)
 
-        zrange = np.linspace(0,max_z,1000)
-        z_range_k = np.linspace(0,max_z_k,1000)
+        zrange = np.linspace(min_z,max_z,1000)
+        z_range_k = np.linspace(min_z_k,max_z_k,1000)
         rrange = np.array(tuple(map(self.radius,zrange)))
 
         fig,ax = plt.subplots(2,2,constrained_layout=True,sharex="col",sharey="row",num=self.name+" Belastungsplot")
@@ -138,7 +142,7 @@ class Welle:
         fig.suptitle(f'Welle "{self.name}"',fontsize=18)
         ax[0,0].plot(zrange,rrange,"k")
         ax[0,0].plot(zrange,rrange*-1,"k")
-        ax[0,0].hlines(0,-5,self.z_daten[-1]+5,linestyles="dashdot",colors="black")
+        ax[0,0].hlines(0,min_z-self.länge*0.05,self.z_daten[-1]+self.länge*0.05,linestyles="dashdot",colors="black")
         for i,z in enumerate(self.z_daten):
             ax[0,0].vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
 
@@ -158,10 +162,11 @@ class Welle:
         ax[0,0].set_title("YZ-Ebene")
         ax[0,0].set_xlabel("$z\\,[mm]$")
         ax[0,0].set_ylabel("$r\\,[mm]$")
+        ax[0,0].set_ylim(ax[0,0].get_xlim())
 
         ax[0,1].plot(zrange,rrange,"k")
         ax[0,1].plot(zrange,rrange*-1,"k")
-        ax[0,1].hlines(0,-5,self.z_daten[-1]+5,linestyles="dashdot",colors="black")
+        ax[0,1].hlines(0,min_z-self.länge*0.05,self.z_daten[-1]+self.länge*0.05,linestyles="dashdot",colors="black")
         for i,z in enumerate(self.z_daten):
             ax[0,1].vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
 
@@ -235,66 +240,12 @@ class Welle:
             print("-"*48)
 
 if __name__ == "__main__":
-    # lab2 = 290
-    # lz21 = 95
-    # lz22 = 115
-    # düb = 75
-    # z_ritzel = lab2-lz22
-    # r_ritzel = 101.46/2
-    # z_rad = lab2+lz21
-    # r_rad = 454.94/2
-
-    # test = Welle("Zwischenwelle",lab2)
-    # test.set_geometrie([
-    #     [0,düb*0.8],
-    #     [30,düb*0.8],
-    #     [30,düb],
-    #     [lab2-30,düb],
-    #     [lab2-30,düb*0.8],
-    #     [lab2+lz21-15,düb*0.8],
-    #     [lab2+lz21-15,düb*0.6],
-    #     [lab2+lz21+15,düb*0.6]
-    # ])
-
-    # test.set_Kraft(2191,"a",z_rad,r_rad,0)
-    # test.set_Kraft(2332,"r",z_rad,r_rad,0) # Rad z12
-    # test.set_Kraft(-6021,"t",z_rad,r_rad,0)
-
-    # test.set_Kraft(-7162,"a",z_ritzel,r_ritzel,0)
-    # test.set_Kraft(10071,"r",z_ritzel,r_ritzel,0) # Ritzel z21
-    # test.set_Kraft(-26727,"t",z_ritzel,r_ritzel,0)
-
-    # test.lagerkräfte_berechnen()
-    # test.plot()
-    # print(test.durchmesser(10))
-    # print(test.Wb(10))
-    # print(test.länge)
-
-    # welle = Welle("Beispielwelle",195)
-    # welle.set_geometrie(
-    #     (
-    #         (0,10),
-    #         (40,10),
-    #         (40,20),
-    #         (80,20),
-    #         (80,27.5),
-    #         (160,27.5),
-    #         (160,15),
-    #         (195,15),
-    #     )
-    # )
-    # # welle.set_Kraft(-3500,"r",20,0,0)
-    # # welle.set_Kraft(4500,"r",135,0,0)
-    # welle.set_Kraft(1000,"a",100,50,0)
-    # welle.lagerkräfte_berechnen()
-    # welle.plot()
-
-    welle = Welle("Online Rechner",4)
-    welle.set_geometrie(((0,10),(5,10)))
+    welle = Welle("Online Rechner",0,4)
+    welle.set_geometrie(((-1,1),(5,1)))
 
     welle.set_Kraft(1,"r",-1,0,0)
-    welle.set_Kraft(1,"r",3,0,0)
-    welle.set_Kraft(1,"a",3,0,0)
+    # welle.set_Kraft(1,"r",2,0,0)
+    # welle.set_Kraft(1,"a",2,0,0)
 
     welle.lagerkräfte_berechnen()
     welle.print_Lagerkräfte()
