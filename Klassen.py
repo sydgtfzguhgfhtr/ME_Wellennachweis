@@ -221,6 +221,17 @@ class Welle:
     def Wb(self,z):
         """Gibt das Widerstandsmoment gegen Biegung an der Stelle z in `mm^3` aus."""
         return np.pi/32 * self.d(z)**3
+    
+    def print_Lagerkräfte(self):
+        print("\n")
+        print(f"Lagerkraefte der Welle \"{self.name}\"\n")
+        print("-"*37)
+        print("|"," "*3,"Fx".center(10),"|","Fy".center(10),"|","Fz".center(10),"|",sep="")
+        print("-"*37)
+        for i in range(5):
+            betrag,z,r,phi,fx,fy,fz = self.belastungen[i]
+            print("|",i,": ",str(round(fx,3)).center(10),"|",str(round(fy,3)).center(10),"|",str(round(fz,3)).center(10),"|",sep="")
+            print("-"*37)
 
 if __name__ == "__main__":
     # lab2 = 290
@@ -258,20 +269,37 @@ if __name__ == "__main__":
     # print(test.Wb(10))
     # print(test.länge)
 
-    welle = Welle("Beispielwelle",195)
-    welle.set_geometrie(
-        (
-            (0,10),
-            (40,10),
-            (40,20),
-            (80,20),
-            (80,27.5),
-            (160,27.5),
-            (160,15),
-            (195,15),
-        )
-    )
-    welle.set_Kraft(-3500,"r",20,0,0)
-    welle.set_Kraft(4500,"r",135,0,0)
-    welle.lagerkräfte_berechnen()
-    welle.plot()
+    # welle = Welle("Beispielwelle",195)
+    # welle.set_geometrie(
+    #     (
+    #         (0,10),
+    #         (40,10),
+    #         (40,20),
+    #         (80,20),
+    #         (80,27.5),
+    #         (160,27.5),
+    #         (160,15),
+    #         (195,15),
+    #     )
+    # )
+    # # welle.set_Kraft(-3500,"r",20,0,0)
+    # # welle.set_Kraft(4500,"r",135,0,0)
+    # welle.set_Kraft(1000,"a",100,50,0)
+    # welle.lagerkräfte_berechnen()
+    # welle.plot()
+
+    a = 1000
+    tm1welle = Welle("TM1 Welle 8.2",3*a)
+    tm1welle.set_geometrie(((0,10),(4*a,10)))
+
+    tm1welle.set_Kraft(2000,"r",a,0,0)
+
+    tm1welle.set_Kraft(-2000*np.sin(np.deg2rad(60)),"r",2*a,0,0)
+    tm1welle.set_Kraft(2000*np.cos(np.deg2rad(60)),"a",2*a,0,0)
+
+    tm1welle.set_Kraft(1000*np.cos(np.deg2rad(60)),"a",4*a,0,0)
+    tm1welle.set_Kraft(1000*np.sin(np.deg2rad(60)),"r",4*a,0,0)
+
+    tm1welle.lagerkräfte_berechnen()
+    tm1welle.print_Lagerkräfte()
+    tm1welle.plot()
