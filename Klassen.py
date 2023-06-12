@@ -205,7 +205,7 @@ class Welle:
             _,z_kraft,r,phi,fx,fy,fz = kraft
             if z_kraft<z:
                 result += -1*fy*(z-z_kraft)
-            result += fz*r*np.cos(phi)
+                result += fz*r*np.cos(phi)
         return round(result,10)
     
     def Mby(self,z):
@@ -215,7 +215,7 @@ class Welle:
             _,z_kraft,r,phi,fx,fy,fz = kraft
             if z_kraft<z:
                 result += -1*fx*(z-z_kraft)
-            result += fz*r*np.sin(phi)
+                result += fz*r*np.sin(phi)
         return round(result,10)
 
 if __name__ == "__main__":
@@ -250,4 +250,5 @@ if __name__ == "__main__":
 
     test.lagerkräfte_berechnen()
     test.plot()
-    #print(test.belastungen)
+    print(test.durchmesser(10))
+    print(test.Mbx(10))
