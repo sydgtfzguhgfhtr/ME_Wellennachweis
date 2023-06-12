@@ -155,7 +155,6 @@ class Welle:
         ax[0,0].set_title("YZ-Ebene")
         ax[0,0].set_xlabel("$z\\,[mm]$")
         ax[0,0].set_ylabel("$r\\,[mm]$")
-        #ax[0,0].axis("equal")
 
         ax[0,1].plot(zrange,rrange,"k")
         ax[0,1].plot(zrange,rrange*-1,"k")
@@ -174,7 +173,6 @@ class Welle:
         ax[0,1].set_title("XZ-Ebene")
         ax[0,1].set_xlabel("$z\\,[mm]$")
         ax[0,1].set_ylabel("$r\\,[mm]$")
-        #ax[0,1].axis("equal")
 
         # Mbx Biegemomentenverlauf
         mbx_daten = tuple(map(self.Mbx,z_range_k))
@@ -184,7 +182,6 @@ class Welle:
         ax[1,0].set_ylabel("$Mb_x\\,[Nmm]$")
         ax[1,0].set_title("Biegemoment um X")
         ax[1,0].grid()
-        ax[1,0].invert_yaxis()
 
         # Mby Biegemomentenverlauf
         mby_daten = tuple(map(self.Mby,z_range_k))
@@ -194,7 +191,8 @@ class Welle:
         ax[1,1].set_ylabel("$Mb_y\\,[Nmm]$")
         ax[1,1].set_title("Biegemoment um Y")
         ax[1,1].grid()
-        ax[1,1].invert_yaxis()
+
+        ax[1,1].invert_yaxis() # Achse invertieren
 
         plt.show()
 
