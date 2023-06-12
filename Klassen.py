@@ -225,13 +225,13 @@ class Welle:
     def print_Lagerkräfte(self):
         print("\n")
         print(f"Lagerkraefte der Welle \"{self.name}\"\n")
-        print("-"*37)
-        print("|"," "*3,"Fx".center(10),"|","Fy".center(10),"|","Fz".center(10),"|",sep="")
-        print("-"*37)
+        print("-"*48)
+        print("|"," "*3,"Fx".center(10),"|","Fy".center(10),"|","Fz".center(10),"|","z".center(10),"|",sep="")
+        print("-"*48)
         for i in range(5):
             betrag,z,r,phi,fx,fy,fz = self.belastungen[i]
-            print("|",i,": ",str(round(fx,3)).center(10),"|",str(round(fy,3)).center(10),"|",str(round(fz,3)).center(10),"|",sep="")
-            print("-"*37)
+            print("|",i,": ",str(round(fx,3)).center(10),"|",str(round(fy,3)).center(10),"|",str(round(fz,3)).center(10),"|",str(round(z,3)).center(10),"|",sep="")
+            print("-"*48)
 
 if __name__ == "__main__":
     # lab2 = 290
