@@ -83,12 +83,12 @@ class Welle:
         lges = self.lagerabstand
         summe_krafthebelx,summe_krafthebely = 0,0
         summe_kräftex,summe_kräftey,summe_kräftez = 0,0,0
-        for _,zk,rk,_,fx,fy,fz in self.belastungen:
+        for _,zk,rk,phi,fx,fy,fz in self.belastungen:
             if self.festlager_z<self.loslager_z:
-                summe_krafthebely += -fy*(zk-self.festlager_z)
+                summe_krafthebely += -fy*(zk-self.festlager_z)-fz*rk*np.cos(phi)
                 summe_krafthebelx += -fx*(zk-self.festlager_z)
             else:
-                summe_krafthebely += fy*(zk-self.festlager_z)
+                summe_krafthebely += fy*(zk-self.festlager_z)+fz*rk*np.cos(phi)
                 summe_krafthebelx += fx*(zk-self.festlager_z)
         self.belastungen[3] = (abs(summe_krafthebelx/lges),self.loslager_z,0,0,summe_krafthebelx/lges,0,0) # Lagerkraft Loslager X
         self.belastungen[4] = (abs(summe_krafthebely/lges),self.loslager_z,0,0,0,summe_krafthebely/lges,0) # Lagerkraft Loslager Y
@@ -166,7 +166,7 @@ class Welle:
         ax[0,0].set_title("YZ-Ebene")
         ax[0,0].set_xlabel("$z\\,[mm]$")
         ax[0,0].set_ylabel("$r\\,[mm]$")
-        ax[0,0].set_ylim(ax[0,0].get_xlim())
+        #ax[0,0].set_ylim(ax[0,0].get_xlim())
 
         ax[0,1].plot(zrange,rrange,"k")
         ax[0,1].plot(zrange,rrange*-1,"k")
@@ -204,7 +204,7 @@ class Welle:
         ax[1,1].set_title("Biegemoment um Y")
         ax[1,1].grid()
 
-        ax[1,1].invert_yaxis() # Achse invertieren
+        ax[0,0].invert_yaxis() # Achse invertieren
 
         plt.show()
 
@@ -247,9 +247,10 @@ if __name__ == "__main__":
     welle = Welle("Online Rechner",1,5)
     welle.set_geometrie(((0,1),(5,1)))
 
-    welle.set_Kraft(1,"r",-1,0,0)
-    # welle.set_Kraft(1,"r",2,0,0)
-    # welle.set_Kraft(1,"a",2,0,0)
+    welle.set_Kraft(1,"r",0,0,0)
+    welle.set_Kraft(1,"r",3,0,0)
+    welle.set_Kraft(1,"a",3,0,0)
+    welle.set_Kraft(1,"a",3,1,0) # Moment
 
     welle.lagerkräfte_berechnen()
     welle.print_Lagerkräfte()
