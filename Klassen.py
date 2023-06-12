@@ -50,6 +50,7 @@ class Welle:
     def __init__(self,name:str,lagerabstand) -> None:
         self.name = str(name)
         self.lagerabstand = lagerabstand
+        self.länge = 0
         self.geometrie = []
         self.z_daten = []
         self.r_daten = []
@@ -100,6 +101,7 @@ class Welle:
         """
         self.geometrie = punkte
         self.z_daten,self.r_daten = zip(*self.geometrie) # Entpackt die Geometriedaten in Vektoren
+        self.länge = abs(max(self.z_daten)-min(self.z_daten))
 
     def radius(self,z):
         """Gibt Radius der Welle an Stelle z aus. Alle Längen werden in `mm` angegeben"""
@@ -254,3 +256,4 @@ if __name__ == "__main__":
     test.plot()
     print(test.durchmesser(10))
     print(test.Wb(10))
+    print(test.länge)
