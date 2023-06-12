@@ -244,14 +244,46 @@ class Welle:
             print("-"*48)
 
 if __name__ == "__main__":
-    welle = Welle("Online Rechner",1,5)
-    welle.set_geometrie(((0,1),(5,1)))
+    # welle = Welle("Online Rechner",1,5)
+    # welle.set_geometrie(((0,1),(5,1)))
 
-    welle.set_Kraft(1,"r",0,0,0)
-    welle.set_Kraft(1,"r",3,0,0)
-    welle.set_Kraft(1,"a",3,0,0)
-    welle.set_Kraft(1,"a",3,1,0) # Moment
+    # welle.set_Kraft(1,"r",0,0,0)
+    # welle.set_Kraft(1,"r",3,0,0)
+    # welle.set_Kraft(1,"a",3,0,0)
+    # welle.set_Kraft(1,"a",3,1,0) # Moment
 
-    welle.lagerkräfte_berechnen()
-    welle.print_Lagerkräfte()
-    welle.plot()
+    # welle.lagerkräfte_berechnen()
+    # welle.print_Lagerkräfte()
+    # welle.plot()
+
+    lab2 = 290
+    lz21 = 95
+    lz22 = 115
+    düb = 75
+    z_ritzel = lab2-lz22
+    r_ritzel = 101.46/2
+    z_rad = lab2+lz21
+    r_rad = 454.94/2
+
+    test = Welle("Zwischenwelle",0,lab2)
+    test.set_geometrie([
+        [0,düb*0.8],
+        [30,düb*0.8],
+        [30,düb],
+        [lab2-30,düb],
+        [lab2-30,düb*0.8],
+        [lab2+lz21-15,düb*0.8],
+        [lab2+lz21-15,düb*0.6],
+        [lab2+lz21+15,düb*0.6]
+    ])
+
+    test.set_Kraft(2191,"a",z_rad,r_rad,0)
+    test.set_Kraft(2332,"r",z_rad,r_rad,0) # Rad z12
+    test.set_Kraft(-6021,"t",z_rad,r_rad,0)
+
+    test.set_Kraft(-7162,"a",z_ritzel,r_ritzel,0)
+    test.set_Kraft(10071,"r",z_ritzel,r_ritzel,0) # Ritzel z21
+    test.set_Kraft(-26727,"t",z_ritzel,r_ritzel,0)
+
+    test.lagerkräfte_berechnen()
+    test.plot()
