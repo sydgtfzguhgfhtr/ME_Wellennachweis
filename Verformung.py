@@ -1,52 +1,62 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from Klassen import Welle
+
+lab2 = 290
+lz21 = 95
+lz22 = 115
+düb = 75
+z_ritzel = lab2-lz22
+r_ritzel = 101.46/2
+z_rad = lab2+lz21
+r_rad = 454.94/2
+
+test = Welle("Zwischenwelle",lab2)
+test.set_geometrie([
+    [0,düb*0.8],
+    [30,düb*0.8],
+    [30,düb],
+    [lab2-30,düb],
+    [lab2-30,düb*0.8],
+    [lab2+lz21-15,düb*0.8],
+    [lab2+lz21-15,düb*0.6],
+    [lab2+lz21+15,düb*0.6]
+])
+
+test.set_Kraft(2191,"a",z_rad,r_rad,0)
+test.set_Kraft(2332,"r",z_rad,r_rad,0) # Rad z12
+test.set_Kraft(-6021,"t",z_rad,r_rad,0)
+
+test.set_Kraft(-7162,"a",z_ritzel,r_ritzel,0)
+test.set_Kraft(10071,"r",z_ritzel,r_ritzel,0) # Ritzel z21
+test.set_Kraft(-26727,"t",z_ritzel,r_ritzel,0)
+
+test.lagerkräfte_berechnen()
 
 NUM = 1000
 
-f = [110]
-D = [90, 90]
-L = [110, 480]
-
-def Biegemoment_x(x):
-    if x < f[0]:
-        return(-10.298*x)
-    elif x <= max(L):
-        return(0.398-0.829*x)
-    
-def Biegemoment_y(x):
-    if x < f[0]:
-        return(-19.372*x)
-    elif x <= max(L):
-        return(5.759*x-2.764)
-
-def Wellendurchmesser(x):
-    i = 0
-    while x > L[i]:
-        i += 1
-        if i == len(L):
-            break
-    return(D[i])
+L = [0, max(test.z_daten)]
 
 
 def Spannungsverlauf_x(x):
-    Wb = np.pi/32 * Wellendurchmesser(x)**3
-    sigma = Biegemoment_x(x)/Wb
+    Wb = np.pi/32 * test.d(x)**3
+    sigma = test.Mbx(x)/Wb
     return(sigma)
 
 def Spannungsverlauf_y(x):
-    Wb = np.pi/32 * Wellendurchmesser(x)**3
-    sigma = Biegemoment_y(x)/Wb
+    Wb = np.pi/32 * test.d(x)**3
+    sigma = test.Mby(x)/Wb
     return(sigma)
 
-def Verformung(f, D, L, E_Modul):
+def Verformung(L, E_Modul):
 
 
     def Ersatzstreckenlast_x(x):
-        q_x = (64*Biegemoment_x(x))/(np.pi*Wellendurchmesser(x)**4)
+        q_x = (64*test.Mbx(x))/(np.pi*test.d(x)**4)
         return(q_x)
 
     def Ersatzstreckenlast_y(x):
-        q_y = (64*Biegemoment_y(x))/(np.pi*Wellendurchmesser(x)**4)
+        q_y = (64*test.Mby(x))/(np.pi*test.d(x)**4)
         return(q_y)
 
     def Ersatzlagerkraft_x(x):
@@ -145,6 +155,6 @@ def Diagramme(Mb_x, phi_x, f_Lager_x, Lager1_x, Lager2_x, Mb_y, phi_y, f_Lager_y
 
     plt.show()
 
-Mb_x, phi_x, f_Lager_x, Mb_y, phi_y, f_Lager_y = Verformung(f, D, L, 210000)
+Mb_x, phi_x, f_Lager_x, Mb_y, phi_y, f_Lager_y = Verformung(L, 210000)
 
 Diagramme(Mb_x, phi_x, f_Lager_x, 0, 480, Mb_y, phi_y, f_Lager_y)

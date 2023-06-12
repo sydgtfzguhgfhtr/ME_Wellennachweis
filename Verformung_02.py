@@ -1,6 +1,7 @@
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 from Klassen import Welle
+import time
 
 lab2 = 290
 lz21 = 95
@@ -33,10 +34,14 @@ test.set_Kraft(0,"t",z_ritzel,r_ritzel,0)
 
 test.lagerkräfte_berechnen()
 
+t1 = time.time()
+
 def Verformung(x, W: Welle):
     E_Modul = 210000 #Nmm^-2
+
     L = W.länge
     NUM = 10*L
+
     z = np.linspace(0, L, num = NUM)
 
     q_x = []
@@ -76,7 +81,44 @@ def Verformung(x, W: Welle):
     f_Integral_y = np.trapz(q_y_Biegung, s)[-1]
     f_y = (1/E_Modul*(F_ers_y*x-f_Integral_y))
 
-    print(f_x)
+    return(phi_x, phi_y, f_x, f_y)
+
+def Diagramme(W: Welle):
+    L = max(W.z_daten)
+    NUM = 2*L
+
+    x = np.linspace(0, L, num = NUM)
+
+    phi_x = []
+    phi_y = []
+    f_x = []
+    f_y = []
+
+    for i in x:
+        xp, yp, xf, yf = Verformung(i, W)
+        phi_x.append(xp)
+        phi_y.append(yp)
+        f_x.append(xf)
+        f_y.append(yf)
+
+    plt.subplot(4, 2, 1)
+    plt.plot(phi_x)
+
+    plt.subplot(4, 2, 2)
+    plt.plot(phi_y)
+
+    plt.subplot(4, 2, 3)
+    plt.plot(f_x)
+
+    plt.subplot(4, 2, 4)
+    plt.plot(f_y)
+
+    plt.show()
 
 
-print(Verformung(2, test))
+Diagramme(test)
+
+
+t2 = time.time()
+
+print(t2-t1)
