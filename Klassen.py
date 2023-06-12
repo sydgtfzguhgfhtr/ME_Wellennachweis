@@ -143,15 +143,16 @@ class Welle:
             ax[0,0].vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
 
         # maximale Kraft ermitteln, zum skalieren der Vektoren
-        l_max = 50
+        l_max = self.länge/3
         max_f = max((self.belastungen[i][0] for i in range(len(self.belastungen))))
 
         for kraft in self.belastungen:
             _,z,r,phi,fx,fy,fz = kraft
             if round(abs(fy),5)>0: # Y Kräfte zeichnen
-                ax[0,0].arrow(z,r*np.cos(phi),0,l_max*-fy/max_f,head_width=2,width=1,color="green",zorder=100)
+                ax[0,0].arrow(z,r*np.cos(phi),0,l_max*-fy/max_f,color="green",zorder=100,width=l_max/20)
+
             if round(abs(fz),5)>0: # Z Kräfte zeichnen
-                ax[0,0].arrow(z,r*np.cos(phi),l_max*fz/max_f,0,head_width=2,width=1,color="blue",zorder=100)
+                ax[0,0].arrow(z,r*np.cos(phi),l_max*fz/max_f,0,color="blue",zorder=100,width=l_max/20)
 
         ax[0,0].grid()
         ax[0,0].set_title("YZ-Ebene")
@@ -167,9 +168,9 @@ class Welle:
         for kraft in self.belastungen:
             _,z,r,phi,fx,fy,fz = kraft
             if round(abs(fx),5)>0: # X Kräfte zeichnen
-                ax[0,1].arrow(z,r*np.sin(phi),0,l_max*-fx/max_f,head_width=2,width=1,color="red",zorder=100)
+                ax[0,1].arrow(z,r*np.sin(phi),0,l_max*-fx/max_f,color="red",zorder=100,width=l_max/20)
             if round(abs(fz),5)>0: # Z Kräfte zeichnen
-                ax[0,1].arrow(z,r*np.sin(phi),l_max*fz/max_f,0,head_width=2,width=1,color="blue",zorder=100)
+                ax[0,1].arrow(z,r*np.sin(phi),l_max*fz/max_f,0,color="blue",zorder=100,width=l_max/20)
 
         ax[0,1].grid()
         ax[0,1].set_title("XZ-Ebene")
@@ -288,18 +289,13 @@ if __name__ == "__main__":
     # welle.lagerkräfte_berechnen()
     # welle.plot()
 
-    a = 1000
-    tm1welle = Welle("TM1 Welle 8.2",3*a)
-    tm1welle.set_geometrie(((0,10),(4*a,10)))
+    welle = Welle("Online Rechner",4)
+    welle.set_geometrie(((0,10),(5,10)))
 
-    tm1welle.set_Kraft(2000,"r",a,0,0)
+    welle.set_Kraft(1,"r",-1,0,0)
+    welle.set_Kraft(1,"r",3,0,0)
+    welle.set_Kraft(1,"a",3,0,0)
 
-    tm1welle.set_Kraft(-2000*np.sin(np.deg2rad(60)),"r",2*a,0,0)
-    tm1welle.set_Kraft(2000*np.cos(np.deg2rad(60)),"a",2*a,0,0)
-
-    tm1welle.set_Kraft(1000*np.cos(np.deg2rad(60)),"a",4*a,0,0)
-    tm1welle.set_Kraft(1000*np.sin(np.deg2rad(60)),"r",4*a,0,0)
-
-    tm1welle.lagerkräfte_berechnen()
-    tm1welle.print_Lagerkräfte()
-    tm1welle.plot()
+    welle.lagerkräfte_berechnen()
+    welle.print_Lagerkräfte()
+    welle.plot()
