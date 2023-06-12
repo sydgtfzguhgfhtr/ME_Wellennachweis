@@ -125,7 +125,7 @@ class Welle:
         return self.d(z)
     def plot(self,kräfte=True,biegemomente=True):
         """Stellt die Welle dar."""
-        _,z_kräfte,_,_,_,_,_=zip(*test.belastungen)
+        _,z_kräfte,_,_,_,_,_=zip(*self.belastungen)
         max_z_k = max(z_kräfte)
         max_z = max(self.z_daten)
 
