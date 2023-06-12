@@ -228,6 +228,16 @@ class Welle:
                 result += fz*r*np.sin(phi)
         return round(result,10)
     
+    def Mt(self,z):
+        """Berechnet numerisch den Torsionsmomentenverlauf um die Globale Z-Achse in `N*mm`"""
+        result = 0
+        for kraft in self.belastungen:
+            _,z_kraft,r,phi,fx,fy,fz = kraft
+            if z_kraft<z:
+                result += -1*fx*r*np.cos(phi)
+                result += -1*fy*r*np.sin(phi)
+        return round(result,10)
+    
     def Wb(self,z):
         """Gibt das Widerstandsmoment gegen Biegung an der Stelle z in `mm^3` aus."""
         return np.pi/32 * self.d(z)**3
@@ -267,7 +277,7 @@ if __name__ == "__main__":
 
     test = Welle("Zwischenwelle",0,lab2)
     test.set_geometrie([
-        [0,düb*0.8],
+        [-30,düb*0.8],
         [30,düb*0.8],
         [30,düb],
         [lab2-30,düb],
