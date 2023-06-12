@@ -191,7 +191,7 @@ class Welle:
         ax[1,0].plot(z_range_k,mbx_daten)
         ax[1,0].fill_between(z_range_k,0,mbx_daten,alpha=0.3)
         ax[1,0].set_xlabel("$z\\,[mm]$")
-        ax[1,0].set_ylabel("$Mb_x\\,[Nmm]$")
+        ax[1,0].set_ylabel("$Mb_x\\,[Nm]$")
         ax[1,0].set_title("Biegemoment um X")
         ax[1,0].grid()
 
@@ -200,7 +200,7 @@ class Welle:
         ax[1,1].plot(z_range_k,mby_daten)
         ax[1,1].fill_between(z_range_k,0,mby_daten,alpha=0.3)
         ax[1,1].set_xlabel("$z\\,[mm]$")
-        ax[1,1].set_ylabel("$Mb_y\\,[Nmm]$")
+        ax[1,1].set_ylabel("$Mb_y\\,[Nm]$")
         ax[1,1].set_title("Biegemoment um Y")
         ax[1,1].grid()
 
@@ -208,35 +208,68 @@ class Welle:
 
         plt.show()
 
+    def plot_torsion(self):
+        """Stellt die Welle dar."""
+        _,z_kräfte,_,_,_,_,_=zip(*self.belastungen)
+        max_z_k = max(z_kräfte)
+        max_z = max(self.z_daten)
+        min_z = min(self.z_daten)
+        min_z_k = min(z_kräfte)
+
+        zrange = np.linspace(min_z,max_z,1000)
+        z_range_k = np.linspace(min_z_k,max_z_k,1000)
+        rrange = np.array(tuple(map(self.radius,zrange)))
+
+        fig,ax = plt.subplots(2,1,constrained_layout=True,sharex="col",sharey="row",num=self.name+" Belastungsplot")
+        fig.set_size_inches(15,10)
+        fig.suptitle(f'Welle "{self.name}"',fontsize=18)
+        ax[0].plot(zrange,rrange,"k")
+        ax[0].plot(zrange,rrange*-1,"k")
+        ax[0].hlines(0,min_z-self.länge*0.05,self.z_daten[-1]+self.länge*0.05,linestyles="dashdot",colors="black")
+        for i,z in enumerate(self.z_daten):
+            ax[0].vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
+        ax[0].set_title("Darstellung")
+        
+        mt = tuple(map(self.Mt,z_range_k))
+
+        ax[1].plot(z_range_k,mt)
+        ax[1].set_xlabel("$z\\,[mm]$")
+        ax[1].set_ylabel("$M_t\\,[Nm]$")
+        ax[1].set_title("Torsionsmoment")
+        ax[0].grid()
+        ax[1].grid()
+
+        plt.show()
+
     def Mbx(self,z):
-        """Berechnet numerisch den Biegemomentenverlauf um die globale X-Achse in `N*mm`"""
+        """Berechnet numerisch den Biegemomentenverlauf um die globale X-Achse in `N*m`"""
         result = 0
         for kraft in self.belastungen:
             _,z_kraft,r,phi,fx,fy,fz = kraft
             if z_kraft<z:
                 result += -1*fy*(z-z_kraft)
                 result += fz*r*np.cos(phi)
-        return round(result,10)
+        return round(result/1000,10)
     
     def Mby(self,z):
-        """Berechnet numerisch den Biegemomentenverlauf um die globale Y-Achse in `N*mm`"""
+        """Berechnet numerisch den Biegemomentenverlauf um die globale Y-Achse in `N*m`"""
         result = 0
         for kraft in self.belastungen:
             _,z_kraft,r,phi,fx,fy,fz = kraft
             if z_kraft<z:
                 result += -1*fx*(z-z_kraft)
                 result += fz*r*np.sin(phi)
-        return round(result,10)
+        return round(result/1000,10)
     
     def Mt(self,z):
-        """Berechnet numerisch den Torsionsmomentenverlauf um die Globale Z-Achse in `N*mm`"""
+        """Berechnet numerisch den Torsionsmomentenverlauf um die Globale Z-Achse in `N*m`"""
         result = 0
         for kraft in self.belastungen:
             _,z_kraft,r,phi,fx,fy,fz = kraft
             if z_kraft<z:
                 result += -1*fx*r*np.cos(phi)
                 result += -1*fy*r*np.sin(phi)
-        return round(result,10)
+        return round(result/1000,10)
     
     def Wb(self,z):
         """Gibt das Widerstandsmoment gegen Biegung an der Stelle z in `mm^3` aus."""
