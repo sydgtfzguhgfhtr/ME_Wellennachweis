@@ -215,6 +215,10 @@ class Welle:
                 result += -1*fx*(z-z_kraft)
                 result += fz*r*np.sin(phi)
         return round(result,10)
+    
+    def Wb(self,z):
+        """Gibt das Widerstandsmoment gegen Biegung an der Stelle z in `mm^3` aus."""
+        return np.pi/32 * self.d(z)**3
 
 if __name__ == "__main__":
     lab2 = 290
@@ -249,4 +253,4 @@ if __name__ == "__main__":
     test.lagerkräfte_berechnen()
     test.plot()
     print(test.durchmesser(10))
-    print(test.Mbx(10))
+    print(test.Wb(10))
