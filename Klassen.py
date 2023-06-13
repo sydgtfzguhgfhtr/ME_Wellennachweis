@@ -277,32 +277,26 @@ class Welle:
         """Gibt das Widerstandsmoment gegen Biegung an der Stelle z in `mm^3` aus."""
         return np.pi/32 * self.d(z)**3
     
-    def Verformung_x(self,z):
+    def Verformung_x(self,z,*schrittweite):
         """Berechnet die Verformung an der Stelle z in `mm`"""
-        def Ersatzstreckenlast_x(z_):
-            return (64*self.Mbx(z_))/(np.pi*self.d(z_))
-        return Ersatzstreckenlast_x(z)
+        if len(schrittweite)==0:
+            dz = self.dz
+        else:
+            dz = schrittweite[0]
+        minL = min(self.z_daten)
+        maxL = max(self.z_daten)
+        z_range = np.arange(minL,maxL,dz)
 
-    def Verformung_(self):
-        def Ersatzstreckenlast_x(z):
-            qz = 64*self.Mbx(z)
-            qn = np.pi*self.d(z)
-            q = qz/qn
-            return(q)
+        def q_ers(z_):
+            return (64*self.Mbx(z_))/(np.pi*self.d(z_)**4)
         
-        def Ersatzstreckenlast_y(z):
-            q = (64*self.Mby(z))/(np.pi*self.d(z))
-            return(q)
-
-        print(Ersatzstreckenlast_x(100))
-
-        n = []
-
-        for i in range(195):
-            n.append(Ersatzstreckenlast_x(i))
-
-        return(n)
-  
+        def F_ers():
+            integral = 0
+            for z in z_range:
+                integral+=q_ers(z)*(maxL-z)
+            F_ers = 1/maxL * integral*dz
+            return F_ers*1000 # N/mm^2
+        return F_ers()
     
     def print_Lagerkräfte(self):
         print("\n")
