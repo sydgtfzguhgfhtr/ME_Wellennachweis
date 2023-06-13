@@ -2,16 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from Klassen import Welle
 
-lab2 = 290
-lz21 = 95
-lz22 = 115
-düb = 75
-z_ritzel = 20
-r_ritzel = 10
-z_rad = 135
-r_rad = 27.5
-
-test = Welle("Zwischenwelle",lab2)
+test = Welle("Zwischenwelle",0, 195)
 test.set_geometrie([
     (0,10),
     (40,10),
@@ -21,6 +12,15 @@ test.set_geometrie([
     (160,15),
     (195,15)
 ])
+
+lab2 = 290
+lz21 = 95
+lz22 = 115
+düb = 75
+z_ritzel = 20
+r_ritzel = 10
+z_rad = 135
+r_rad = 27.5
 
 test.set_Kraft(0,"a",z_rad,r_rad,0)
 test.set_Kraft(3500,"r",z_rad,r_rad,0) # Rad z12
@@ -32,9 +32,13 @@ test.set_Kraft(0,"t",z_ritzel,r_ritzel,0)
 
 test.lagerkräfte_berechnen()
 
-E = 210000000
 
 NUM = 1000
+
+L = [110, 195]
+
+
+
 
 def Spannungsverlauf_x(x):
     Wb = np.pi/32 * test.d(x)**3
@@ -46,38 +50,35 @@ def Spannungsverlauf_y(x):
     sigma = test.Mby(x)/Wb
     return(sigma)
 
-def Verformung(W: Welle):
+def Verformung(L, E_Modul):
 
-    E_Modul = 210000
-
-    L = W.länge
 
     def Ersatzstreckenlast_x(x):
-        q_x = (64*W.Mbx(x))/(np.pi*W.d(x)**4)
+        q_x = (64*test.Mbx(x))/(np.pi*test.d(x)**4)
         return(q_x)
 
     def Ersatzstreckenlast_y(x):
-        q_y = (64*W.Mby(x))/(np.pi*W.d(x)**4)
+        q_y = (64*test.Mby(x))/(np.pi*test.d(x)**4)
         return(q_y)
 
     def Ersatzlagerkraft_x(x):
         def Ersatzstreckenlast_mal_irgendwas(x):
-            return Ersatzstreckenlast_x(x) * (L - x)
+            return Ersatzstreckenlast_x(x) * (max(L) - x)
 
-        x = np.linspace(0, L, num=NUM)
+        x = np.linspace(0, max(L), num=NUM)
 
         Integral = np.trapz(np.vectorize(Ersatzstreckenlast_mal_irgendwas)(x), x)       #np.trapz() -> Integrate along the given axis using the composite trapezoidal rule.
-        F_value = 1 / L * Integral                                  #np.vectorize() -> geht sonst nicht mit x als Vektor
+        F_value = 1 / max(L) * Integral                                  #np.vectorize() -> geht sonst nicht mit x als Vektor
         return(F_value)
     
     def Ersatzlagerkraft_y(x):
         def Ersatzstreckenlast_mal_irgendwas(x):
-            return Ersatzstreckenlast_y(x) * (L - x)
+            return Ersatzstreckenlast_y(x) * (max(L) - x)
 
-        x = np.linspace(0, L, num=NUM)
+        x = np.linspace(0, max(L), num=NUM)
 
         Integral = np.trapz(np.vectorize(Ersatzstreckenlast_mal_irgendwas)(x), x)       #np.trapz() -> Integrate along the given axis using the composite trapezoidal rule.
-        F_value = 1 / L * Integral                                  #np.vectorize() -> geht sonst nicht mit x als Vektor
+        F_value = 1 / max(L) * Integral                                  #np.vectorize() -> geht sonst nicht mit x als Vektor
         return(F_value)
 
     def Neigung_x(x):
@@ -110,22 +111,20 @@ def Verformung(W: Welle):
     
 
 
-    Mb_x = np.fromfunction(np.vectorize(Biegung_x), (L, ))
-    phi_x = np.fromfunction(np.vectorize(Neigung_x), (L, ))
+    Mb_x = np.fromfunction(np.vectorize(Biegung_x), (max(L), ))
+    phi_x = np.fromfunction(np.vectorize(Neigung_x), (max(L), ))
 
-    Mb_y = np.fromfunction(np.vectorize(Biegung_y), (L, ))
-    phi_y = np.fromfunction(np.vectorize(Neigung_y), (L, ))    
-
-
+    Mb_y = np.fromfunction(np.vectorize(Biegung_y), (max(L), ))
+    phi_y = np.fromfunction(np.vectorize(Neigung_y), (max(L), ))    
 
     print(Biegung_x(200))
     return(Mb_x, phi_x, Biegung_x(200), Mb_y, phi_y, Biegung_y(200))
 
 
-def Diagramme(W: Welle, Mb_x, phi_x, f_Lager_x, Lager1_x, Lager2_x, Mb_y, phi_y, f_Lager_y):
+def Diagramme(Mb_x, phi_x, f_Lager_x, Lager1_x, Lager2_x, Mb_y, phi_y, f_Lager_y):
 
-    L = W.länge
-
+    
+    print("NICHT VERSCHOBEN")
     Mb_verschoben_x = Mb_x
     Mb_verschoben_y = Mb_y
 
@@ -144,8 +143,8 @@ def Diagramme(W: Welle, Mb_x, phi_x, f_Lager_x, Lager1_x, Lager2_x, Mb_y, phi_y,
     plt.legend()
     plt.title("Neigung")
 
-    sigma_x = np.fromfunction(np.vectorize(Spannungsverlauf_x), (L, ))
-    sigma_y = np.fromfunction(np.vectorize(Spannungsverlauf_y), (L, ))
+    sigma_x = np.fromfunction(np.vectorize(Spannungsverlauf_x), (max(L), ))
+    sigma_y = np.fromfunction(np.vectorize(Spannungsverlauf_y), (max(L), ))
 
     plt.subplot(2, 2, 3)
     plt.plot(sigma_x, label = "sigma_x")
@@ -158,6 +157,6 @@ def Diagramme(W: Welle, Mb_x, phi_x, f_Lager_x, Lager1_x, Lager2_x, Mb_y, phi_y,
 
     plt.show()
 
-Mb_x, phi_x, f_Lager_x, Mb_y, phi_y, f_Lager_y = Verformung(test)
+Mb_x, phi_x, f_Lager_x, Mb_y, phi_y, f_Lager_y = Verformung(L, 210000)
 
-Diagramme(test, Mb_x, phi_x, f_Lager_x, 0, test.länge, Mb_y, phi_y, f_Lager_y)
+Diagramme(Mb_x, phi_x, f_Lager_x, 0, 195, Mb_y, phi_y, f_Lager_y)
