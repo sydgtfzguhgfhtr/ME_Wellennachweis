@@ -276,8 +276,11 @@ class Welle:
         """Gibt das Widerstandsmoment gegen Biegung an der Stelle z in `mm^3` aus."""
         return np.pi/32 * self.d(z)**3
     
-    def Verformung(self,z):
-        pass
+    def Verformung_x(self,z):
+        """Berechnet die Verformung an der Stelle z in `mm`"""
+        def Ersatzstreckenlast_x(z_):
+            return (64*self.Mbx(z_))/(np.pi*self.d(z_))
+        return Ersatzstreckenlast_x(z)
 
     def Verformung_(self):
         def Ersatzstreckenlast_x(self, z):
@@ -315,35 +318,43 @@ if __name__ == "__main__":
     # welle.print_Lagerkräfte()
     # welle.plot()
 
-    lab2 = 290
-    lz21 = 95
-    lz22 = 115
-    düb = 75
-    z_ritzel = lab2-lz22
-    r_ritzel = 101.46/2
-    z_rad = lab2+lz21
-    r_rad = 454.94/2
+    # lab2 = 290
+    # lz21 = 95
+    # lz22 = 115
+    # düb = 75
+    # z_ritzel = lab2-lz22
+    # r_ritzel = 101.46/2
+    # z_rad = lab2+lz21
+    # r_rad = 454.94/2
 
-    test = Welle("Zwischenwelle",0,lab2)
-    test.set_geometrie([
-        [-30,düb*0.8],
-        [30,düb*0.8],
-        [30,düb],
-        [lab2-30,düb],
-        [lab2-30,düb*0.8],
-        [lab2+lz21-15,düb*0.8],
-        [lab2+lz21-15,düb*0.6],
-        [lab2+lz21+15,düb*0.6]
-    ])
+    # test = Welle("Zwischenwelle",0,lab2)
+    # test.set_geometrie([
+    #     [-30,düb*0.8],
+    #     [30,düb*0.8],
+    #     [30,düb],
+    #     [lab2-30,düb],
+    #     [lab2-30,düb*0.8],
+    #     [lab2+lz21-15,düb*0.8],
+    #     [lab2+lz21-15,düb*0.6],
+    #     [lab2+lz21+15,düb*0.6]
+    # ])
 
-    test.set_Kraft(2191,"axial",z_rad,r_rad,0)
-    test.set_Kraft(2332,"r",z_rad,r_rad,0) # Rad z12
-    test.set_Kraft(-6021,"t",z_rad,r_rad,0)
+    # test.set_Kraft(2191,"axial",z_rad,r_rad,0)
+    # test.set_Kraft(2332,"r",z_rad,r_rad,0) # Rad z12
+    # test.set_Kraft(-6021,"t",z_rad,r_rad,0)
 
-    test.set_Kraft(-7162,"a",z_ritzel,r_ritzel,0)
-    test.set_Kraft(10071,"r",z_ritzel,r_ritzel,0) # Ritzel z21
-    test.set_Kraft(26727,"t",z_ritzel,r_ritzel,0)
+    # test.set_Kraft(-7162,"a",z_ritzel,r_ritzel,0)
+    # test.set_Kraft(10071,"r",z_ritzel,r_ritzel,0) # Ritzel z21
+    # test.set_Kraft(26727,"t",z_ritzel,r_ritzel,0)
 
-    test.lagerkräfte_berechnen()
+    # test.lagerkräfte_berechnen()
 
-    test.plot()
+    
+
+    z = np.linspace(0,200)
+
+    print(test.Verformung_x(100))
+
+    test_y = tuple(map(test.Verformung_x,z))
+    plt.plot(z,test_y)
+    plt.show()
