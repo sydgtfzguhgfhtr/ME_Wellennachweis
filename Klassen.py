@@ -67,6 +67,8 @@ class Welle:
         self.z_range = None
         self.biegung_x = None
         self.biegung_y = None
+        self.neigung_x = None
+        self.neigung_y = None
 
     
     def set_Kraft(self,betrag,typ:str,z=0,r=0,phi=0):
@@ -336,8 +338,21 @@ class Welle:
                 integral += q_ers_y(s)*(z-s)*dz
             return 1/E*(F_ey*z-integral*1000)
         
+        def Neigung_x(z):
+            integral = 0
+            for s in z_range[z_range<z]:
+                integral += q_ers_x(s)*dz
+            return 1/E * (F_ex-integral*1000)
+        def Neigung_y(z):
+            integral = 0
+            for s in z_range[z_range<z]:
+                integral += q_ers_y(s)*dz
+            return 1/E * (F_ey-integral*1000)
+
         self.biegung_x = np.fromiter(map(Biegung_x,z_range),float)
         self.biegung_y = np.fromiter(map(Biegung_y,z_range),float)
+        self.neigung_x = np.fromiter(map(Neigung_x,z_range),float)
+        self.neigung_y = np.fromiter(map(Neigung_y,z_range),float)
 
     
     
@@ -373,10 +388,13 @@ if __name__ == "__main__":
     test.verformung_berechnen()
 
 
-    #test.plot()
-    plt.plot(test.z_range,test.biegung_x)
-    plt.plot(test.z_range,test.biegung_y)
-
+    test.plot()
+    # plt.plot(test.z_range,test.biegung_x)
+    # plt.plot(test.z_range,test.biegung_y)
+    plt.plot(test.z_range,test.neigung_x)
+    plt.plot(test.z_range,test.neigung_y)
+    plt.gca().invert_yaxis()
+    plt.show()
 
 
     # welle = Welle("Online Rechner",1,5)
