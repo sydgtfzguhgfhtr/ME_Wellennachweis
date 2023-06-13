@@ -49,6 +49,7 @@ Torsionswechselfestigkeit:      {self.tau_tW}
 class Welle:
     def __init__(self,name:str,festlager_z,loslager_z, werkstoff, Rz, Oberflächenverfestigung) -> None:
         self.name = str(name)
+        self.Emod = 210e3 # N/mm^2
         self.festlager_z = festlager_z
         self.loslager_z = loslager_z
         self.lagerabstand = abs(festlager_z-loslager_z)
@@ -283,9 +284,9 @@ class Welle:
         """Gibt das Widerstandsmoment gegen Biegung an der Stelle z in `mm^3` aus."""
         return np.pi/32 * self.d(z)**3
     
-    def Verformung_x(self,z,*schrittweite):
+    def Verformung(self,*schrittweite):
         """Berechnet die Verformungs- und Neigungsvektoren. Es kann optional die Schrittweite der Integration angegeben werden."""
-        E = 210e3 # N/mm^2
+        E = self.Emod
         if len(schrittweite)==0:
             dz = self.dz
         else:
@@ -354,7 +355,7 @@ if __name__ == "__main__":
     print(test.Verformung_x(190,1))
 
 
-    
+
     # welle = Welle("Online Rechner",1,5)
     # welle.set_geometrie(((0,1),(5,1)))
 
