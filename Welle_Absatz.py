@@ -23,6 +23,11 @@ class Welle_Absatz():
             self.b = b
             self.D = self.welle.d(self.z)
             self.t = (self.D-self.d)/2
+        if Art == "umlaufende Rechtecknut":
+            t, r, b = args
+            self.t = t
+            self.r = r
+            self.b = b
 
     def K1(self, B_oder_S):
         """Einflussfaktor K1
@@ -189,7 +194,7 @@ class Welle_Absatz():
         """
         Art = self.Art
         D = max(self.welle.d(self.z-1), self.welle.d(self.z+1))
-
+        d = self.welle.d(self.z)
         def Formzahl_Unterfunktion_Formel(A,B,C,z,d,D,r,t):
             a = 1+ 1/(np.sqrt(A*r/t+2*B*r/d*(1+2*r/d)**2+C*(r/t)**z*d/D))
             return a
@@ -261,9 +266,9 @@ class Welle_Absatz():
                 beta_sigma_dBK = beta_sigma_stern*1.08*(self.b/t)**(-0.2)
                 beta_tau_dBK = beta_tau_stern*1.08*(self.b/t)**(-0.2)
 
-            beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(self.d, 30, beta_sigma_dBK)
-            beta_zd = beta_zd_dBK*self.K3_dBK_durch_K3_D(self.d, 30, beta_zd_dBK)
-            beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(self.d, 30, beta_tau_dBK)
+            beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(30, beta_sigma_dBK)
+            beta_zd = beta_zd_dBK*self.K3_dBK_durch_K3_D(30, beta_zd_dBK)
+            beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(30, beta_tau_dBK)
         if Art == "Absatz" or Art == "umlaufende Rundnut":
             if Art == "Absatz":
                 t = self.t
@@ -646,10 +651,10 @@ test = Welle("Test", 0, 10, "34CrMo4", 5, "nein")
 test.set_geometrie(
     ((0, 25),
     (10,25),
-    (10,25),
-    (40,25))
+    (10,26),
+    (40,26))
 )
 #test.plot()
-Abschnitt = Welle_Absatz(test, 10, "umlaufende Rundnut", 2, 2, 2)
+Abschnitt = Welle_Absatz(test, 10, "Absatz", 3)
 
 print(Abschnitt.Sicherheiten(146.677, 183.346, 97.785, 100, 0, 100, 200))
