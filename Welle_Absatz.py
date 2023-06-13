@@ -1,11 +1,12 @@
 from Klassen import Welle, Werkstoff
+import math
 
 class Welle_Absatz():
     def __init__(self,welle:Welle,z):
         self.welle = welle
         self.z = z
         
-    def K1(self):
+    def K1(self, D, B_oder_S):
         """Einflussfaktor K1
 
         Args:
@@ -16,6 +17,7 @@ class Welle_Absatz():
         Returns:
             K_1 (float): Einflussfaktor K1
         """
+        D = max(self.welle.d(z), self.welle.d(z+3))
         w = Werkstoff.Werkstoffe[self.welle.werkstoff]
         if B_oder_S == "B":
             if w.art == "Nitrierstahl" or w.art == "Baustahl":
@@ -95,3 +97,17 @@ class Welle_Absatz():
             raise ValueError("bei K1 Werkstoff wurde nicht zugeordnet")
         return K_1
         
+    def Zugfestigkeit(self, D):
+        """Zugfestigkeit für Durchmesser
+
+        Args:
+            D (int): großer Durchmesser der Welle
+            werkstoff (str): Werkstoff der Welle
+        
+        Returns:
+            sigma_B: Zugfestigkeit für D
+        """
+        werkstoff = self.welle.werkstoff
+        sigma_B = int(Werkstoff.Werkstoffe[werkstoff].sigma_B)
+        K_1 = self.K1(D, "B", werkstoff)
+        return(sigma_B*K_1)
