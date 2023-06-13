@@ -279,7 +279,15 @@ class Welle:
         pass
 
     def Verformung_(self):
-        pass
+        def Ersatzstreckenlast_x(self, z):
+            q = (64*self.Mbx(z))/(np.pi*self.d(z))
+            return(q)
+        
+        def Ersatzstreckenlast_y(self, z):
+            q = (64*self.Mby(z))/(np.pi*self.d(z))
+            return(q)
+        
+        
     
     
     def print_Lagerkräfte(self):

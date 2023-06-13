@@ -57,7 +57,7 @@ def Verformung(f, D, L, E_Modul):
 
         x = np.linspace(0, max(L), num=NUM)
 
-        Integral = np.trapz(np.vectorize(Ersatzstreckenlast_mal_irgendwas)(x), x)       #np.trapz() -> Integrate along the given axis using the composite trapezoidal rule.
+        Integral = np.trapz(np.vectorize(Ersatzstreckenlast_mal_irgendwas))       #np.trapz() -> Integrate along the given axis using the composite trapezoidal rule.
         F_value = 1 / max(L) * Integral                                  #np.vectorize() -> geht sonst nicht mit x als Vektor
         return(F_value)
     
@@ -67,19 +67,19 @@ def Verformung(f, D, L, E_Modul):
 
         x = np.linspace(0, max(L), num=NUM)
 
-        Integral = np.trapz(np.vectorize(Ersatzstreckenlast_mal_irgendwas)(x), x)       #np.trapz() -> Integrate along the given axis using the composite trapezoidal rule.
+        Integral = np.trapz(np.vectorize(Ersatzstreckenlast_mal_irgendwas))       #np.trapz() -> Integrate along the given axis using the composite trapezoidal rule.
         F_value = 1 / max(L) * Integral                                  #np.vectorize() -> geht sonst nicht mit x als Vektor
         return(F_value)
 
     def Neigung_x(x):
         s = np.linspace(0, x, num = NUM)
-        Integral = np.trapz(np.vectorize(Ersatzstreckenlast_x)(s), s)
+        Integral = np.trapz(np.vectorize(Ersatzstreckenlast_x))
         phi = (1/E_Modul*(Ersatzlagerkraft_x(0)-Integral))*1000
         return(phi)
     
     def Neigung_y(x):
         s = np.linspace(0, x, num = NUM)
-        Integral = np.trapz(np.vectorize(Ersatzstreckenlast_y)(s), s)
+        Integral = np.trapz(np.vectorize(Ersatzstreckenlast_y))
         phi = (1/E_Modul*(Ersatzlagerkraft_y(0)-Integral))*1000
         return(phi)
 
@@ -87,7 +87,7 @@ def Verformung(f, D, L, E_Modul):
         def UNTER_BIEGUNG_FUNKTION(s):
             return(Ersatzstreckenlast_x(s)*(x-s))
         s = np.linspace(0, x, num = NUM)
-        Integral = np.trapz(np.vectorize(UNTER_BIEGUNG_FUNKTION)(s), s)   
+        Integral = np.trapz(np.vectorize(UNTER_BIEGUNG_FUNKTION))   
         f = (1/E_Modul*(Ersatzlagerkraft_x(0)*x-Integral))*1000000
         return(f)
     
@@ -95,7 +95,7 @@ def Verformung(f, D, L, E_Modul):
         def UNTER_BIEGUNG_FUNKTION(s):
             return(Ersatzstreckenlast_y(s)*(x-s))
         s = np.linspace(0, x, num = NUM)
-        Integral = np.trapz(np.vectorize(UNTER_BIEGUNG_FUNKTION)(s), s)   
+        Integral = np.trapz(np.vectorize(UNTER_BIEGUNG_FUNKTION))   
         f = (1/E_Modul*(Ersatzlagerkraft_y(0)*x-Integral))*1000000
         return(f)
     
