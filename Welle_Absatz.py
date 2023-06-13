@@ -349,7 +349,7 @@ class Welle_Absatz():
 
         return(K_F_sigma, K_F_tau)
 
-    def KV(self, Oberflächenverfestigung):
+    def KV(self):
         """Einflussfaktor KV
 
         Args:
@@ -367,6 +367,7 @@ class Welle_Absatz():
         D = self.welle.d(self.z)
         if Art == "umlaufende Rundnut" or Art == "Absatz":
             K_V = 1
+        Oberflächenverfestigung = self.welle.Oberflächenverfestigung
         match Oberflächenverfestigung:
             case "nein":
                 K_V = 1
@@ -555,7 +556,7 @@ class Welle_Absatz():
 
         return(sigma_mv, tau_mv)
 
-    def Mittelspannungsempfindlichkeit(self, D, tau_tWK, sigma_zd_bWK, werkstoff):
+    def Mittelspannungsempfindlichkeit(self):
         """Mittelspannungsempfindlichkeit
 
         Args:
@@ -568,14 +569,16 @@ class Welle_Absatz():
             Psi_zd_b_sigma (float): Mittelspannungsempfindlichkeit Biegung
             Psi_tauK (float): Mittelspannungsempfindlichkeit Torsion
         """
+        sigma_zd_bWK, tau_tWK = self.Bauteilwechselfestigkeiten()
+        D = max(self.welle.d(self.z-1), self.welle.d(self.z+1))
         sigma_B = int(Werkstoff.Werkstoffe[self.welle.werkstoff].sigma_B)
-        K_1 = self.K1(D, "B", werkstoff)
+        K_1 = self.K1(D, "B", self.welle.werkstoff)
         Psi_zd_b_sigma_K = (sigma_zd_bWK)/(2*K_1*sigma_B-sigma_zd_bWK)
         Psi_tauK = (tau_tWK)/(2*K_1*sigma_B-tau_tWK)
 
         return(Psi_zd_b_sigma_K, Psi_tauK)
 
-    def Gestaltfestigkeit(self, D, werkstoff, gamma_F_sigma, gamma_F_tau, sigma_mv, tau_mv, sigma_bWK, Psi_b_sigma_K, tau_tWK, Psi_tau_K):
+    def Gestaltfestigkeit(self,sigma_zdm, sigma_bm, tau_tm):
         """Gestaltfestigkeit
 
         Args:
@@ -594,6 +597,13 @@ class Welle_Absatz():
             sigma_bADK (float): Gestaltfestigkeit Biegung
             tau_tADK (float): Gestaltfestigkeit Torsion
         """
+        sigma_bWK, tau_tWK = self.Bauteilwechselfestigkeiten()
+        sigma_mv, tau_mv = self.Vergleichsmittelspannungen(sigma_zdm, sigma_bm, tau_tm)
+        beta_sigma, _, _ = self.Kerbwirkungszahl()
+        gamma_F_sigma, gamma_F_tau = self.Erhöhungsfaktor_der_Fließgrenze(beta_sigma)
+        Psi_b_sigma_K, Psi_tau_K = self.Mittelspannungsempfindlichkeit()
+        D = max(self.welle.d(self.z+1), self.welle.d(self.z-1))
+        werkstoff = self.welle.werkstoff
         K2F_sigma , K2F_tau = self.K2F()
         sigma_S = int(Werkstoff.Werkstoffe[self.welle.werkstoff].sigma_S)
         sigma_bFK = self.K1(D, "S", werkstoff)*K2F_sigma*gamma_F_sigma*sigma_S
@@ -613,7 +623,7 @@ class Welle_Absatz():
     def Spannungen(self, z):
         pass
 
-    def Sicherheiten(self, sigma_bmax, sigma_bFK, tau_tmax, tau_tFK, sigma_bq, sigma_bADK, tau_ta, tau_tADK):
+    def Sicherheiten(self, sigma_bmax, tau_tmax, sigma_bq, tau_ta, sigma_zdm, sigma_bm, tau_tm):
         """Sicherheiten
 
         Args:
@@ -626,6 +636,8 @@ class Welle_Absatz():
             tau_ta (float): Torsionsausschlagspannung
             tau_tADK (float): Dauerfestigkeit Torsion
         """
+        sigma_bADK, tau_tADK = self.Gestaltfestigkeit(sigma_zdm, sigma_bm, tau_tm)
+        sigma_bFK, tau_tFK = self.Bauteilfließgrenzen()
         S_F = 1/(np.sqrt((sigma_bmax/sigma_bFK)**2+(tau_tmax/tau_tFK)**2))
         S_D = 1/(np.sqrt((sigma_bq/sigma_bADK)**2+(tau_ta/tau_tADK)**2))
 
