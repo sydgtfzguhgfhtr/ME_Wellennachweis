@@ -62,9 +62,9 @@ class Welle:
         self.Oberflächenverfestigung = Oberflächenverfestigung
         self.belastungen = [(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0)]
         self.dz = dz # Schrittweite in Z in mm
-        self.minL = min(self.z_daten)
-        self.maxL = max(self.z_daten)
-        self.z_range = np.arange(self.minL,self.maxL,dz)
+        self.minL = None
+        self.maxL = None
+        self.z_range = None
         self.biegung_x = None
         self.biegung_y = None
 
@@ -118,7 +118,11 @@ class Welle:
         """
         self.geometrie = punkte
         self.z_daten,self.r_daten = zip(*self.geometrie) # Entpackt die Geometriedaten in Vektoren
-        self.länge = abs(max(self.z_daten)-min(self.z_daten))
+        self.minL = min(self.z_daten)
+        self.maxL = max(self.z_daten)
+        self.länge = abs(self.maxL-self.minL)
+        self.z_range = np.arange(self.minL,self.maxL,self.dz)
+
 
     def radius(self,z):
         """Gibt Radius der Welle an Stelle z aus. Alle Längen werden in `mm` angegeben"""
@@ -332,8 +336,8 @@ class Welle:
                 integral += q_ers_y(s)*(z-s)*dz
             return 1/E*(F_ey*z-integral*1000)
         
-        self.biegung_x = np.fromiter(map(Biegung_x,z_range))
-        self.biegung_y = np.fromiter(map(Biegung_y,z_range))
+        self.biegung_x = np.fromiter(map(Biegung_x,z_range),float)
+        self.biegung_y = np.fromiter(map(Biegung_y,z_range),float)
 
     
     
@@ -350,7 +354,7 @@ class Welle:
 
 if __name__ == "__main__":
     Werkstoff.aus_csv_laden()
-    test = Welle("Test", 0, 195,Werkstoff.Werkstoffe["S275N"], 2, "nein")
+    test = Welle("Test", 0, 195,Werkstoff.Werkstoffe["S275N"], 2, "nein",dz=1)
 
     test.set_geometrie(
         ((0,10),
@@ -370,7 +374,8 @@ if __name__ == "__main__":
 
 
     #test.plot()
-    print(test.Verformung_x(190,1))
+    plt.plot(test.z_range,test.biegung_x)
+    plt.plot(test.z_range,test.biegung_y)
 
 
 
@@ -416,22 +421,3 @@ if __name__ == "__main__":
     # test.set_Kraft(26727,"t",z_ritzel,r_ritzel,0)
 
     # test.lagerkräfte_berechnen()
-    Werkstoff.aus_csv_laden()
-    test = Welle("Test", 0, 195,Werkstoff.Werkstoffe["S275N"], 2, "nein")
-
-    test.set_geometrie(
-        ((0,10),
-        (40,10),
-        (40,20),
-        (80,20),
-        (80,27.5),
-        (160,27.5),
-        (160,15),
-        (195,15))
-    )
-    test.set_Kraft(3500, "r", 20, -test.d(20)/2)
-    test.set_Kraft(-4500, "r", 135, -test.d(135)/2, 0)
-
-    test.lagerkräfte_berechnen()
-    #test.plot()
-    print(test.Verformung(60,.1))
