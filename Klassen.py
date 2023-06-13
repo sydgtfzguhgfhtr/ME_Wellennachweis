@@ -57,6 +57,7 @@ class Welle:
         self.z_daten = []
         self.r_daten = []
         self.belastungen = [(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0)]
+        self.dz = 0.1 # Schrittweite in Z in mm
     
     def set_Kraft(self,betrag,typ:str,z=0,r=0,phi=0):
         """Legt eine Krafteinleitung an der Welle fest.
@@ -327,7 +328,7 @@ if __name__ == "__main__":
         [lab2+lz21+15,düb*0.6]
     ])
 
-    test.set_Kraft(2191,"a",z_rad,r_rad,0)
+    test.set_Kraft(2191,"axial",z_rad,r_rad,0)
     test.set_Kraft(2332,"r",z_rad,r_rad,0) # Rad z12
     test.set_Kraft(-6021,"t",z_rad,r_rad,0)
 
@@ -336,5 +337,5 @@ if __name__ == "__main__":
     test.set_Kraft(-26727,"t",z_ritzel,r_ritzel,0)
 
     test.lagerkräfte_berechnen()
-    print(test.z_Mbx_max())
+
     test.plot()
