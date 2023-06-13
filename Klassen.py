@@ -335,7 +335,7 @@ class Welle:
 
 if __name__ == "__main__":
     Werkstoff.aus_csv_laden()
-    test = Welle("Test", 0, 195,Werkstoff.Werkstoffe["S275N"])
+    test = Welle("Test", 0, 195,Werkstoff.Werkstoffe["S275N"], 2, "nein")
 
     test.set_geometrie(
         ((0,10),
@@ -352,7 +352,7 @@ if __name__ == "__main__":
 
     test.lagerkräfte_berechnen()
     #test.plot()
-    print(test.Verformung_x(190,1))
+    print(test.Verformung(190,1))
 
 
 
@@ -399,7 +399,7 @@ if __name__ == "__main__":
 
     # test.lagerkräfte_berechnen()
     Werkstoff.aus_csv_laden()
-    test = Welle("Test", 0, 195,Werkstoff.Werkstoffe["S275N"])
+    test = Welle("Test", 0, 195,Werkstoff.Werkstoffe["S275N"], 2, "nein")
 
     test.set_geometrie(
         ((0,10),
@@ -416,4 +416,4 @@ if __name__ == "__main__":
 
     test.lagerkräfte_berechnen()
     #test.plot()
-    print(test.Verformung_x(60,.1))
+    print(test.Verformung(60,.1))
