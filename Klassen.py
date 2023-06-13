@@ -47,7 +47,7 @@ Torsionswechselfestigkeit:      {self.tau_tW}
         return 1
 
 class Welle:
-    def __init__(self,name:str,festlager_z,loslager_z) -> None:
+    def __init__(self,name:str,festlager_z,loslager_z, werkstoff) -> None:
         self.name = str(name)
         self.festlager_z = festlager_z
         self.loslager_z = loslager_z
@@ -56,6 +56,7 @@ class Welle:
         self.geometrie = []
         self.z_daten = []
         self.r_daten = []
+        self.werkstoff = werkstoff
         self.belastungen = [(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0)]
         self.dz = 0.1 # Schrittweite in Z in mm
     
@@ -276,26 +277,11 @@ class Welle:
         """Gibt das Widerstandsmoment gegen Biegung an der Stelle z in `mm^3` aus."""
         return np.pi/32 * self.d(z)**3
     
-    def Verformung_x(self,z,*schrittweite):
+    def Verformung_x(self,z):
         """Berechnet die Verformung an der Stelle z in `mm`"""
-        if len(schrittweite)==0:
-            dz = self.dz
-        else:
-            dz = schrittweite[0]
-        minL = min(self.z_daten)
-        maxL = max(self.z_daten)
-        z_range = np.arange(minL,maxL,dz)
-
-        def q_ers(z_):
-            return (64*self.Mbx(z_))/(np.pi*self.d(z_)**4)
-        
-        def F_ers():
-            integral = 0
-            for z in z_range:
-                integral+=q_ers(z)*(maxL-z)
-            F_ers = 1/maxL * integral*dz
-            return F_ers*1000 # N/mm^2
-        return F_ers()
+        def Ersatzstreckenlast_x(z_):
+            return (64*self.Mbx(z_))/(np.pi*self.d(z_))
+        return Ersatzstreckenlast_x(z)
 
     def Verformung_(self):
         def Ersatzstreckenlast_x(z):
