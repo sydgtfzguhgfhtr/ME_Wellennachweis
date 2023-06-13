@@ -334,7 +334,7 @@ if __name__ == "__main__":
 
     test.set_Kraft(-7162,"a",z_ritzel,r_ritzel,0)
     test.set_Kraft(10071,"r",z_ritzel,r_ritzel,0) # Ritzel z21
-    test.set_Kraft(-26727,"t",z_ritzel,r_ritzel,0)
+    test.set_Kraft(26727,"t",z_ritzel,r_ritzel,0)
 
     test.lagerkräfte_berechnen()
 
