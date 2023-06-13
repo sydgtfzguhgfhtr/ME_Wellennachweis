@@ -47,7 +47,7 @@ Torsionswechselfestigkeit:      {self.tau_tW}
         return 1
 
 class Welle:
-    def __init__(self,name:str,festlager_z,loslager_z, werkstoff, Rz, Oberflächenverfestigung) -> None:
+    def __init__(self,name:str,festlager_z:int,loslager_z:int, werkstoff:Werkstoff, Rz, Oberflächenverfestigung,dz=0.1) -> None:
         self.name = str(name)
         self.Emod = 210e3 # N/mm^2
         self.festlager_z = festlager_z
@@ -61,10 +61,12 @@ class Welle:
         self.Rz = Rz
         self.Oberflächenverfestigung = Oberflächenverfestigung
         self.belastungen = [(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0)]
-        self.dz = 0.1 # Schrittweite in Z in mm
-
-        # Zwischenspeicher
-        self.__F_ers = None
+        self.dz = dz # Schrittweite in Z in mm
+        self.minL = None
+        self.maxL = None
+        self.z_range = None
+        self.biegung_x = None
+        self.biegung_y = None
 
     
     def set_Kraft(self,betrag,typ:str,z=0,r=0,phi=0):
@@ -116,7 +118,11 @@ class Welle:
         """
         self.geometrie = punkte
         self.z_daten,self.r_daten = zip(*self.geometrie) # Entpackt die Geometriedaten in Vektoren
-        self.länge = abs(max(self.z_daten)-min(self.z_daten))
+        self.minL = min(self.z_daten)
+        self.maxL = max(self.z_daten)
+        self.länge = abs(self.maxL-self.minL)
+        self.z_range = np.arange(self.minL,self.maxL,self.dz)
+
 
     def radius(self,z):
         """Gibt Radius der Welle an Stelle z aus. Alle Längen werden in `mm` angegeben"""
@@ -284,42 +290,55 @@ class Welle:
         """Gibt das Widerstandsmoment gegen Biegung an der Stelle z in `mm^3` aus."""
         return np.pi/32 * self.d(z)**3
     
-    def Verformung(self,*schrittweite):
+    def verformung_berechnen(self,*schrittweite):
         """Berechnet die Verformungs- und Neigungsvektoren. Es kann optional die Schrittweite der Integration angegeben werden."""
         E = self.Emod
         if len(schrittweite)==0:
             dz = self.dz
         else:
             dz = schrittweite[0]
-        minL = min(self.z_daten)
-        maxL = max(self.z_daten)
-        z_range = np.arange(minL,maxL,dz)
 
-        def q_ers(z):
+        z_range = self.z_range
+        minL = self.minL
+        maxL = self.maxL
+
+        def q_ers_x(z):
             return (64*self.Mbx(z))/(np.pi*self.d(z)**4)
+        def q_ers_y(z):
+            return (64*self.Mby(z))/(np.pi*self.d(z)**4)
         
-        def F_ers():
+        def F_ers_x():
             integral = 0
             for z in z_range:
-                integral+=q_ers(z)*(maxL-z)
+                integral+=q_ers_x(z)*(maxL-z)
+            F_ers = 1/maxL * integral*dz
+            return (F_ers)*1000 # N/mm^2
+        def F_ers_y():
+            integral = 0
+            for z in z_range:
+                integral+=q_ers_y(z)*(maxL-z)
             F_ers = 1/maxL * integral*dz
             return (F_ers)*1000 # N/mm^2
         
-        if self.__F_ers is None:
-            self.__F_ers = F_ers()
-        F_e = self.__F_ers
+        # Ersatzlagerkräfte
+        F_ex = F_ers_x()
+        F_ey = F_ers_y()
 
         # Biegung
-        def Biegung(z):
+        def Biegung_x(z):
             integral = 0
             for s in z_range[z_range<=z]:
-                integral += q_ers(s)*(z-s)*dz
-            return 1/E*(F_e*z-integral*1000)
-        plt.plot(z_range,tuple(map(Biegung,z_range)))
-        plt.gca().invert_yaxis()
-        plt.grid()
-        plt.show()
-        return Biegung(z)
+                integral += q_ers_x(s)*(z-s)*dz
+            return 1/E*(F_ex*z-integral*1000)
+        def Biegung_y(z):
+            integral = 0
+            for s in z_range[z_range<=z]:
+                integral += q_ers_y(s)*(z-s)*dz
+            return 1/E*(F_ey*z-integral*1000)
+        
+        self.biegung_x = np.fromiter(map(Biegung_x,z_range),float)
+        self.biegung_y = np.fromiter(map(Biegung_y,z_range),float)
+
     
     
     def print_Lagerkräfte(self):
@@ -335,7 +354,7 @@ class Welle:
 
 if __name__ == "__main__":
     Werkstoff.aus_csv_laden()
-    test = Welle("Test", 0, 195,Werkstoff.Werkstoffe["S275N"], 2, "nein")
+    test = Welle("Test", 0, 195,Werkstoff.Werkstoffe["S275N"], 2, "nein",dz=1)
 
     test.set_geometrie(
         ((0,10),
@@ -351,8 +370,12 @@ if __name__ == "__main__":
     test.set_Kraft(-4500, "r", 135, -test.d(135)/2, 0)
 
     test.lagerkräfte_berechnen()
+    test.verformung_berechnen()
+
+
     #test.plot()
-    print(test.Verformung(190,1))
+    plt.plot(test.z_range,test.biegung_x)
+    plt.plot(test.z_range,test.biegung_y)
 
 
 
@@ -398,22 +421,3 @@ if __name__ == "__main__":
     # test.set_Kraft(26727,"t",z_ritzel,r_ritzel,0)
 
     # test.lagerkräfte_berechnen()
-    Werkstoff.aus_csv_laden()
-    test = Welle("Test", 0, 195,Werkstoff.Werkstoffe["S275N"], 2, "nein")
-
-    test.set_geometrie(
-        ((0,10),
-        (40,10),
-        (40,20),
-        (80,20),
-        (80,27.5),
-        (160,27.5),
-        (160,15),
-        (195,15))
-    )
-    test.set_Kraft(3500, "r", 20, -test.d(20)/2)
-    test.set_Kraft(-4500, "r", 135, -test.d(135)/2, 0)
-
-    test.lagerkräfte_berechnen()
-    #test.plot()
-    print(test.Verformung(60,.1))
