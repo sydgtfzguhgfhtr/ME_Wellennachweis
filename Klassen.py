@@ -354,7 +354,14 @@ class Welle:
         self.neigung_x = np.fromiter(map(Neigung_x,z_range),float)
         self.neigung_y = np.fromiter(map(Neigung_y,z_range),float)
 
-    
+    def Spannungen(self, z):
+        """Spannungen
+        Gibt Biegepannung in x, y und Torsionsspannung an z aus 
+        """
+        sigma_x = self.Mbx(z)*1000/self.Wb(z)
+        sigma_y = self.Mby(z)*1000/self.Wb(z)
+        tau = self.Mt(z)*1000/(np.pi/16 * self.d(z)**4)
+        return(sigma_x, sigma_y, tau)
     
     def print_Lagerkräfte(self):
         print("\n")
