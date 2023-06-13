@@ -280,16 +280,25 @@ class Welle:
         pass
 
     def Verformung_(self):
-        def Ersatzstreckenlast_x(self, z):
-            q = (64*self.Mbx(z))/(np.pi*self.d(z))
+        def Ersatzstreckenlast_x(z):
+            qz = 64*self.Mbx(z)
+            qn = np.pi*self.d(z)
+            q = qz/qn
             return(q)
         
-        def Ersatzstreckenlast_y(self, z):
+        def Ersatzstreckenlast_y(z):
             q = (64*self.Mby(z))/(np.pi*self.d(z))
             return(q)
-        
-        
-    
+
+        print(Ersatzstreckenlast_x(100))
+
+        n = []
+
+        for i in range(195):
+            n.append(Ersatzstreckenlast_x(i))
+
+        return(n)
+  
     
     def print_Lagerkräfte(self):
         print("\n")
@@ -345,5 +354,6 @@ if __name__ == "__main__":
     test.set_Kraft(-26727,"t",z_ritzel,r_ritzel,0)
 
     test.lagerkräfte_berechnen()
+    test.Verformung_()
 
     test.plot()
