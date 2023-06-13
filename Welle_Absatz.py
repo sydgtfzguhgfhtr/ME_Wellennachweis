@@ -367,6 +367,7 @@ class Welle_Absatz():
         D = self.welle.d(self.z)
         if Art == "umlaufende Rundnut" or Art == "Absatz":
             K_V = 1
+        Oberflächenverfestigung = self.welle.Oberflächenverfestigung
         match Oberflächenverfestigung:
             case "nein":
                 K_V = 1
