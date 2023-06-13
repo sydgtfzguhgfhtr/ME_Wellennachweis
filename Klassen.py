@@ -277,29 +277,26 @@ class Welle:
         """Gibt das Widerstandsmoment gegen Biegung an der Stelle z in `mm^3` aus."""
         return np.pi/32 * self.d(z)**3
     
-    def Verformung(self,z):
-        pass
+    def Verformung_x(self,z,*schrittweite):
+        """Berechnet die Verformung an der Stelle z in `mm`"""
+        if len(schrittweite)==0:
+            dz = self.dz
+        else:
+            dz = schrittweite[0]
+        minL = min(self.z_daten)
+        maxL = max(self.z_daten)
+        z_range = np.arange(minL,maxL,dz)
 
-    def Verformung_(self):
-        def Ersatzstreckenlast_x(z):
-            qz = 64*self.Mbx(z)
-            qn = np.pi*self.d(z)
-            q = qz/qn
-            return(q)
+        def q_ers(z_):
+            return (64*self.Mbx(z_))/(np.pi*self.d(z_)**4)
         
-        def Ersatzstreckenlast_y(z):
-            q = (64*self.Mby(z))/(np.pi*self.d(z))
-            return(q)
-
-        print(Ersatzstreckenlast_x(100))
-
-        n = []
-
-        for i in range(195):
-            n.append(Ersatzstreckenlast_x(i))
-
-        return(n)
-  
+        def F_ers():
+            integral = 0
+            for z in z_range:
+                integral+=q_ers(z)*(maxL-z)
+            F_ers = 1/maxL * integral*dz
+            return F_ers*1000 # N/mm^2
+        return F_ers()
     
     def print_Lagerkräfte(self):
         print("\n")
@@ -356,12 +353,20 @@ if __name__ == "__main__":
 
     # test.lagerkräfte_berechnen()
 
-    
+    test = Welle("Test", 0, 195)
 
-    z = np.linspace(0,200)
+    test.set_geometrie(
+        ((0,10),
+        (40,10),
+        (40,20),
+        (80,20),
+        (80,27.5),
+        (160,27.5),
+        (160,15),
+        (195,15))
+    )
+    test.set_Kraft(3500, "r", 20, -test.d(20)/2)
+    test.set_Kraft(-4500, "r", 135, -test.d(135)/2, 0)
 
     test.lagerkräfte_berechnen()
-
-    test_y = tuple(map(test.Verformung_x,z))
-    plt.plot(z,test_y)
-    plt.show()
+    print(test.Verformung_x(0,0.1))
