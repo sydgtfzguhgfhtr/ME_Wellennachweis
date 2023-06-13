@@ -266,7 +266,7 @@ class Welle:
         result = 0
         for kraft in self.belastungen:
             _,z_kraft,r,phi,fx,fy,fz = kraft
-            if z_kraft<z:
+            if z_kraft<=z:
                 result += -1*fx*r*np.cos(phi)
                 result += -1*fy*r*np.sin(phi)
         return round(result/1000,10)
@@ -274,6 +274,13 @@ class Welle:
     def Wb(self,z):
         """Gibt das Widerstandsmoment gegen Biegung an der Stelle z in `mm^3` aus."""
         return np.pi/32 * self.d(z)**3
+    
+    def Verformung(self,z):
+        pass
+
+    def Verformung_(self):
+        pass
+    
     
     def print_Lagerkräfte(self):
         print("\n")
@@ -329,4 +336,5 @@ if __name__ == "__main__":
     test.set_Kraft(-26727,"t",z_ritzel,r_ritzel,0)
 
     test.lagerkräfte_berechnen()
+    print(test.z_Mbx_max())
     test.plot()
