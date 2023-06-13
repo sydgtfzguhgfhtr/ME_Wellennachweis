@@ -282,7 +282,7 @@ class Welle:
         return np.pi/32 * self.d(z)**3
     
     def Verformung_x(self,z,*schrittweite):
-        """Berechnet die Verformung an der Stelle z in `mm`"""
+        """Berechnet die Verformungs- und Neigungsvektoren. Es kann optional die Schrittweite der Integration angegeben werden."""
         E = 210e3 # N/mm^2
         if len(schrittweite)==0:
             dz = self.dz
@@ -292,8 +292,8 @@ class Welle:
         maxL = max(self.z_daten)
         z_range = np.arange(minL,maxL,dz)
 
-        def q_ers(z_):
-            return (64*self.Mbx(z_))/(np.pi*self.d(z_)**4)
+        def q_ers(z):
+            return (64*self.Mbx(z))/(np.pi*self.d(z)**4)
         
         def F_ers():
             integral = 0
@@ -304,15 +304,19 @@ class Welle:
         
         if self.__F_ers is None:
             self.__F_ers = F_ers()
+        F_e = self.__F_ers
 
         # Biegung
         def Biegung(z):
             integral = 0
-            for s in z_range[z_range<z]:
-                integral+=q_ers(s)*(z-s)*dz
-            return 1/E*(self.__F_ers*z-integral)
+            for s in z_range[z_range<=z]:
+                integral += q_ers(s)*(z-s)*dz
+            return 1/E*(F_e*z-integral*1000)
         plt.plot(z_range,tuple(map(Biegung,z_range)))
+        plt.gca().invert_yaxis()
+        plt.grid()
         plt.show()
+        return Biegung(z)
     
     
     def print_Lagerkräfte(self):
@@ -327,6 +331,28 @@ class Welle:
             print("-"*48)
 
 if __name__ == "__main__":
+    Werkstoff.aus_csv_laden()
+    test = Welle("Test", 0, 195,Werkstoff.Werkstoffe["S275N"])
+
+    test.set_geometrie(
+        ((0,10),
+        (40,10),
+        (40,20),
+        (80,20),
+        (80,27.5),
+        (160,27.5),
+        (160,15),
+        (195,15))
+    )
+    test.set_Kraft(3500, "r", 20, -test.d(20)/2)
+    test.set_Kraft(-4500, "r", 135, -test.d(135)/2, 0)
+
+    test.lagerkräfte_berechnen()
+    #test.plot()
+    print(test.Verformung_x(190,1))
+
+
+    
     # welle = Welle("Online Rechner",1,5)
     # welle.set_geometrie(((0,1),(5,1)))
 
@@ -369,22 +395,3 @@ if __name__ == "__main__":
     # test.set_Kraft(26727,"t",z_ritzel,r_ritzel,0)
 
     # test.lagerkräfte_berechnen()
-    Werkstoff.aus_csv_laden()
-    test = Welle("Test", 0, 195,Werkstoff.Werkstoffe["S275N"])
-
-    test.set_geometrie(
-        ((0,10),
-        (40,10),
-        (40,20),
-        (80,20),
-        (80,27.5),
-        (160,27.5),
-        (160,15),
-        (195,15))
-    )
-    test.set_Kraft(3500, "r", 20, -test.d(20)/2)
-    test.set_Kraft(-4500, "r", 135, -test.d(135)/2, 0)
-
-    test.lagerkräfte_berechnen()
-    #test.plot()
-    print(test.Verformung_x(60,.1))
