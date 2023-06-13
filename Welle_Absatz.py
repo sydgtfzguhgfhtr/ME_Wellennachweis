@@ -2,6 +2,9 @@ from Klassen import Welle, Werkstoff
 import numpy as np
 import math
 
+Werkstoff.aus_csv_laden()
+
+
 class Welle_Absatz():
     def __init__(self,welle:Welle,z, Art, *args):
         self.welle = welle
@@ -10,7 +13,7 @@ class Welle_Absatz():
         if self.Art == "Absatz":
             self.D = max(self.welle.d(self.z-1), self.welle.d(self.z+1))
             self.d = min(self.welle.d(self.z-1), self.welle.d(self.z+1))
-            r = args
+            r = args[0]
             self.r = r
             self.t = (self.D-self.d)/2
         if Art == "umlaufende Rundnut":
@@ -20,6 +23,7 @@ class Welle_Absatz():
             self.b = b
             self.D = self.welle.d(self.z)
             self.t = (self.D-self.d)/2
+
         
 
 
@@ -124,9 +128,8 @@ class Welle_Absatz():
         Returns:
             sigma_B: Zugfestigkeit für D
         """
-        D = max(self.welle.d(self.z-1), self.welle.d(self.z+1))
         sigma_B = int(Werkstoff.Werkstoffe[self.welle.werkstoff].sigma_B)
-        K_1 = self.K1(D, "B", self.welle.werkstoff)
+        K_1 = self.K1("B")
         return(sigma_B*K_1)
     
     def Streckgrenze(self):
@@ -140,7 +143,7 @@ class Welle_Absatz():
         """
         D = max(self.welle.d(self.z-1), self.welle.d(self.z+1))
         sigma_S = int(Werkstoff.Werkstoffe[self.welle.werkstoff].sigma_S)
-        K_1 = self.K1(D, "S", self.welle.werkstoff)
+        K_1 = self.K1("S")
         return(sigma_S*K_1)
 
     def K3_dBK_durch_K3_D(self, dBK, alpha_dBK_beta_dBK):
@@ -194,57 +197,55 @@ class Welle_Absatz():
             a = 1+ 1/(np.sqrt(A*r/t+2*B*r/d*(1+2*r/d)**2+C*(r/t)**z*d/D))
             return a
         
-        sigma_B_d = self.Zugfestigkeit(D, self.welle.werkstoff)
+        sigma_B_d = self.Zugfestigkeit()
         if Art == "eine Passfeder":
             beta_sigma_dBK = 3*(sigma_B_d/1000)**0.38
-            print(beta_sigma_dBK)
             beta_tau_dBK = 0.56*beta_sigma_dBK+0.1
             beta_zd = 1
-            beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
-            beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
+            beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(40, beta_sigma_dBK)
+            beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(40, beta_sigma_dBK)
         elif Art == "zwei Passfedern":
             beta_sigma_dBK = 3*(sigma_B_d/1000)**0.38
-            print(beta_sigma_dBK)
+
             beta_tau_dBK = 0.56*beta_sigma_dBK+0.1
             beta_zd = 1
-            beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
-            beta_sigma = 1.15*beta_sigma*self.K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
+            beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(40, beta_sigma_dBK)
+            beta_sigma = 1.15*beta_sigma*self.K3_dBK_durch_K3_D(40, beta_sigma_dBK)
             beta_tau = beta_tau_dBK
         elif Art == "Pressverbindung":
             beta_sigma_dBK = 2.7*(sigma_B_d/1000)**0.43
-            print(beta_sigma_dBK)
             beta_tau_dBK = 0.65*beta_sigma_dBK+0.1
             beta_zd = 1
-            beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
-            beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(D, 40, beta_sigma_dBK)
+            beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(40, beta_sigma_dBK)
+            beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(40, beta_sigma_dBK)
         elif Art == "Keilwelle":
             beta_tau_dBK_stern = math.e**(4.2*10**(-7)*sigma_B_d**2)
             beta_tau_dBK = beta_tau_dBK_stern
             beta_sigma_dBK = 1+0.45*(beta_tau_dBK_stern-1)
             beta_zd = 1
-            beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
-            beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
+            beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(29, beta_sigma_dBK)
+            beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(29, beta_sigma_dBK)
         elif Art == "Kerbzahnwelle":
             beta_tau_dBK_stern = math.e**(4.2*10**(-7)*sigma_B_d**2)
             beta_tau_dBK = beta_tau_dBK_stern
             beta_sigma_dBK = 1+0.65*(beta_tau_dBK_stern-1)
             beta_zd = 1
-            beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
-            beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
+            beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(29, beta_sigma_dBK)
+            beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(29, beta_sigma_dBK)
         elif Art == "Zahnwelle":
             beta_tau_dBK_stern = math.e**(4.2*10**(-7)*sigma_B_d**2)
             beta_tau_dBK = 1+0.75*(beta_tau_dBK_stern-1)
             beta_sigma_dBK = 1+0.49*(beta_tau_dBK_stern-1)
             beta_zd = 1
-            beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
-            beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(D, 29, beta_sigma_dBK)
+            beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(29, beta_sigma_dBK)
+            beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(29, beta_sigma_dBK)
         elif Art == "umlaufende Spitzkerbe":
                 beta_zd_dBK = 0.109*sigma_B_d
                 beta_sigma_dBK = 0.0923*sigma_B_d
                 beta_tau_dBK = 0.8*beta_sigma_dBK
-                beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(D, 15, beta_sigma_dBK)
-                beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(D, 15, beta_sigma_dBK)
-                beta_zd = beta_zd_dBK*self.K3_dBK_durch_K3_D(D, 159, beta_sigma_dBK)
+                beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(15, beta_sigma_dBK)
+                beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(15, beta_sigma_dBK)
+                beta_zd = beta_zd_dBK*self.K3_dBK_durch_K3_D(159, beta_sigma_dBK)
         if Art == "umlaufende Rechtecknut":
             sigma_S = int(Werkstoff.Werkstoffe[self.welle.werkstoff].sigma_S)
             t = self.t
@@ -269,6 +270,7 @@ class Welle_Absatz():
         if Art == "Absatz" or Art == "umlaufende Rundnut":
             if Art == "Absatz":
                 t = self.t
+                print(self.r)
                 alpha_zd = Formzahl_Unterfunktion_Formel(0.62,3.5,0,0,self.d,D,self.r,t)
                 alpha_b = Formzahl_Unterfunktion_Formel(0.62,5.8,0.2,3,self.d,D,self.r,t)
                 alpha_t = Formzahl_Unterfunktion_Formel(3.4,19,1,2,self.d,D,self.r,t)
@@ -277,7 +279,7 @@ class Welle_Absatz():
                 alpha_zd = Formzahl_Unterfunktion_Formel(0.22,1.37,0,0,self.d,D,self.r,t)
                 alpha_b = Formzahl_Unterfunktion_Formel(0.2,2.75,0,0,self.d,D,self.r,t)
                 alpha_t = Formzahl_Unterfunktion_Formel(0.7,10.3,0,0,self.d,D,self.r,t)
-                sigma_S = self.Streckgrenze(D, self.welle.werkstoff)
+                sigma_S = self.Streckgrenze()
 
             if ((D-self.d)/self.d <= 0.5):
                 phi = 1/(np.sqrt(8*(D-self.d)/self.r)+2)
@@ -290,7 +292,7 @@ class Welle_Absatz():
                 G_s_tau = 1.15/self.r
             elif Art == "umlaufende Rundnut":
                 G_s_zd = 2/self.r*(1+phi)
-                G_s_sigam = G_s_zd
+                G_s_sigma = G_s_zd
                 G_s_tau = 1/self.r
 
             w = Werkstoff.Werkstoffe[self.welle.werkstoff]
@@ -343,7 +345,7 @@ class Welle_Absatz():
         Rz = self.welle.Rz
         werkstoff = self.welle.werkstoff
         D = self.welle.d(self.z)
-        sigma_B = self.Zugfestigkeit(D, werkstoff)
+        sigma_B = self.Zugfestigkeit()
         K_F_sigma = 1-0.22*math.log10(Rz)*(math.log10(sigma_B/20)-1)
         K_F_tau = 0.575*K_F_sigma+0.425
 
@@ -439,7 +441,7 @@ class Welle_Absatz():
         D = max(self.welle.d(self.z-1), self.welle.d(self.z+1))
 
         K_2 = self.K2()
-        K_V = self.KV(self.Oberflächenverfetigung)
+        K_V = self.KV()
         (K_F_sigma, K_F_tau) = self.KF()
         K_sigma = ((beta_sigma/K_2)+(1/K_F_sigma)-1)*(1/K_V)
         K_tau = ((beta_tau/K_2)+(1/K_F_tau)-1)*(1/K_V)
@@ -464,7 +466,7 @@ class Welle_Absatz():
         K_sigma, K_tau = self.Gesamtgrößeneinflussfaktor()
         D = max(self.welle.d(self.z+1), self.welle.d(self.z-1))
         werkstoff = self.welle.werkstoff
-        K_1 = self.K1(D, "B", werkstoff)
+        K_1 = self.K1("B")
         sigma_bW = Werkstoff.Werkstoffe[werkstoff].sigma_bW
         tau_tW = Werkstoff.Werkstoffe[werkstoff].tau_tW
         sigma_bWK = (K_1*sigma_bW)/K_sigma
@@ -521,7 +523,7 @@ class Welle_Absatz():
             D (int): Wellendurchmesser
             werkstoff (str): Werkstoff der Welle
         """
-        beta_sigma, _ = self.Kerbwirkungszahl()
+        beta_sigma, _ , _ = self.Kerbwirkungszahl()
         K_2F_sigma, K_2F_tau = self.K2F()
         gamma_sigma, gamma_tau = self.Erhöhungsfaktor_der_Fließgrenze(beta_sigma)
         K_1 = self.K1("S")
@@ -572,7 +574,7 @@ class Welle_Absatz():
         sigma_zd_bWK, tau_tWK = self.Bauteilwechselfestigkeiten()
         D = max(self.welle.d(self.z-1), self.welle.d(self.z+1))
         sigma_B = int(Werkstoff.Werkstoffe[self.welle.werkstoff].sigma_B)
-        K_1 = self.K1(D, "B", self.welle.werkstoff)
+        K_1 = self.K1("B")
         Psi_zd_b_sigma_K = (sigma_zd_bWK)/(2*K_1*sigma_B-sigma_zd_bWK)
         Psi_tauK = (tau_tWK)/(2*K_1*sigma_B-tau_tWK)
 
@@ -606,8 +608,8 @@ class Welle_Absatz():
         werkstoff = self.welle.werkstoff
         K2F_sigma , K2F_tau = self.K2F()
         sigma_S = int(Werkstoff.Werkstoffe[self.welle.werkstoff].sigma_S)
-        sigma_bFK = self.K1(D, "S", werkstoff)*K2F_sigma*gamma_F_sigma*sigma_S
-        tau_tFK = self.K1(D, "S", werkstoff)*K2F_tau*gamma_F_tau*(sigma_S/np.sqrt(3))
+        sigma_bFK = self.K1("S", )*K2F_sigma*gamma_F_sigma*sigma_S
+        tau_tFK = self.K1("S")*K2F_tau*gamma_F_tau*(sigma_S/np.sqrt(3))
 
         if sigma_mv <= (sigma_bFK-sigma_bWK)/(1-Psi_b_sigma_K) and tau_mv <= (tau_tFK-tau_tWK)/(1-Psi_tau_K):
             sigma_bADK = sigma_bWK-Psi_b_sigma_K*sigma_mv
@@ -642,3 +644,15 @@ class Welle_Absatz():
         S_D = 1/(np.sqrt((sigma_bq/sigma_bADK)**2+(tau_ta/tau_tADK)**2))
 
         return(S_F, S_D)
+    
+test = Welle("Test", 0, 10, "34CrMo4", 5, "nein")
+test.set_geometrie(
+    ((0, 25),
+    (10,25),
+    (10,25),
+    (40,25))
+)
+#test.plot()
+Abschnitt = Welle_Absatz(test, 10, "umlaufende Rundnut", 2, 2, 2)
+
+print(Abschnitt.Sicherheiten(146.677, 183.346, 97.785, 100, 0, 100, 200))
