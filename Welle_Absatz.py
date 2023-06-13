@@ -24,9 +24,6 @@ class Welle_Absatz():
             self.D = self.welle.d(self.z)
             self.t = (self.D-self.d)/2
 
-        
-
-
     def K1(self, B_oder_S):
         """Einflussfaktor K1
 
