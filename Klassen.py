@@ -59,6 +59,10 @@ class Welle:
         self.werkstoff = werkstoff
         self.belastungen = [(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0)]
         self.dz = 0.1 # Schrittweite in Z in mm
+
+        # Zwischenspeicher
+        self.__F_ers = None
+
     
     def set_Kraft(self,betrag,typ:str,z=0,r=0,phi=0):
         """Legt eine Krafteinleitung an der Welle fest.
@@ -131,7 +135,7 @@ class Welle:
     def durchmesser(self,z):
         """Gibt Durchmesser der Welle an Stelle z aus. Alle Längen werden in `mm` angegeben"""
         return self.d(z)
-    def plot(self,kräfte=True,biegemomente=True):
+    def plot(self,kräfte=True):
         """Stellt die Welle dar."""
         _,z_kräfte,_,_,_,_,_=zip(*self.belastungen)
         max_z_k = max(z_kräfte)
@@ -279,6 +283,7 @@ class Welle:
     
     def Verformung_x(self,z,*schrittweite):
         """Berechnet die Verformung an der Stelle z in `mm`"""
+        E = 210e3 # N/mm^2
         if len(schrittweite)==0:
             dz = self.dz
         else:
@@ -295,8 +300,20 @@ class Welle:
             for z in z_range:
                 integral+=q_ers(z)*(maxL-z)
             F_ers = 1/maxL * integral*dz
-            return F_ers*1000 # N/mm^2
-        return F_ers()
+            return (F_ers)*1000 # N/mm^2
+        
+        if self.__F_ers is None:
+            self.__F_ers = F_ers()
+
+        # Biegung
+        def Biegung(z):
+            integral = 0
+            for s in z_range[z_range<z]:
+                integral+=q_ers(s)*(z-s)*dz
+            return 1/E*(self.__F_ers*z-integral)
+        plt.plot(z_range,tuple(map(Biegung,z_range)))
+        plt.show()
+    
     
     def print_Lagerkräfte(self):
         print("\n")
@@ -352,8 +369,8 @@ if __name__ == "__main__":
     # test.set_Kraft(26727,"t",z_ritzel,r_ritzel,0)
 
     # test.lagerkräfte_berechnen()
-
-    test = Welle("Test", 0, 195)
+    Werkstoff.aus_csv_laden()
+    test = Welle("Test", 0, 195,Werkstoff.Werkstoffe["S275N"])
 
     test.set_geometrie(
         ((0,10),
@@ -369,4 +386,5 @@ if __name__ == "__main__":
     test.set_Kraft(-4500, "r", 135, -test.d(135)/2, 0)
 
     test.lagerkräfte_berechnen()
-    print(test.Verformung_x(0,0.1))
+    #test.plot()
+    print(test.Verformung_x(60,.1))
