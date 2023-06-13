@@ -47,7 +47,7 @@ Torsionswechselfestigkeit:      {self.tau_tW}
         return 1
 
 class Welle:
-    def __init__(self,name:str,festlager_z,loslager_z, werkstoff) -> None:
+    def __init__(self,name:str,festlager_z,loslager_z, werkstoff, Rz, Oberflächenverfestigung) -> None:
         self.name = str(name)
         self.festlager_z = festlager_z
         self.loslager_z = loslager_z
@@ -57,6 +57,8 @@ class Welle:
         self.z_daten = []
         self.r_daten = []
         self.werkstoff = werkstoff
+        self.Rz = Rz
+        self.Oberflächenverfestigung = Oberflächenverfestigung
         self.belastungen = [(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0)]
         self.dz = 0.1 # Schrittweite in Z in mm
 
