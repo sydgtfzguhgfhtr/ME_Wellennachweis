@@ -74,6 +74,11 @@ class Welle:
         self.neigung_y = None
         self.F_ersx = None # Ersatzlagerkraft in X
         self.F_ersy = None # Ersatzlagerkraft in Y
+        self.FL_Fx = None  # Festlager FY
+        self.FL_Fy = None  # Festlager FX
+        self.FL_Fz = None  # Festlager FZ
+        self.LL_Fx = None  # Loslager FX
+        self.LL_Fy = None  # Loslager FY
 
     
     def set_Kraft(self,betrag,typ:str,z=0,r=0,phi=0):
@@ -109,15 +114,20 @@ class Welle:
                 summe_krafthebely += fy*(zk-self.festlager_z)+fz*rk*np.cos(phi)
                 summe_krafthebelx += fx*(zk-self.festlager_z)
         self.belastungen[3] = (abs(summe_krafthebelx/lges),self.loslager_z,0,0,summe_krafthebelx/lges,0,0) # Lagerkraft Loslager X
+        self.LL_Fx = summe_krafthebelx/lges
         self.belastungen[4] = (abs(summe_krafthebely/lges),self.loslager_z,0,0,0,summe_krafthebely/lges,0) # Lagerkraft Loslager Y
+        self.LL_Fy = summe_krafthebely/lges
 
         for _,zk,rk,_,fx,fy,fz in self.belastungen:
             summe_kräftex += -fx
             summe_kräftey += -fy
             summe_kräftez += -fz
         self.belastungen[0] = (abs(summe_kräftex),self.festlager_z,0,0,summe_kräftex,0,0) # Lagerkraft Festlager X
+        self.FL_Fx = summe_kräftex
         self.belastungen[1] = (abs(summe_kräftey),self.festlager_z,0,0,0,summe_kräftey,0) # Lagerkraft Festlager Y
+        self.FL_Fy = summe_kräftey
         self.belastungen[2] = (abs(summe_kräftez),self.festlager_z,0,0,0,0,summe_kräftez) # Lagerkraft Festlager Z
+        self.FL_Fz = summe_kräftez
 
     def set_geometrie(self,punkte:list):
         """
