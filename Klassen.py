@@ -5,7 +5,7 @@ Code geschrieben von: Nadine Schulz, Quentin Huss
 
 import numpy as np
 import matplotlib.pyplot as plt
-from numba import njit,jit
+from numba import njit,jit,jit_module
 
 class Werkstoff():
     Werkstoffe = {} # Dictionary mit allen erzeugten Werkstoffen
@@ -271,7 +271,8 @@ class Welle:
             if z_kraft<z:
                 result += -1*fy*(z-z_kraft)
                 result += fz*r*np.cos(phi)
-        return round(result/1000,10)
+        return result/1000
+
     
     def Mby(self,z):
         """Berechnet numerisch den Biegemomentenverlauf um die globale Y-Achse in `N*m`"""
@@ -281,7 +282,7 @@ class Welle:
             if z_kraft<z:
                 result += -1*fx*(z-z_kraft)
                 result += fz*r*np.sin(phi)
-        return round(result/1000,10)
+        return result/1000
     
     def Mt(self,z):
         """Berechnet numerisch den Torsionsmomentenverlauf um die Globale Z-Achse in `N*m`"""
@@ -291,7 +292,7 @@ class Welle:
             if z_kraft<=z:
                 result += -1*fx*r*np.cos(phi)
                 result += -1*fy*r*np.sin(phi)
-        return round(result/1000,10)
+        return result
     
     def Wb(self,z):
         """Gibt das Widerstandsmoment gegen Biegung an der Stelle z in `mm^3` aus."""
@@ -356,35 +357,26 @@ class Welle:
         self.neigung_x = np.fromiter(map(Neigung_x,z_range),float,self.len_z_range)
         self.neigung_y = np.fromiter(map(Neigung_y,z_range),float,self.len_z_range)
 
-        if abs(Biegung_x(self.loslager_z)) <= 0.0001 and abs(Biegung_x(self.festlager_z)) <= 0.0001 :
-            pass
-        else:
-            m = (Biegung_x(self.festlager_z) - Biegung_x(self.loslager_z))/ (self.festlager_z - self.loslager_z)    # Gerade zwischen Lagern
-            n = Biegung_x(self.loslager_z) - m * self.loslager_z                     
+        # Schlusslinie in X
+        m = (Biegung_x(self.festlager_z) - Biegung_x(self.loslager_z))/ (self.festlager_z - self.loslager_z)    # Gerade zwischen Lagern
+        n = Biegung_x(self.loslager_z) - m * self.loslager_z                     
+        y_range = m * z_range + n
+        self.biegung_x = self.biegung_x - y_range
 
-            x_range = z_range #np.arange(start=0, stop=self.länge, step=self.dz)
-            y_range = m * x_range + n
-
-            self.biegung_x = self.biegung_x - y_range
-
-        if Biegung_y(self.loslager_z) == 0 and Biegung_y(self.festlager_z) == 0 :
-            pass
-        else:
-            m = (Biegung_y(self.festlager_z) - Biegung_y(self.loslager_z))/ (self.festlager_z - self.loslager_z)    # Gerade zwischen Lagern
-            n = Biegung_y(self.loslager_z) - m * self.loslager_z                     
-
-            x_range = z_range #np.arange(start=0, stop=self.länge, step=self.dz)
-            y_range = m * x_range + n
-
-            self.biegung_y = self.biegung_x - y_range
+        # Schlusslinie in y
+        m = (Biegung_y(self.festlager_z) - Biegung_y(self.loslager_z))/ (self.festlager_z - self.loslager_z)    # Gerade zwischen Lagern
+        n = Biegung_y(self.loslager_z) - m * self.loslager_z
+        y_range = m * z_range + n
+        self.biegung_y = self.biegung_x - y_range
 
 
     def Spannungen(self, z):
         """Spannungen
         Gibt Biegepannung in x, y und Torsionsspannung an z aus 
         """
-        sigma_x = self.Mbx(z)*1000/self.Wb(z)
-        sigma_y = self.Mby(z)*1000/self.Wb(z)
+        wbz = self.Wb(z)
+        sigma_x = self.Mbx(z)*1000/wbz
+        sigma_y = self.Mby(z)*1000/wbz
         tau = self.Mt(z)*1000/(np.pi/16 * self.d(z)**4)
         return(sigma_x, sigma_y, tau)
     
@@ -1122,6 +1114,7 @@ def Werte_in_CSV_speichern(*args:Welle_Absatz):
 
     print(W)
     np.savetxt("Absaetze.csv", np.array(W), fmt='%s', delimiter=',')
+
 
 if __name__ == "__main__":
     Werkstoff.aus_csv_laden()
