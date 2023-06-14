@@ -427,6 +427,7 @@ class Welle_Absatz():
         self.welle = welle
         self.z = z
         self.Art = Art
+        self.Werte = []
         if self.Art == "Absatz":
             self.D = max(self.welle.d(self.z-1), self.welle.d(self.z+1))
             self.d = min(self.welle.d(self.z-1), self.welle.d(self.z+1))
@@ -689,7 +690,6 @@ class Welle_Absatz():
         if Art == "Absatz" or Art == "umlaufende Rundnut":
             if Art == "Absatz":
                 t = self.t
-                print(self.r)
                 alpha_zd = Formzahl_Unterfunktion_Formel(0.62,3.5,0,0,self.d,D,self.r,t)
                 alpha_b = Formzahl_Unterfunktion_Formel(0.62,5.8,0.2,3,self.d,D,self.r,t)
                 alpha_t = Formzahl_Unterfunktion_Formel(3.4,19,1,2,self.d,D,self.r,t)
@@ -1044,6 +1044,39 @@ class Welle_Absatz():
     def Spannungen(self, z):
         pass
 
+    def Werte_speichern(self):
+        self.Werte = []
+        # Geometrie
+        self.Werte.append(str(self.Art))
+        self.Werte.append(str(self.welle.werkstoff))
+        self.Werte.append(str(self.z))
+        self.Werte.append(str(self.welle.name))
+
+        # Kerbwirkungszahlen
+        beta_sigma, beta_tau, _ = self.Kerbwirkungszahl()
+        self.Werte.append(str(beta_sigma))
+        self.Werte.append(str(beta_tau))
+
+        # Gesamtgrößeneinflussfaktor
+        K_ges_sigma, K_ges_tau = self.Gesamtgrößeneinflussfaktor()
+        self.Werte.append(str(K_ges_sigma))
+        self.Werte.append(str(K_ges_tau))
+
+        # Bauteilwechselfestigkeiten
+        sigma_bWK, tau_tWK = self.Bauteilwechselfestigkeiten()
+        self.Werte.append(str(sigma_bWK))
+        self.Werte.append(str(tau_tWK))
+
+        # Bauteilfließgrenzen
+        sigma_bFK, tau_tFK = self.Bauteilfließgrenzen()
+        self.Werte.append(str(sigma_bFK))
+        self.Werte.append(str(tau_tFK))
+
+        # Gestaltfestigkeiten
+        sigma_bADK, tau_tADK = self.Gestaltfestigkeit(100, 100, 100)
+        self.Werte.append(str(sigma_bADK))
+        self.Werte.append(str(tau_tADK))
+
     def Sicherheiten(self, sigma_bmax, tau_tmax, sigma_bq, tau_ta, sigma_zdm, sigma_bm, tau_tm):
         """Sicherheiten
 
@@ -1057,23 +1090,49 @@ class Welle_Absatz():
             tau_ta (float): Torsionsausschlagspannung
             tau_tADK (float): Dauerfestigkeit Torsion
         """
+        self.Werte_speichern()
         sigma_bADK, tau_tADK = self.Gestaltfestigkeit(sigma_zdm, sigma_bm, tau_tm)
         sigma_bFK, tau_tFK = self.Bauteilfließgrenzen()
         S_F = 1/(np.sqrt((sigma_bmax/sigma_bFK)**2+(tau_tmax/tau_tFK)**2))
         S_D = 1/(np.sqrt((sigma_bq/sigma_bADK)**2+(tau_ta/tau_tADK)**2))
 
-        return(S_F, S_D)
+        # Werte für csv
+        self.Werte.append(str(S_F))
+        self.Werte.append(str(S_D))
+        if self.Art == "Absatz":
+            self.Werte.append(str(self.D))
+            self.Werte.append(str(self.d))
+            self.Werte.append(str(self.r))
+            self.Werte.append(str((self.D-self.d)/2))
+        if self.Art == "umlaufende Rundnut":
+            self.Werte.append(str(self.d))
+            self.Werte.append(str(self.r))
+            self.Werte.append(str(self.b))
+        if self.Art == "umlaufende Rechtecknut":
+            self.Werte.append(str(self.t))
+            self.Werte.append(str(self.r))
+            self.Werte.append(str(self.b))
 
+        return(S_F, S_D, self.Werte)
+
+# speichert Werte in CSV um daraus pdf zu erzeugen als Berechnung
+def Werte_in_CSV_speichern(*args:Welle_Absatz):
+    W = []
+    for Absatz in args:
+        W.append(Absatz.Sicherheiten(100, 100, 100, 20, 20, 30 , 30)[2])
+
+    print(W)
+    np.savetxt("Absaetze.csv", np.array(W), fmt='%s', delimiter=',')
 
 if __name__ == "__main__":
     Werkstoff.aus_csv_laden()
     test = Welle("Test", 0, 200, "42CrMo4" , 2, "nein",dz=1)
 
     test.set_geometrie(
-        ((0,10),
-        (40,10),
-        (40,20),
-        (80,20),
+        ((0,25),
+        (40,25),
+        (40,21),
+        (80,21),
         (80,27.5),
         (160,27.5),
         (160,15),
@@ -1086,7 +1145,7 @@ if __name__ == "__main__":
     test.verformung_berechnen()
 
 
-    #test.plot()
+    # test.plot()
     # plt.plot(test.z_range,test.biegung_x)
     # plt.plot(test.z_range,test.biegung_y)
     # plt.plot(test.z_range,test.biegung_x)
@@ -1095,8 +1154,12 @@ if __name__ == "__main__":
     # plt.gca().invert_yaxis()
     # plt.show()
 
-    Abschnitt1 = Welle_Absatz(test, 40, "Pressverbindung")
-    print(Abschnitt1.Sicherheiten(100, 100, 100, 100, 0, 0, 0))
+    Abschnitt1 = Welle_Absatz(test, 40, "Absatz", 5)
+    Abschnitt2 = Welle_Absatz(test, 40, "Absatz", 2)
+    Abschnitt3 = Welle_Absatz(test, 40, "Absatz", 0.1)
+    Werte_in_CSV_speichern(Abschnitt1, Abschnitt2, Abschnitt3)
+
+    print(Abschnitt1.Werte)
 
     # welle = Welle("Online Rechner",1,5)
     # welle.set_geometrie(((0,1),(5,1)))
