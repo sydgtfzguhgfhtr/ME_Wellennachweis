@@ -1,0 +1,188 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Wellennachweis - Keilwelle},
+  pdfauthor={Quentin Huss, Nadine Schulz},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Wellennachweis - Keilwelle}
+\author{Quentin Huss, Nadine Schulz}
+\date{14.06.2023}
+
+\begin{document}
+\maketitle
+
+\hypertarget{gegebene-gruxf6uxdfen}{%
+\section{0 gegebene Größen}\label{gegebene-gruxf6uxdfen}}
+
+\hypertarget{geometrie}{%
+\subsection{Geometrie}\label{geometrie}}
+
+\begin{table}[!h]
+\centering
+\begin{tabular}[t]{lr}
+\toprule
+\multicolumn{2}{c}{in mm} \\
+\cmidrule(l{3pt}r{3pt}){1-2}
+\cellcolor{gray!6}{Wellendurchmesser} & \cellcolor{gray!6}{50}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\hypertarget{beanspruchung}{%
+\subsection{Beanspruchung}\label{beanspruchung}}
+
+\hypertarget{bauteilwechselfestigkeiten}{%
+\section{1
+Bauteilwechselfestigkeiten}\label{bauteilwechselfestigkeiten}}
+
+\hypertarget{kerbwirkungszahlen}{%
+\subsection{Kerbwirkungszahlen}\label{kerbwirkungszahlen}}
+
+\begin{center}
+$\beta_{\sigma_b} = 2$ 
+  
+$\beta_{\tau} = 3$  
+\end{center}
+
+\hypertarget{gesamteinflussfaktoren}{%
+\subsection{Gesamteinflussfaktoren}\label{gesamteinflussfaktoren}}
+
+\begin{center}
+
+$K_{\sigma ,b} = 30$  
+
+$K_{\tau} = 29$
+
+\end{center}
+
+\hypertarget{bauteilwechselfestigkeit}{%
+\subsection{Bauteilwechselfestigkeit}\label{bauteilwechselfestigkeit}}
+
+\begin{center}
+
+$\sigma_{bWK} = 2038\ \dfrac{N}{mm^{2}}$
+
+$\tau_{tWK} = \ensuremath{2.39848\times 10^{5}}\ \dfrac{N}{mm^{2}}$
+
+\end{center}
+
+\pagebreak
+
+\hypertarget{bauteilflieuxdfgrenzen}{%
+\section{2 Bauteilfließgrenzen}\label{bauteilflieuxdfgrenzen}}
+
+\begin{center}  
+$\sigma_{bFK} = 48\ \dfrac{N}{mm^{2}}$  
+
+$\tau_{tFK} = \ensuremath{4.39875\times 10^{5}}\ \dfrac{N}{mm^{2}}$  
+\end{center}
+
+\hypertarget{gestaltfestigkeit}{%
+\section{3 Gestaltfestigkeit}\label{gestaltfestigkeit}}
+
+\begin{center}
+$\sigma_{bADK} = 34\ \dfrac{N}{mm^{2}}$  
+
+$\tau_{tADK} = 457\ \dfrac{N}{mm^{2}}$  
+\end{center}
+
+\hypertarget{sicherheiten}{%
+\section{4 Sicherheiten}\label{sicherheiten}}
+
+\begin{center}
+$S_F = 2$  
+
+$S_D = 4$
+\end{center}
+
+\end{document}
