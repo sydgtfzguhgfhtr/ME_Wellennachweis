@@ -65,6 +65,7 @@ class Welle:
         self.minL = None
         self.maxL = None
         self.z_range = None
+        self.len_z_range = None
         self.biegung_x = None
         self.biegung_y = None
         self.neigung_x = None
@@ -124,6 +125,7 @@ class Welle:
         self.maxL = max(self.z_daten)
         self.länge = abs(self.maxL-self.minL)
         self.z_range = np.arange(self.minL,self.maxL,self.dz)
+        self.len_z_range = len(self.z_range)
 
 
     def radius(self,z):
@@ -156,7 +158,7 @@ class Welle:
 
         zrange = np.linspace(min_z,max_z,1000)
         z_range_k = np.linspace(min_z_k,max_z_k,1000)
-        rrange = np.array(tuple(map(self.radius,zrange)))
+        rrange = np.fromiter(map(self.radius,zrange),float,len(zrange))
 
         fig,ax = plt.subplots(2,2,constrained_layout=True,sharex="col",sharey="row",num=self.name+" Belastungsplot")
         fig.set_size_inches(15,10)
@@ -204,7 +206,7 @@ class Welle:
         ax[0,1].set_ylabel("$r\\,[mm]$")
 
         # Mbx Biegemomentenverlauf
-        mbx_daten = tuple(map(self.Mbx,z_range_k))
+        mbx_daten = np.fromiter(map(self.Mbx,z_range_k),float,len(z_range_k))
         ax[1,0].plot(z_range_k,mbx_daten)
         ax[1,0].fill_between(z_range_k,0,mbx_daten,alpha=0.3)
         ax[1,0].set_xlabel("$z\\,[mm]$")
@@ -213,7 +215,7 @@ class Welle:
         ax[1,0].grid()
 
         # Mby Biegemomentenverlauf
-        mby_daten = tuple(map(self.Mby,z_range_k))
+        mby_daten = np.fromiter(map(self.Mby,z_range_k),float,len(z_range_k))
         ax[1,1].plot(z_range_k,mby_daten)
         ax[1,1].fill_between(z_range_k,0,mby_daten,alpha=0.3)
         ax[1,1].set_xlabel("$z\\,[mm]$")
@@ -292,14 +294,10 @@ class Welle:
         """Gibt das Widerstandsmoment gegen Biegung an der Stelle z in `mm^3` aus."""
         return np.pi/32 * self.d(z)**3
     
-    def verformung_berechnen(self,*schrittweite):
+    def verformung_berechnen(self):
         """Berechnet die Verformungs- und Neigungsvektoren. Es kann optional die Schrittweite der Integration angegeben werden."""
         E = self.Emod
-        if len(schrittweite)==0:
-            dz = self.dz
-        else:
-            dz = schrittweite[0]
-
+        dz = self.dz
         z_range = self.z_range
         minL = self.minL
         maxL = self.maxL
@@ -349,10 +347,10 @@ class Welle:
                 integral += q_ers_y(s)*dz
             return 1/E * (F_ey-integral*1000)
 
-        self.biegung_x = np.fromiter(map(Biegung_x,z_range),float)
-        self.biegung_y = np.fromiter(map(Biegung_y,z_range),float)
-        self.neigung_x = np.fromiter(map(Neigung_x,z_range),float)
-        self.neigung_y = np.fromiter(map(Neigung_y,z_range),float)
+        self.biegung_x = np.fromiter(map(Biegung_x,z_range),float,self.len_z_range)
+        self.biegung_y = np.fromiter(map(Biegung_y,z_range),float,self.len_z_range)
+        self.neigung_x = np.fromiter(map(Neigung_x,z_range),float,self.len_z_range)
+        self.neigung_y = np.fromiter(map(Neigung_y,z_range),float,self.len_z_range)
 
     
     
@@ -369,7 +367,7 @@ class Welle:
 
 if __name__ == "__main__":
     Werkstoff.aus_csv_laden()
-    test = Welle("Test", 0, 195,Werkstoff.Werkstoffe["S275N"], 2, "nein",dz=1)
+    test = Welle("Test", 0, 195,Werkstoff.Werkstoffe["S275N"], 2, "nein",dz=0.1)
 
     test.set_geometrie(
         ((0,10),
@@ -389,10 +387,9 @@ if __name__ == "__main__":
 
 
     test.plot()
-    # plt.plot(test.z_range,test.biegung_x)
-    # plt.plot(test.z_range,test.biegung_y)
-    plt.plot(test.z_range,test.neigung_x)
-    plt.plot(test.z_range,test.neigung_y)
+    plt.plot(test.z_range,test.biegung_x,label="Aus Mbx")
+    plt.plot(test.z_range,test.biegung_y,label="aus Mby")
+    plt.grid()
     plt.gca().invert_yaxis()
     plt.show()
 
