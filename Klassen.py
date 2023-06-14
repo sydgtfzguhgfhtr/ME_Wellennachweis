@@ -409,8 +409,8 @@ if __name__ == "__main__":
         (160,15),
         (300,15))
     )
-    test.set_Kraft(3500, "r", 20, -test.d(20)/2)
-    test.set_Kraft(-4500, "r", 135, -test.d(135)/2, 0)
+    test.set_Kraft(3500, "r", 20, 0, 0)
+    test.set_Kraft(-4500, "r", 135, 0, 0)
 
     test.lagerkräfte_berechnen()
     test.verformung_berechnen()
