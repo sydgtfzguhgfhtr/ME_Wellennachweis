@@ -5,6 +5,7 @@ Code geschrieben von: Nadine Schulz, Quentin Huss
 
 import numpy as np
 import matplotlib.pyplot as plt
+from numba import njit,jit
 
 class Werkstoff():
     Werkstoffe = {} # Dictionary mit allen erzeugten Werkstoffen
@@ -140,6 +141,7 @@ class Welle:
                 return r1 + m * (r2 - r1)
         else:
             return 0
+
     def r(self,z):
         """Gibt Radius der Welle an Stelle z aus. Alle Längen werden in `mm` angegeben"""
         return self.radius(z)
@@ -307,7 +309,7 @@ class Welle:
             return (64*self.Mbx(z))/(np.pi*self.d(z)**4)
         def q_ers_y(z):
             return (64*self.Mby(z))/(np.pi*self.d(z)**4)
-        
+
         def F_ers_x():
             integral = 0
             for z in z_range:
@@ -331,6 +333,7 @@ class Welle:
             for s in z_range[z_range<=z]:
                 integral += q_ers_x(s)*(z-s)*dz
             return 1/E*(F_ex*z-integral*1000)
+
         def Biegung_y(z):
             integral = 0
             for s in z_range[z_range<=z]:
