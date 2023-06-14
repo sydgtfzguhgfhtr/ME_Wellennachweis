@@ -352,7 +352,37 @@ class Welle:
         self.neigung_x = np.fromiter(map(Neigung_x,z_range),float,self.len_z_range)
         self.neigung_y = np.fromiter(map(Neigung_y,z_range),float,self.len_z_range)
 
-    
+        if Biegung_x(self.loslager_z) == 0 and Biegung_x(self.festlager_z) == 0 :
+            self.biegung_x = np.fromiter(map(Biegung_x,z_range),float)
+        else:
+            m = (Biegung_x(self.festlager_z) - Biegung_x(self.loslager_z))/ (self.festlager_z - self.loslager_z)    # Gerade zwischen Lagern
+            n = Biegung_x(self.loslager_z) - m * self.loslager_z                     
+
+            x_range = np.arange(start=0, stop=self.länge, step=self.dz)
+            y_range = m * x_range + n
+
+            self.biegung_x = self.biegung_x - y_range
+
+        if Biegung_y(self.loslager_z) == 0 and Biegung_y(self.festlager_z) == 0 :
+            self.biegung_y = np.fromiter(map(Biegung_y,z_range),float)
+        else:
+            m = (Biegung_y(self.festlager_z) - Biegung_y(self.loslager_z))/ (self.festlager_z - self.loslager_z)    # Gerade zwischen Lagern
+            n = Biegung_y(self.loslager_z) - m * self.loslager_z                     
+
+            x_range = np.arange(start=0, stop=self.länge, step=self.dz)
+            y_range = m * x_range + n
+
+            self.biegung_y = self.biegung_x - y_range
+
+
+    def Spannungen(self, z):
+        """Spannungen
+        Gibt Biegepannung in x, y und Torsionsspannung an z aus 
+        """
+        sigma_x = self.Mbx(z)*1000/self.Wb(z)
+        sigma_y = self.Mby(z)*1000/self.Wb(z)
+        tau = self.Mt(z)*1000/(np.pi/16 * self.d(z)**4)
+        return(sigma_x, sigma_y, tau)
     
     def print_Lagerkräfte(self):
         print("\n")
@@ -367,7 +397,7 @@ class Welle:
 
 if __name__ == "__main__":
     Werkstoff.aus_csv_laden()
-    test = Welle("Test", 0, 195,Werkstoff.Werkstoffe["S275N"], 2, "nein",dz=0.1)
+    test = Welle("Test", 0, 200,Werkstoff.Werkstoffe["S275N"], 2, "nein",dz=1)
 
     test.set_geometrie(
         ((0,10),
@@ -377,7 +407,7 @@ if __name__ == "__main__":
         (80,27.5),
         (160,27.5),
         (160,15),
-        (195,15))
+        (300,15))
     )
     test.set_Kraft(3500, "r", 20, -test.d(20)/2)
     test.set_Kraft(-4500, "r", 135, -test.d(135)/2, 0)
@@ -387,9 +417,10 @@ if __name__ == "__main__":
 
 
     test.plot()
-    plt.plot(test.z_range,test.biegung_x,label="Aus Mbx")
-    plt.plot(test.z_range,test.biegung_y,label="aus Mby")
-    plt.grid()
+    # plt.plot(test.z_range,test.biegung_x)
+    # plt.plot(test.z_range,test.biegung_y)
+    plt.plot(test.z_range,test.neigung_x)
+    plt.plot(test.z_range,test.neigung_y)
     plt.gca().invert_yaxis()
     plt.show()
 
