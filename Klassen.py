@@ -1100,24 +1100,20 @@ class Welle_Absatz():
         self.Werte.append(str(S_F))
         self.Werte.append(str(S_D))
         if self.Art == "Absatz":
-            self.Werte.append(str(self.D))
-            self.Werte.append(str(self.d))
-            self.Werte.append(str(self.r))
-            self.Werte.append(str((self.D-self.d)/2))
-        if self.Art == "umlaufende Rundnut":
-            self.Werte.append(str(self.d))
-            self.Werte.append(str(self.r))
-            self.Werte.append(str(self.b))
-        if self.Art == "umlaufende Rechtecknut":
-            self.Werte.append(str(self.t))
-            self.Werte.append(str(self.r))
-            self.Werte.append(str(self.b))
+            self.Werte.append(str(self.D)+";"+str(self.d)+";"+str(self.r)+";"+str((self.D-self.d)/2))
+        elif self.Art == "umlaufende Rundnut":
+            self.Werte.append(str(self.d)+";"+str(self.r)+";"+str(self.b))
+        elif self.Art == "umlaufende Rechtecknut":
+            self.Werte.append(str(self.t)+";"+str(self.r)+";"+str(self.b))
+        else:
+            self.Werte.append("-")
 
         return(S_F, S_D, self.Werte)
 
 # speichert Werte in CSV um daraus pdf zu erzeugen als Berechnung
 def Werte_in_CSV_speichern(*args:Welle_Absatz):
     W = []
+    W.append(["Name", "Werkstoff", "z_Wert", "Welle", "beta_sigma", "beta_tau", "K_ges_sigma", "K_ges_tau", "sigma_bWK", "tau_bWK", "sigma_bFK", "tau_tFK", "sigma_bADK", "tau_tADK", "S_F", "S_D", "anderes"])
     for Absatz in args:
         W.append(Absatz.Sicherheiten(100, 100, 100, 20, 20, 30 , 30)[2])
 
@@ -1157,9 +1153,13 @@ if __name__ == "__main__":
     Abschnitt1 = Welle_Absatz(test, 40, "Absatz", 5)
     Abschnitt2 = Welle_Absatz(test, 40, "Absatz", 2)
     Abschnitt3 = Welle_Absatz(test, 40, "Absatz", 0.1)
-    Werte_in_CSV_speichern(Abschnitt1, Abschnitt2, Abschnitt3)
+    Abschnitt4 = Welle_Absatz(test, 40, "Absatz", 0.1)
+    Abschnitt5 = Welle_Absatz(test, 40, "Absatz", 0.1)
+    Abschnitt6 = Welle_Absatz(test, 40, "Absatz", 0.1)
+    Abschnitt7 = Welle_Absatz(test, 40, "Absatz", 0.1)
+    Abschnitt8 = Welle_Absatz(test, 40, "Absatz", 0.1)
+    Werte_in_CSV_speichern(Abschnitt1, Abschnitt2, Abschnitt3, Abschnitt4, Abschnitt5, Abschnitt6, Abschnitt7, Abschnitt8)
 
-    print(Abschnitt1.Werte)
 
     # welle = Welle("Online Rechner",1,5)
     # welle.set_geometrie(((0,1),(5,1)))
