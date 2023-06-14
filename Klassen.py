@@ -5,7 +5,7 @@ Code geschrieben von: Nadine Schulz, Quentin Huss
 
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.integrate import quad,fixed_quad
+from scipy.integrate import quad
 
 class Werkstoff():
     Werkstoffe = {} # Dictionary mit allen erzeugten Werkstoffen
@@ -49,9 +49,10 @@ Torsionswechselfestigkeit:      {self.tau_tW}
         return 1
 
 class Welle:
-    def __init__(self,name:str,festlager_z:int,loslager_z:int, werkstoff:Werkstoff, Rz, Oberflächenverfestigung) -> None:
+    def __init__(self,name:str,festlager_z:int,loslager_z:int, werkstoff:Werkstoff, Rz, Oberflächenverfestigung,dz=1) -> None:
         self.name = str(name)
         self.Emod = 210e3 # N/mm^2
+        self.dz = dz
         self.festlager_z = festlager_z
         self.loslager_z = loslager_z
         self.lagerabstand = abs(festlager_z-loslager_z)
@@ -71,6 +72,13 @@ class Welle:
         self.biegung_y = None
         self.neigung_x = None
         self.neigung_y = None
+        self.F_ersx = None # Ersatzlagerkraft in X
+        self.F_ersy = None # Ersatzlagerkraft in Y
+        self.FL_Fx = None  # Festlager FY
+        self.FL_Fy = None  # Festlager FX
+        self.FL_Fz = None  # Festlager FZ
+        self.LL_Fx = None  # Loslager FX
+        self.LL_Fy = None  # Loslager FY
 
     
     def set_Kraft(self,betrag,typ:str,z=0,r=0,phi=0):
@@ -106,15 +114,20 @@ class Welle:
                 summe_krafthebely += fy*(zk-self.festlager_z)+fz*rk*np.cos(phi)
                 summe_krafthebelx += fx*(zk-self.festlager_z)
         self.belastungen[3] = (abs(summe_krafthebelx/lges),self.loslager_z,0,0,summe_krafthebelx/lges,0,0) # Lagerkraft Loslager X
+        self.LL_Fx = summe_krafthebelx/lges
         self.belastungen[4] = (abs(summe_krafthebely/lges),self.loslager_z,0,0,0,summe_krafthebely/lges,0) # Lagerkraft Loslager Y
+        self.LL_Fy = summe_krafthebely/lges
 
         for _,zk,rk,_,fx,fy,fz in self.belastungen:
             summe_kräftex += -fx
             summe_kräftey += -fy
             summe_kräftez += -fz
         self.belastungen[0] = (abs(summe_kräftex),self.festlager_z,0,0,summe_kräftex,0,0) # Lagerkraft Festlager X
+        self.FL_Fx = summe_kräftex
         self.belastungen[1] = (abs(summe_kräftey),self.festlager_z,0,0,0,summe_kräftey,0) # Lagerkraft Festlager Y
+        self.FL_Fy = summe_kräftey
         self.belastungen[2] = (abs(summe_kräftez),self.festlager_z,0,0,0,0,summe_kräftez) # Lagerkraft Festlager Z
+        self.FL_Fz = summe_kräftez
 
     def set_geometrie(self,punkte:list):
         """
@@ -125,13 +138,13 @@ class Welle:
         self.minL = min(self.z_daten)
         self.maxL = max(self.z_daten)
         self.länge = abs(self.maxL-self.minL)
-        self.z_range = np.linspace(self.minL,self.maxL,500)
+        self.z_range = np.arange(self.minL,self.maxL,self.dz)
         self.len_z_range = len(self.z_range)
 
 
     def radius(self,z):
         """Gibt Radius der Welle an Stelle z aus. Alle Längen werden in `mm` angegeben"""
-        for i,zr in enumerate(self.geometrie):
+        for i,_ in enumerate(self.geometrie):
             z1,z2 = self.geometrie[i-1][0],self.geometrie[i][0]
             r1,r2 = self.geometrie[i-1][1],self.geometrie[i][1]
             
@@ -150,7 +163,7 @@ class Welle:
     def durchmesser(self,z):
         """Gibt Durchmesser der Welle an Stelle z aus. Alle Längen werden in `mm` angegeben"""
         return self.d(z)
-    def plot(self,kräfte=True):
+    def plot(self):
         """Stellt die Welle dar."""
         _,z_kräfte,_,_,_,_,_=zip(*self.belastungen)
         max_z_k = max(z_kräfte)
@@ -247,7 +260,7 @@ class Welle:
         ax[0].plot(zrange,rrange,"k")
         ax[0].plot(zrange,rrange*-1,"k")
         ax[0].hlines(0,min_z-self.länge*0.05,self.z_daten[-1]+self.länge*0.05,linestyles="dashdot",colors="black")
-        for i,z in enumerate(self.z_daten):
+        for z in self.z_daten:
             ax[0].vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
         ax[0].set_title("Darstellung")
         
@@ -326,8 +339,9 @@ class Welle:
         # Ersatzlagerkräfte
         F_ex = F_ers_x()
         F_ey = F_ers_y()
-        print(F_ex)
-        print(F_ey)
+
+        self.F_ersx = F_ex
+        self.F_ersy = F_ey
 
         # Biegung
         def Biegung_x(z):
@@ -343,10 +357,10 @@ class Welle:
             return 1/E*(F_ey*z-integral*1000)
         
         def Neigung_x(z):
-            integral,_ = quad(q_ers_x,minl,z,epsabs=1e-3)
+            integral,_ = quad(q_ers_x,minl,z,epsabs=1e-4)
             return 1/E * (F_ex-integral*1000)
         def Neigung_y(z):
-            integral,_ = quad(q_ers_y,minl,z,epsabs=1e-3)
+            integral,_ = quad(q_ers_y,minl,z,epsabs=1e-4)
             return 1/E * (F_ey-integral*1000)
 
         self.biegung_x = np.fromiter(map(Biegung_x,z_range),float,self.len_z_range)
@@ -651,12 +665,12 @@ class Welle_Absatz():
             beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(29, beta_sigma_dBK)
             beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(29, beta_sigma_dBK)
         elif Art == "umlaufende Spitzkerbe":
-                beta_zd_dBK = 0.109*sigma_B_d
-                beta_sigma_dBK = 0.0923*sigma_B_d
-                beta_tau_dBK = 0.8*beta_sigma_dBK
-                beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(15, beta_sigma_dBK)
-                beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(15, beta_sigma_dBK)
-                beta_zd = beta_zd_dBK*self.K3_dBK_durch_K3_D(159, beta_sigma_dBK)
+            beta_zd_dBK = 0.109*sigma_B_d
+            beta_sigma_dBK = 0.0923*sigma_B_d
+            beta_tau_dBK = 0.8*beta_sigma_dBK
+            beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(15, beta_sigma_dBK)
+            beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(15, beta_sigma_dBK)
+            beta_zd = beta_zd_dBK*self.K3_dBK_durch_K3_D(159, beta_sigma_dBK)
         if Art == "umlaufende Rechtecknut":
             sigma_S = int(Werkstoff.Werkstoffe[self.welle.werkstoff].sigma_S)
             t = self.t
@@ -1017,7 +1031,7 @@ class Welle_Absatz():
         D = max(self.welle.d(self.z+1), self.welle.d(self.z-1))
         werkstoff = self.welle.werkstoff
         K2F_sigma , K2F_tau = self.K2F()
-        sigma_S = int(Werkstoff.Werkstoffe[self.welle.werkstoff].sigma_S)
+        sigma_S = int(Werkstoff.Werkstoffe[werkstoff].sigma_S)
         sigma_bFK = self.K1("S", )*K2F_sigma*gamma_F_sigma*sigma_S
         tau_tFK = self.K1("S")*K2F_tau*gamma_F_tau*(sigma_S/np.sqrt(3))
 
@@ -1133,13 +1147,13 @@ if __name__ == "__main__":
     test.verformung_berechnen()
 
 
-    # test.plot()
+    test.plot()
     plt.plot(test.z_range,test.biegung_x,label="X")
     plt.plot(test.z_range,test.biegung_y,label="Y")
     plt.grid()
     plt.legend()
     plt.gca().invert_yaxis()
-#    plt.show()
+    # plt.show()
 
     Abschnitt1 = Welle_Absatz(test, 40, "Absatz", 5)
     Abschnitt2 = Welle_Absatz(test, 40, "Absatz", 2)
