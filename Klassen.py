@@ -353,23 +353,23 @@ class Welle:
         self.neigung_y = np.fromiter(map(Neigung_y,z_range),float,self.len_z_range)
 
         if Biegung_x(self.loslager_z) == 0 and Biegung_x(self.festlager_z) == 0 :
-            self.biegung_x = np.fromiter(map(Biegung_x,z_range),float)
+            pass
         else:
             m = (Biegung_x(self.festlager_z) - Biegung_x(self.loslager_z))/ (self.festlager_z - self.loslager_z)    # Gerade zwischen Lagern
             n = Biegung_x(self.loslager_z) - m * self.loslager_z                     
 
-            x_range = np.arange(start=0, stop=self.länge, step=self.dz)
+            x_range = z_range #np.arange(start=0, stop=self.länge, step=self.dz)
             y_range = m * x_range + n
 
             self.biegung_x = self.biegung_x - y_range
 
         if Biegung_y(self.loslager_z) == 0 and Biegung_y(self.festlager_z) == 0 :
-            self.biegung_y = np.fromiter(map(Biegung_y,z_range),float)
+            pass
         else:
             m = (Biegung_y(self.festlager_z) - Biegung_y(self.loslager_z))/ (self.festlager_z - self.loslager_z)    # Gerade zwischen Lagern
             n = Biegung_y(self.loslager_z) - m * self.loslager_z                     
 
-            x_range = np.arange(start=0, stop=self.länge, step=self.dz)
+            x_range = z_range #np.arange(start=0, stop=self.länge, step=self.dz)
             y_range = m * x_range + n
 
             self.biegung_y = self.biegung_x - y_range
@@ -1062,8 +1062,8 @@ if __name__ == "__main__":
     test.plot()
     # plt.plot(test.z_range,test.biegung_x)
     # plt.plot(test.z_range,test.biegung_y)
-    plt.plot(test.z_range,test.neigung_x)
-    plt.plot(test.z_range,test.neigung_y)
+    plt.plot(test.z_range,test.biegung_x)
+    plt.plot(test.z_range,test.biegung_x)
     plt.gca().invert_yaxis()
     plt.show()
 
