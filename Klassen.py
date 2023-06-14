@@ -49,9 +49,10 @@ Torsionswechselfestigkeit:      {self.tau_tW}
         return 1
 
 class Welle:
-    def __init__(self,name:str,festlager_z:int,loslager_z:int, werkstoff:Werkstoff, Rz, Oberflächenverfestigung) -> None:
+    def __init__(self,name:str,festlager_z:int,loslager_z:int, werkstoff:Werkstoff, Rz, Oberflächenverfestigung,dz=1) -> None:
         self.name = str(name)
         self.Emod = 210e3 # N/mm^2
+        self.dz = dz
         self.festlager_z = festlager_z
         self.loslager_z = loslager_z
         self.lagerabstand = abs(festlager_z-loslager_z)
@@ -125,7 +126,7 @@ class Welle:
         self.minL = min(self.z_daten)
         self.maxL = max(self.z_daten)
         self.länge = abs(self.maxL-self.minL)
-        self.z_range = np.linspace(self.minL,self.maxL,500)
+        self.z_range = np.arange(self.minL,self.maxL,self.dz)
         self.len_z_range = len(self.z_range)
 
 
@@ -343,10 +344,10 @@ class Welle:
             return 1/E*(F_ey*z-integral*1000)
         
         def Neigung_x(z):
-            integral,_ = quad(q_ers_x,minl,z,epsabs=1e-3)
+            integral,_ = quad(q_ers_x,minl,z,epsabs=1e-4)
             return 1/E * (F_ex-integral*1000)
         def Neigung_y(z):
-            integral,_ = quad(q_ers_y,minl,z,epsabs=1e-3)
+            integral,_ = quad(q_ers_y,minl,z,epsabs=1e-4)
             return 1/E * (F_ey-integral*1000)
 
         self.biegung_x = np.fromiter(map(Biegung_x,z_range),float,self.len_z_range)
