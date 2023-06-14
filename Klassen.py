@@ -49,7 +49,7 @@ Torsionswechselfestigkeit:      {self.tau_tW}
         return 1
 
 class Welle:
-    def __init__(self,name:str,festlager_z:int,loslager_z:int, werkstoff:Werkstoff, Rz, Oberflächenverfestigung,dz=0.1) -> None:
+    def __init__(self,name:str,festlager_z:int,loslager_z:int, werkstoff:Werkstoff, Rz, Oberflächenverfestigung) -> None:
         self.name = str(name)
         self.Emod = 210e3 # N/mm^2
         self.festlager_z = festlager_z
@@ -63,7 +63,6 @@ class Welle:
         self.Rz = Rz
         self.Oberflächenverfestigung = Oberflächenverfestigung
         self.belastungen = [(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0)]
-        self.dz = dz # Schrittweite in Z in mm
         self.minL = None
         self.maxL = None
         self.z_range = None
@@ -126,7 +125,7 @@ class Welle:
         self.minL = min(self.z_daten)
         self.maxL = max(self.z_daten)
         self.länge = abs(self.maxL-self.minL)
-        self.z_range = np.arange(self.minL,self.maxL,self.dz)
+        self.z_range = np.linspace(self.minL,self.maxL,500)
         self.len_z_range = len(self.z_range)
 
 
@@ -301,7 +300,6 @@ class Welle:
     def verformung_berechnen(self):
         """Berechnet die Verformungs- und Neigungsvektoren. Es kann optional die Schrittweite der Integration angegeben werden."""
         E = self.Emod
-        dz = self.dz
         z_range = self.z_range
         länge = self.länge
         minl = self.minL
@@ -313,21 +311,23 @@ class Welle:
             return (64*self.Mby(z))/(np.pi*self.d(z)**4)
 
         def F_ers_x():
-            integral = 0
-            for z in z_range:
-                integral+=q_ers_x(z)*(länge-z)
-            F_ers = 1/länge * integral*dz
+            def integfuncx(z):
+                return q_ers_x(z)*(länge-z)
+            integral,_ = quad(integfuncx,minl,maxl,epsabs=1e-4,limit=100)
+            F_ers = 1/länge * integral
             return (F_ers)*1000 # N/mm^2
         def F_ers_y():
-            integral = 0
-            for z in z_range:
-                integral+=q_ers_y(z)*(länge-z)
-            F_ers = 1/länge * integral*dz
+            def integfuncy(z):
+                return q_ers_y(z)*(länge-z)
+            integral,_ = quad(integfuncy,minl,maxl,epsabs=1e-4,limit=100)
+            F_ers = 1/länge * integral
             return (F_ers)*1000 # N/mm^2
         
         # Ersatzlagerkräfte
         F_ex = F_ers_x()
         F_ey = F_ers_y()
+        print(F_ex)
+        print(F_ey)
 
         # Biegung
         def Biegung_x(z):
@@ -1115,7 +1115,7 @@ def Werte_in_CSV_speichern(*args:Welle_Absatz):
 
 if __name__ == "__main__":
     Werkstoff.aus_csv_laden()
-    test = Welle("Test", 0, 200, "42CrMo4" , 2, "nein",dz=1)
+    test = Welle("Test", 0, 200, "42CrMo4" , 2, "nein")
 
     test.set_geometrie(
         ((0,25),
