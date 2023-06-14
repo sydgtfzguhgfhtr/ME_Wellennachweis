@@ -5,7 +5,7 @@ Code geschrieben von: Nadine Schulz, Quentin Huss
 
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.integrate import quad,fixed_quad
+from scipy.integrate import quad
 
 class Werkstoff():
     Werkstoffe = {} # Dictionary mit allen erzeugten Werkstoffen
@@ -134,7 +134,7 @@ class Welle:
 
     def radius(self,z):
         """Gibt Radius der Welle an Stelle z aus. Alle Längen werden in `mm` angegeben"""
-        for i,zr in enumerate(self.geometrie):
+        for i,_ in enumerate(self.geometrie):
             z1,z2 = self.geometrie[i-1][0],self.geometrie[i][0]
             r1,r2 = self.geometrie[i-1][1],self.geometrie[i][1]
             
@@ -153,7 +153,7 @@ class Welle:
     def durchmesser(self,z):
         """Gibt Durchmesser der Welle an Stelle z aus. Alle Längen werden in `mm` angegeben"""
         return self.d(z)
-    def plot(self,kräfte=True):
+    def plot(self):
         """Stellt die Welle dar."""
         _,z_kräfte,_,_,_,_,_=zip(*self.belastungen)
         max_z_k = max(z_kräfte)
@@ -250,7 +250,7 @@ class Welle:
         ax[0].plot(zrange,rrange,"k")
         ax[0].plot(zrange,rrange*-1,"k")
         ax[0].hlines(0,min_z-self.länge*0.05,self.z_daten[-1]+self.länge*0.05,linestyles="dashdot",colors="black")
-        for i,z in enumerate(self.z_daten):
+        for z in self.z_daten:
             ax[0].vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
         ax[0].set_title("Darstellung")
         
@@ -655,12 +655,12 @@ class Welle_Absatz():
             beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(29, beta_sigma_dBK)
             beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(29, beta_sigma_dBK)
         elif Art == "umlaufende Spitzkerbe":
-                beta_zd_dBK = 0.109*sigma_B_d
-                beta_sigma_dBK = 0.0923*sigma_B_d
-                beta_tau_dBK = 0.8*beta_sigma_dBK
-                beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(15, beta_sigma_dBK)
-                beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(15, beta_sigma_dBK)
-                beta_zd = beta_zd_dBK*self.K3_dBK_durch_K3_D(159, beta_sigma_dBK)
+            beta_zd_dBK = 0.109*sigma_B_d
+            beta_sigma_dBK = 0.0923*sigma_B_d
+            beta_tau_dBK = 0.8*beta_sigma_dBK
+            beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(15, beta_sigma_dBK)
+            beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(15, beta_sigma_dBK)
+            beta_zd = beta_zd_dBK*self.K3_dBK_durch_K3_D(159, beta_sigma_dBK)
         if Art == "umlaufende Rechtecknut":
             sigma_S = int(Werkstoff.Werkstoffe[self.welle.werkstoff].sigma_S)
             t = self.t
@@ -1021,7 +1021,7 @@ class Welle_Absatz():
         D = max(self.welle.d(self.z+1), self.welle.d(self.z-1))
         werkstoff = self.welle.werkstoff
         K2F_sigma , K2F_tau = self.K2F()
-        sigma_S = int(Werkstoff.Werkstoffe[self.welle.werkstoff].sigma_S)
+        sigma_S = int(Werkstoff.Werkstoffe[werkstoff].sigma_S)
         sigma_bFK = self.K1("S", )*K2F_sigma*gamma_F_sigma*sigma_S
         tau_tFK = self.K1("S")*K2F_tau*gamma_F_tau*(sigma_S/np.sqrt(3))
 
@@ -1137,13 +1137,13 @@ if __name__ == "__main__":
     test.verformung_berechnen()
 
 
-    # test.plot()
+    test.plot()
     plt.plot(test.z_range,test.biegung_x,label="X")
     plt.plot(test.z_range,test.biegung_y,label="Y")
     plt.grid()
     plt.legend()
     plt.gca().invert_yaxis()
-#    plt.show()
+    # plt.show()
 
     Abschnitt1 = Welle_Absatz(test, 40, "Absatz", 5)
     Abschnitt2 = Welle_Absatz(test, 40, "Absatz", 2)
