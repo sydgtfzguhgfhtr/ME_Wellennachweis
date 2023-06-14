@@ -72,6 +72,8 @@ class Welle:
         self.biegung_y = None
         self.neigung_x = None
         self.neigung_y = None
+        self.F_ersx = None # Ersatzlagerkraft in X
+        self.F_ersy = None # Ersatzlagerkraft in Y
 
     
     def set_Kraft(self,betrag,typ:str,z=0,r=0,phi=0):
@@ -327,8 +329,9 @@ class Welle:
         # Ersatzlagerkräfte
         F_ex = F_ers_x()
         F_ey = F_ers_y()
-        print(F_ex)
-        print(F_ey)
+
+        self.F_ersx = F_ex
+        self.F_ersy = F_ey
 
         # Biegung
         def Biegung_x(z):
