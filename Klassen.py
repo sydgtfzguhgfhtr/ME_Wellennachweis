@@ -397,7 +397,33 @@ class Welle:
             print("-"*48)
 
 class Welle_Absatz():
+    """einzelne nachzuweisende Wellenabsätze
+    """
     def __init__(self,welle:Welle,z, Art, *args):
+        """Wellenabsatz
+
+        Args:
+            welle (Welle): Welle für die Absatz nachgewiesen werden soll
+            z (float): z-Koordinate des Absatzes auf der Welle
+            Art (str): Art der Querschnittsschwächung
+
+        Möglichkeiten für Art:
+            Absatz,
+            umlaufende Rundnut,
+            eine Passfeder,
+            zwei Passfedern,
+            umlaufende Rundnut,
+            umlaufende Spitzkerbe,
+            Keilwelle,
+            Kerbzahnwelle,
+            Zahnwelle,
+            Pressverbindung
+
+        zusätzliche Argumente für bestimmte Arten (*args):
+        Absatz: Radius;
+        umlaufende Rundnut: Kerbgrunddurchmesser, Radius, Breite der Nut;
+        umlaufende Rechtecknut: Tiefe der Nut, Radius, Breite der Nut
+        """
         self.welle = welle
         self.z = z
         self.Art = Art
@@ -1041,7 +1067,7 @@ class Welle_Absatz():
 
 if __name__ == "__main__":
     Werkstoff.aus_csv_laden()
-    test = Welle("Test", 0, 200,Werkstoff.Werkstoffe["S275N"], 2, "nein",dz=1)
+    test = Welle("Test", 0, 200, "42CrMo4" , 2, "nein",dz=1)
 
     test.set_geometrie(
         ((0,10),
@@ -1063,12 +1089,14 @@ if __name__ == "__main__":
     #test.plot()
     # plt.plot(test.z_range,test.biegung_x)
     # plt.plot(test.z_range,test.biegung_y)
-    plt.plot(test.z_range,test.biegung_x)
-    plt.plot(test.z_range,test.biegung_x)
-    plt.grid()
-    plt.gca().invert_yaxis()
-    plt.show()
+    # plt.plot(test.z_range,test.biegung_x)
+    # plt.plot(test.z_range,test.biegung_x)
+    # plt.grid()
+    # plt.gca().invert_yaxis()
+    # plt.show()
 
+    Abschnitt1 = Welle_Absatz(test, 40, "Pressverbindung")
+    print(Abschnitt1.Sicherheiten(100, 100, 100, 100, 0, 0, 0))
 
     # welle = Welle("Online Rechner",1,5)
     # welle.set_geometrie(((0,1),(5,1)))
