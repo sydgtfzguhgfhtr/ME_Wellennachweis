@@ -437,7 +437,7 @@ class Welle_Absatz():
                 if D <= 100:
                     K_1 = 1
                 elif D <= 300:
-                    K_1 = 1-0.23*math.log10(D/100)
+                    K_1 = 1-0.23*np.log10(D/100)
                 elif D >= 500:
                     K_1 = 0.89
                 else:
@@ -446,7 +446,7 @@ class Welle_Absatz():
                 if D <= 16:
                     K_1 = 1
                 elif D <= 300:
-                    K_1 = 1-0.26*math.log10(D/16)
+                    K_1 = 1-0.26*np.log10(D/16)
                 elif D >= 500:
                     K_1 = 0.67
                 else:
@@ -455,7 +455,7 @@ class Welle_Absatz():
                 if D <= 16:
                     K_1 = 1
                 elif D <= 150:
-                    K_1 = 1-0.41*math.log10(D/16)
+                    K_1 = 1-0.41*np.log10(D/16)
                 elif D >= 500:
                     K_1 = 0.6
                 else:
@@ -465,7 +465,7 @@ class Welle_Absatz():
                 if D <= 100:
                     K_1 = 1
                 elif D <= 300:
-                    K_1 = 1-0.23*math.log10(D/100)
+                    K_1 = 1-0.23*np.log10(D/100)
                 elif D >= 500:
                     K_1 = 0.89
                 else:
@@ -474,7 +474,7 @@ class Welle_Absatz():
                 if D <= 32:
                     K_1 = 1
                 elif D <= 300:
-                    K_1 = 1-0.26*math.log10(D/100)
+                    K_1 = 1-0.26*np.log10(D/100)
                 elif D >= 500:
                     K_1 = 0.75
                 else:
@@ -483,7 +483,7 @@ class Welle_Absatz():
                 if D <= 16:
                     K_1 = 1
                 elif D <= 300:
-                    K_1 = 1-0.26*math.log10(D/16)
+                    K_1 = 1-0.26*np.log10(D/16)
                 elif D >= 500:
                     K_1 = 0.67
                 else:
@@ -492,7 +492,7 @@ class Welle_Absatz():
                 if D <= 16:
                     K_1 = 1
                 elif D <= 300:
-                    K_1 = 1-0.34*math.log10(D/16)
+                    K_1 = 1-0.34*np.log10(D/16)
                 elif D >= 500:
                     K_1 = 0.57
                 else:
@@ -501,7 +501,7 @@ class Welle_Absatz():
                 if D <= 16:
                     K_1 = 1
                 elif D <= 150:
-                    K_1 = 1-0.41*math.log10(D/16)
+                    K_1 = 1-0.41*np.log10(D/16)
                 elif D >= 500:
                     K_1 = 0.6
                 else:
@@ -611,21 +611,21 @@ class Welle_Absatz():
             beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(40, beta_sigma_dBK)
             beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(40, beta_sigma_dBK)
         elif Art == "Keilwelle":
-            beta_tau_dBK_stern = math.e**(4.2*10**(-7)*sigma_B_d**2)
+            beta_tau_dBK_stern = np.e**(4.2*10**(-7)*sigma_B_d**2)
             beta_tau_dBK = beta_tau_dBK_stern
             beta_sigma_dBK = 1+0.45*(beta_tau_dBK_stern-1)
             beta_zd = 1
             beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(29, beta_sigma_dBK)
             beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(29, beta_sigma_dBK)
         elif Art == "Kerbzahnwelle":
-            beta_tau_dBK_stern = math.e**(4.2*10**(-7)*sigma_B_d**2)
+            beta_tau_dBK_stern = np.e**(4.2*10**(-7)*sigma_B_d**2)
             beta_tau_dBK = beta_tau_dBK_stern
             beta_sigma_dBK = 1+0.65*(beta_tau_dBK_stern-1)
             beta_zd = 1
             beta_sigma = beta_sigma_dBK*self.K3_dBK_durch_K3_D(29, beta_sigma_dBK)
             beta_tau = beta_tau_dBK*self.K3_dBK_durch_K3_D(29, beta_sigma_dBK)
         elif Art == "Zahnwelle":
-            beta_tau_dBK_stern = math.e**(4.2*10**(-7)*sigma_B_d**2)
+            beta_tau_dBK_stern = np.e**(4.2*10**(-7)*sigma_B_d**2)
             beta_tau_dBK = 1+0.75*(beta_tau_dBK_stern-1)
             beta_sigma_dBK = 1+0.49*(beta_tau_dBK_stern-1)
             beta_zd = 1
@@ -714,7 +714,7 @@ class Welle_Absatz():
         """
         d = self.welle.d(self.z)
         if d < 150:
-            K_2 = 1-0.2*(math.log10(d/7.5))/math.log10(20)
+            K_2 = 1-0.2*(np.log10(d/7.5))/np.log10(20)
         else:
             K_2 = 0.8
         return(K_2)
@@ -738,7 +738,7 @@ class Welle_Absatz():
         werkstoff = self.welle.werkstoff
         D = self.welle.d(self.z)
         sigma_B = self.Zugfestigkeit()
-        K_F_sigma = 1-0.22*math.log10(Rz)*(math.log10(sigma_B/20)-1)
+        K_F_sigma = 1-0.22*np.log10(Rz)*(np.log10(sigma_B/20)-1)
         K_F_tau = 0.575*K_F_sigma+0.425
 
         return(K_F_sigma, K_F_tau)
