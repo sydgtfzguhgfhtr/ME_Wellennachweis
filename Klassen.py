@@ -5,7 +5,7 @@ Code geschrieben von: Nadine Schulz, Quentin Huss
 
 import numpy as np
 import matplotlib.pyplot as plt
-from numba import njit,jit,jit_module
+from scipy.integrate import quad,fixed_quad
 
 class Werkstoff():
     Werkstoffe = {} # Dictionary mit allen erzeugten Werkstoffen
@@ -267,7 +267,7 @@ class Welle:
         """Berechnet numerisch den Biegemomentenverlauf um die globale X-Achse in `N*m`"""
         result = 0
         for kraft in self.belastungen:
-            _,z_kraft,r,phi,fx,fy,fz = kraft
+            _,z_kraft,r,phi,_,fy,fz = kraft
             if z_kraft<z:
                 result += -1*fy*(z-z_kraft)
                 result += fz*r*np.cos(phi)
@@ -278,7 +278,7 @@ class Welle:
         """Berechnet numerisch den Biegemomentenverlauf um die globale Y-Achse in `N*m`"""
         result = 0
         for kraft in self.belastungen:
-            _,z_kraft,r,phi,fx,fy,fz = kraft
+            _,z_kraft,r,phi,fx,_,fz = kraft
             if z_kraft<z:
                 result += -1*fx*(z-z_kraft)
                 result += fz*r*np.sin(phi)
@@ -288,7 +288,7 @@ class Welle:
         """Berechnet numerisch den Torsionsmomentenverlauf um die Globale Z-Achse in `N*m`"""
         result = 0
         for kraft in self.belastungen:
-            _,z_kraft,r,phi,fx,fy,fz = kraft
+            _,z_kraft,r,phi,fx,fy,_ = kraft
             if z_kraft<=z:
                 result += -1*fx*r*np.cos(phi)
                 result += -1*fy*r*np.sin(phi)
@@ -303,8 +303,9 @@ class Welle:
         E = self.Emod
         dz = self.dz
         z_range = self.z_range
-        minL = self.minL
-        maxL = self.maxL
+        länge = self.länge
+        minl = self.minL
+        maxl = self.maxL
 
         def q_ers_x(z):
             return (64*self.Mbx(z))/(np.pi*self.d(z)**4)
@@ -314,14 +315,14 @@ class Welle:
         def F_ers_x():
             integral = 0
             for z in z_range:
-                integral+=q_ers_x(z)*(maxL-z)
-            F_ers = 1/maxL * integral*dz
+                integral+=q_ers_x(z)*(länge-z)
+            F_ers = 1/länge * integral*dz
             return (F_ers)*1000 # N/mm^2
         def F_ers_y():
             integral = 0
             for z in z_range:
-                integral+=q_ers_y(z)*(maxL-z)
-            F_ers = 1/maxL * integral*dz
+                integral+=q_ers_y(z)*(länge-z)
+            F_ers = 1/länge * integral*dz
             return (F_ers)*1000 # N/mm^2
         
         # Ersatzlagerkräfte
@@ -330,26 +331,22 @@ class Welle:
 
         # Biegung
         def Biegung_x(z):
-            integral = 0
-            for s in z_range[z_range<=z]:
-                integral += q_ers_x(s)*(z-s)*dz
+            def integfuncx(s):
+                return q_ers_x(s)*(z-s)
+            integral,_ = quad(integfuncx,minl,z,epsabs=1e-2)
             return 1/E*(F_ex*z-integral*1000)
 
         def Biegung_y(z):
-            integral = 0
-            for s in z_range[z_range<=z]:
-                integral += q_ers_y(s)*(z-s)*dz
+            def integfuncy(s):
+                return q_ers_y(s)*(z-s)
+            integral,_ = quad(integfuncy,minl,z,epsabs=1e-2)
             return 1/E*(F_ey*z-integral*1000)
         
         def Neigung_x(z):
-            integral = 0
-            for s in z_range[z_range<z]:
-                integral += q_ers_x(s)*dz
+            integral,_ = quad(q_ers_x,minl,z,epsabs=1e-3)
             return 1/E * (F_ex-integral*1000)
         def Neigung_y(z):
-            integral = 0
-            for s in z_range[z_range<z]:
-                integral += q_ers_y(s)*dz
+            integral,_ = quad(q_ers_y,minl,z,epsabs=1e-3)
             return 1/E * (F_ey-integral*1000)
 
         self.biegung_x = np.fromiter(map(Biegung_x,z_range),float,self.len_z_range)
@@ -367,7 +364,7 @@ class Welle:
         m = (Biegung_y(self.festlager_z) - Biegung_y(self.loslager_z))/ (self.festlager_z - self.loslager_z)    # Gerade zwischen Lagern
         n = Biegung_y(self.loslager_z) - m * self.loslager_z
         y_range = m * z_range + n
-        self.biegung_y = self.biegung_x - y_range
+        self.biegung_y = self.biegung_y - y_range
 
 
     def Spannungen(self, z):
@@ -1138,13 +1135,12 @@ if __name__ == "__main__":
 
 
     # test.plot()
-    # plt.plot(test.z_range,test.biegung_x)
-    # plt.plot(test.z_range,test.biegung_y)
-    # plt.plot(test.z_range,test.biegung_x)
-    # plt.plot(test.z_range,test.biegung_x)
-    # plt.grid()
-    # plt.gca().invert_yaxis()
-    # plt.show()
+    plt.plot(test.z_range,test.biegung_x,label="X")
+    plt.plot(test.z_range,test.biegung_y,label="Y")
+    plt.grid()
+    plt.legend()
+    plt.gca().invert_yaxis()
+#    plt.show()
 
     Abschnitt1 = Welle_Absatz(test, 40, "Absatz", 5)
     Abschnitt2 = Welle_Absatz(test, 40, "Absatz", 2)
