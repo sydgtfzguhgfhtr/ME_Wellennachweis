@@ -1,5 +1,6 @@
 """
 Klassendefinitionen
+Code geschrieben von: Nadine Schulz, Quentin Huss
 """
 
 import numpy as np
@@ -352,7 +353,7 @@ class Welle:
         self.neigung_x = np.fromiter(map(Neigung_x,z_range),float,self.len_z_range)
         self.neigung_y = np.fromiter(map(Neigung_y,z_range),float,self.len_z_range)
 
-        if Biegung_x(self.loslager_z) == 0 and Biegung_x(self.festlager_z) == 0 :
+        if abs(Biegung_x(self.loslager_z)) <= 0.0001 and abs(Biegung_x(self.festlager_z)) <= 0.0001 :
             pass
         else:
             m = (Biegung_x(self.festlager_z) - Biegung_x(self.loslager_z))/ (self.festlager_z - self.loslager_z)    # Gerade zwischen Lagern
@@ -1059,11 +1060,12 @@ if __name__ == "__main__":
     test.verformung_berechnen()
 
 
-    test.plot()
+    #test.plot()
     # plt.plot(test.z_range,test.biegung_x)
     # plt.plot(test.z_range,test.biegung_y)
     plt.plot(test.z_range,test.biegung_x)
     plt.plot(test.z_range,test.biegung_x)
+    plt.grid()
     plt.gca().invert_yaxis()
     plt.show()
 
