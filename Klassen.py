@@ -404,7 +404,6 @@ class Welle_Absatz():
             umlaufende Rundnut,
             eine Passfeder,
             zwei Passfedern,
-            umlaufende Rundnut,
             umlaufende Spitzkerbe,
             Keilwelle,
             Kerbzahnwelle,
