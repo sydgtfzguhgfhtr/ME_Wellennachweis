@@ -73,48 +73,37 @@ kbl(t(Tabelle_gegebene_Größen), booktabs = TRUE) %>%
 # 1 Bauteilwechselfestigkeiten  
 ## Kerbwirkungszahlen  
 \begin{center}
-$\beta_{\sigma_b} = `r beta_sigma`$ 
+$\beta_{\sigma_b} = `r round(beta_sigma, 3)`$ 
   
-$\beta_{\tau} = `r beta_tau`$  
+$\beta_{\tau} = `r round(beta_tau, 3)`$  
 \end{center}  
 
 ## Gesamteinflussfaktoren  
 \begin{center}
 
-$K_{\sigma ,b} = `r K_ges_sigma`$  
+$K_{\sigma ,b} = `r round(K_ges_sigma, 3)`$  
 
-$K_{\tau} = `r K_ges_tau`$
+$K_{\tau} = `r round(K_ges_tau, 3)`$
 
 \end{center}
 
 ## Bauteilwechselfestigkeit  
-\begin{center}
 
-$\sigma_{bWK} = `r sigma_bWK`\ \dfrac{N}{mm^{2}}$
-
-$\tau_{tWK} = `r tau_bWK`\ \dfrac{N}{mm^{2}}$
-
-\end{center}
-
-\pagebreak
+$$\sigma_{bWK} = `r round(sigma_bWK, 3)` \dfrac{N}{mm^{2}}$$  
+  
+$$\tau_{tWK} = `r round(tau_bWK, 3)` \dfrac{N}{mm^{2}}$$  
 
 # 2 Bauteilfließgrenzen  
-\begin{center}  
-$\sigma_{bFK} = `r sigma_bFK`\ \dfrac{N}{mm^{2}}$  
-
-$\tau_{tFK} = `r tau_tFK`\ \dfrac{N}{mm^{2}}$  
-\end{center}  
+$$\sigma_{bFK} = `r round(sigma_bFK, 3)` \dfrac{N}{mm^{2}}$$  
+  
+$$\tau_{tFK} = `r round(tau_tFK, 3)` \dfrac{N}{mm^{2}}$$  
 
 # 3 Gestaltfestigkeit  
-\begin{center}
-$\sigma_{bADK} = `r sigma_bADK`\ \dfrac{N}{mm^{2}}$  
-
-$\tau_{tADK} = `r tau_tADK`\ \dfrac{N}{mm^{2}}$  
-\end{center}  
+$$\sigma_{bADK} = `r round(sigma_bADK, 3)` \dfrac{N}{mm^{2}}$$  
+  
+$$\tau_{tADK} = `r round(tau_tADK, 3)` \dfrac{N}{mm^{2}}$$  
 
 # 4 Sicherheiten  
-\begin{center}
-$S_F = `r S_F`$  
-
-$S_D = `r S_D`$
-\end{center}
+$$S_F = `r round(S_F, 3)`$$  
+  
+$$S_D = `r round(S_D, 3)`$$

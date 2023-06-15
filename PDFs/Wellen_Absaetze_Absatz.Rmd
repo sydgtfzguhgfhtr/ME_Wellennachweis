@@ -32,6 +32,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # 0 gegebene Größen  
 ## Geometrie  
+
 ```{r, echo=FALSE, results='asis'}
 Tabelle_gegebene_Größen <- data.frame(
   "Durchmesser" = c(D),
@@ -42,9 +43,7 @@ Tabelle_gegebene_Größen <- data.frame(
 
 library(kableExtra)
 
-kbl(t(Tabelle_gegebene_Größen), booktabs = TRUE) %>%
-  kable_styling(latex_options = c("striped", "hold_position")) %>%
-  add_header_above(c("in mm" = 2))
+knitr::kable(t(Tabelle_gegebene_Größen)) 
 
 ```
  
@@ -53,37 +52,38 @@ kbl(t(Tabelle_gegebene_Größen), booktabs = TRUE) %>%
 # 1 Bauteilwechselfestigkeiten  
 ## Kerbwirkungszahlen  
 
-$$\beta_{\sigma_b} = `r beta_sigma`$$ 
+$$\beta_{\sigma_b} = `r round(beta_sigma, 3)`$$ 
   
-$$\beta_{\tau} = `r beta_tau`$$  
+$$\beta_{\tau} = `r round(beta_tau, 3)`$$  
 
 ## Gesamteinflussfaktoren    
 
 
-$$K_{\sigma ,b} = `r K_ges_sigma`$$    
-
-$$K_{\tau} = `r K_ges_tau`$$  
+$$K_{\sigma ,b} = `r round(K_ges_sigma, 3)`$$    
+  
+$$K_{\tau} = `r round(K_ges_tau, 3)`$$  
 
 
 
 ## Bauteilwechselfestigkeit  
 
-$$\sigma_{bWK} = `r sigma_bWK`$$  
-<!-- 
-$$\tau_{tWK} = `r tau_bWK`$$  
-
-
+$$\sigma_{bWK} = `r round(sigma_bWK, 3)` \dfrac{N}{mm^{2}}$$  
+  
+$$\tau_{tWK} = `r round(tau_bWK, 3)` \dfrac{N}{mm^{2}}$$  
+  
 # 2 Bauteilfließgrenzen  
-$$\sigma_{bFK} = `r sigma_bFK`$$   
-
-$$\tau_{tFK} = `r tau_tFK`$$  
+  
+$$\sigma_{bFK} = `r round(sigma_bFK, 3)` \dfrac{N}{mm^{2}}$$  
+  
+$$\tau_{tFK} = `r round(tau_tFK, 3)` \dfrac{N}{mm^{2}}$$  
 
 # 3 Gestaltfestigkeit  
-$$\sigma_{bADK} = `r sigma_bADK`$$    
 
-$$\tau_{tADK} = `r tau_tADK`$$  
+$$\sigma_{bADK} = `r round(sigma_bADK, 3)` \dfrac{n}{mm^{2}}$$    
+  
+$$\tau_{tADK} = `r round(tau_tADK, 3)` \dfrac{N}{mm^{2}}$$  
 
 # 4 Sicherheiten  
-$$S_F = `r S_F`$$    
-
-$$S_D = `r S_D`$$   -->
+$$S_F = `r round(S_F, 3)`$$    
+  
+$$S_D = `r round(S_D, 3)`$$   

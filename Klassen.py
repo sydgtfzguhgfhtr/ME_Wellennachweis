@@ -1130,8 +1130,7 @@ def Werte_in_CSV_speichern(*args:Welle_Absatz):
     for Absatz in args:
         W.append(Absatz.Sicherheiten()[2])
 
-    print(W)
-    np.savetxt("Absaetze.csv", np.array(W), fmt='%s', delimiter=',')
+    np.savetxt(r"PDFs\Absaetze.csv", np.array(W), fmt='%s', delimiter=',')
 
 
 if __name__ == "__main__":
@@ -1155,23 +1154,25 @@ if __name__ == "__main__":
     test.verformung_berechnen()
 
 
-    test.plot()
-    plt.plot(test.z_range,test.biegung_x,label="X")
-    plt.plot(test.z_range,test.biegung_y,label="Y")
-    plt.grid()
-    plt.legend()
-    plt.gca().invert_yaxis()
+    # test.plot()
+    # plt.plot(test.z_range,test.biegung_x,label="X")
+    # plt.plot(test.z_range,test.biegung_y,label="Y")
+    # plt.grid()
+    # plt.legend()
+    # plt.gca().invert_yaxis()
     # plt.show()
 
     Abschnitt1 = Welle_Absatz(test, 40, "Absatz", 5)
-    Abschnitt2 = Welle_Absatz(test, 40, "Absatz", 2)
-    Abschnitt3 = Welle_Absatz(test, 40, "Absatz", 0.1)
-    Abschnitt4 = Welle_Absatz(test, 40, "Absatz", 0.1)
-    Abschnitt5 = Welle_Absatz(test, 40, "Absatz", 0.1)
-    Abschnitt6 = Welle_Absatz(test, 40, "Absatz", 0.1)
-    Abschnitt7 = Welle_Absatz(test, 40, "Absatz", 0.1)
-    Abschnitt8 = Welle_Absatz(test, 40, "Absatz", 0.1)
-    Werte_in_CSV_speichern(Abschnitt1, Abschnitt2, Abschnitt3, Abschnitt4, Abschnitt5, Abschnitt6, Abschnitt7, Abschnitt8)
+    Abschnitt2 = Welle_Absatz(test, 40, "eine Passfeder")
+    Abschnitt3 = Welle_Absatz(test, 40, "umlaufende Rundnut", 10, 1, 2)
+    Abschnitt4 = Welle_Absatz(test, 40, "zwei Passfedern")
+    Abschnitt5 = Welle_Absatz(test, 40, "umlaufende Spitzkerbe")
+    Abschnitt6 = Welle_Absatz(test, 40, "Keilwelle")
+    Abschnitt7 = Welle_Absatz(test, 40, "Kerbzahnwelle")
+    Abschnitt8 = Welle_Absatz(test, 40, "Zahnwelle")
+    Abschnitt9 = Welle_Absatz(test, 40, "Pressverbindung")
+    Abschnitt10 = Welle_Absatz(test, 40, "umlaufende Rechtecknut", 2, 1, 3)
+    Werte_in_CSV_speichern(Abschnitt1, Abschnitt2, Abschnitt3, Abschnitt4, Abschnitt5, Abschnitt6, Abschnitt7, Abschnitt8, Abschnitt9, Abschnitt10)
 
 
     # welle = Welle("Online Rechner",1,5)
