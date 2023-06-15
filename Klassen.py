@@ -1004,7 +1004,7 @@ class Welle_Absatz():
 
         return(Psi_zd_b_sigma_K, Psi_tauK)
 
-    def Gestaltfestigkeit(self,sigma_zdm, sigma_bm, tau_tm):
+    def Gestaltfestigkeit(self):
         """Gestaltfestigkeit
 
         Args:
@@ -1023,6 +1023,9 @@ class Welle_Absatz():
             sigma_bADK (float): Gestaltfestigkeit Biegung
             tau_tADK (float): Gestaltfestigkeit Torsion
         """
+        sigma_zdm = 0
+        sigma_bm = 0
+        tau_tm = 0
         sigma_bWK, tau_tWK = self.Bauteilwechselfestigkeiten()
         sigma_mv, tau_mv = self.Vergleichsmittelspannungen(sigma_zdm, sigma_bm, tau_tm)
         beta_sigma, _, _ = self.Kerbwirkungszahl()
@@ -1078,11 +1081,11 @@ class Welle_Absatz():
         self.Werte.append(str(tau_tFK))
 
         # Gestaltfestigkeiten
-        sigma_bADK, tau_tADK = self.Gestaltfestigkeit(100, 100, 100)
+        sigma_bADK, tau_tADK = self.Gestaltfestigkeit()
         self.Werte.append(str(sigma_bADK))
         self.Werte.append(str(tau_tADK))
 
-    def Sicherheiten(self, sigma_bmax, tau_tmax, sigma_bq, tau_ta, sigma_zdm, sigma_bm, tau_tm):
+    def Sicherheiten(self):
         """Sicherheiten
 
         Args:
@@ -1095,8 +1098,13 @@ class Welle_Absatz():
             tau_ta (float): Torsionsausschlagspannung
             tau_tADK (float): Dauerfestigkeit Torsion
         """
+        sigma_bmax = np.sqrt(self.welle.Spannungen(self.z)[0]**2+self.welle.Spannungen(self.z)[1]**2)
+        tau_tmax = self.welle.Spannungen(self.z)[2]
+        sigma_bq = sigma_bmax
+        tau_ta = tau_tmax
+        sigma_zdm, sigma_bm, tau_tm = (0,0,0)
         self.Werte_speichern()
-        sigma_bADK, tau_tADK = self.Gestaltfestigkeit(sigma_zdm, sigma_bm, tau_tm)
+        sigma_bADK, tau_tADK = self.Gestaltfestigkeit()
         sigma_bFK, tau_tFK = self.Bauteilfließgrenzen()
         S_F = 1/(np.sqrt((sigma_bmax/sigma_bFK)**2+(tau_tmax/tau_tFK)**2))
         S_D = 1/(np.sqrt((sigma_bq/sigma_bADK)**2+(tau_ta/tau_tADK)**2))
@@ -1120,7 +1128,7 @@ def Werte_in_CSV_speichern(*args:Welle_Absatz):
     W = []
     W.append(["Name", "Werkstoff", "z_Wert", "Welle", "beta_sigma", "beta_tau", "K_ges_sigma", "K_ges_tau", "sigma_bWK", "tau_bWK", "sigma_bFK", "tau_tFK", "sigma_bADK", "tau_tADK", "S_F", "S_D", "anderes"])
     for Absatz in args:
-        W.append(Absatz.Sicherheiten(100, 100, 100, 20, 20, 30 , 30)[2])
+        W.append(Absatz.Sicherheiten()[2])
 
     print(W)
     np.savetxt("Absaetze.csv", np.array(W), fmt='%s', delimiter=',')
