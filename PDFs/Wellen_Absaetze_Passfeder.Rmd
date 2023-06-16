@@ -31,10 +31,33 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 # 0 gegebene Größen  
-## Geometrie  
-
+## Geometrie Stelle `r z_Koordinate` mm der `r Welle`  
+Wellendurchmesser:  
+$$d_w = `r dw`mm$$
  
 ## Beanspruchung  
+
+Biegemittelspannung:
+
+$$
+\sigma_{bm} = 0 \dfrac{N}{mm^{2}}
+$$ Biegeausschlagspannung:
+
+$$
+\sigma_{ba} = `r round(sigma_max, 3)` \dfrac{N}{mm^{2}}
+$$
+
+Torsionsmittelspannung:
+
+$$
+\tau_{tm} = 0 \dfrac{N}{mm^{2}}
+$$
+
+Torsionsausschlagspannung:
+
+$$
+\tau_{ta} = `r round(tau_max, 3)` \dfrac{N}{mm^{2}}
+$$
 
 # 1 Bauteilwechselfestigkeiten  
 ## Kerbwirkungszahlen  

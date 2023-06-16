@@ -28,64 +28,92 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```
 
+# 0 gegebene Größen
 
+## Geometrie Stelle `r z_Koordinate` mm der `r Welle`  
 
+Wellendurchmesser:
 
-# 0 gegebene Größen  
-## Geometrie  
-```{r, echo=FALSE, results='asis'}
-Tabelle_gegebene_Größen <- data.frame(
-  "Wellendurchmesser" = c(dw),
-  "Kerbgrunddurchmesser" = c(d),
-  "Radius" = c(r),
-  "Breite\ der\ Nut" = c(b)
-)
+$$
+d_w = `r dw` mm
+$$
 
-library(kableExtra)
+Kerbgrunddurchmesser:
 
-kbl(t(Tabelle_gegebene_Größen), booktabs = TRUE) %>%
-  kable_styling(latex_options = c("striped", "hold_position")) %>%
-  add_header_above(c("in mm" = 2))
+$$
+d = `r d` mm
+$$
 
-```
- 
-## Beanspruchung  
+Radius:
 
-# 1 Bauteilwechselfestigkeiten  
-## Kerbwirkungszahlen  
+$$
+r = `r r` mm
+$$
 
-$$\beta_{\sigma_b} = `r round(beta_sigma, 3)`$$ 
-  
-$$\beta_{\tau} = `r round(beta_tau, 3)`$$  
+Breite der Nut:
 
-## Gesamteinflussfaktoren    
+$$
+b = `r b` mm
+$$
 
+## Beanspruchung
 
-$$K_{\sigma ,b} = `r round(K_ges_sigma, 3)`$$    
-  
-$$K_{\tau} = `r round(K_ges_tau, 3)`$$  
+Biegemittelspannung:
 
+$$
+\sigma_{bm} = 0 \dfrac{N}{mm^{2}}
+$$ Biegeausschlagspannung:
 
+$$
+\sigma_{ba} = `r round(sigma_max, 3)` \dfrac{N}{mm^{2}}
+$$
 
-## Bauteilwechselfestigkeit  
+Torsionsmittelspannung:
 
-$$\sigma_{bWK} = `r round(sigma_bWK, 3)` \dfrac{N}{mm^{2}}$$  
-  
-$$\tau_{tWK} = `r round(tau_bWK, 3)` \dfrac{N}{mm^{2}}$$  
-  
-# 2 Bauteilfließgrenzen  
-  
-$$\sigma_{bFK} = `r round(sigma_bFK, 3)` \dfrac{N}{mm^{2}}$$  
-  
-$$\tau_{tFK} = `r round(tau_tFK, 3)` \dfrac{N}{mm^{2}}$$  
+$$
+\tau_{tm} = 0 \dfrac{N}{mm^{2}}
+$$
 
-# 3 Gestaltfestigkeit  
+Torsionsausschlagspannung:
 
-$$\sigma_{bADK} = `r round(sigma_bADK, 3)` \dfrac{n}{mm^{2}}$$    
-  
-$$\tau_{tADK} = `r round(tau_tADK, 3)` \dfrac{N}{mm^{2}}$$  
+$$
+\tau_{ta} = `r round(tau_max, 3)` \dfrac{N}{mm^{2}}
+$$
 
-# 4 Sicherheiten  
-$$S_F = `r round(S_F, 3)`$$    
-  
-$$S_D = `r round(S_D, 3)`$$ 
+# 1 Bauteilwechselfestigkeiten
+
+## Kerbwirkungszahlen
+
+$$\beta_{\sigma_b} = `r round(beta_sigma, 3)`$$
+
+$$\beta_{\tau} = `r round(beta_tau, 3)`$$
+
+## Gesamteinflussfaktoren
+
+$$K_{\sigma ,b} = `r round(K_ges_sigma, 3)`$$
+
+$$K_{\tau} = `r round(K_ges_tau, 3)`$$
+
+## Bauteilwechselfestigkeit
+
+$$\sigma_{bWK} = `r round(sigma_bWK, 3)` \dfrac{N}{mm^{2}}$$
+
+$$\tau_{tWK} = `r round(tau_bWK, 3)` \dfrac{N}{mm^{2}}$$
+
+# 2 Bauteilfließgrenzen
+
+$$\sigma_{bFK} = `r round(sigma_bFK, 3)` \dfrac{N}{mm^{2}}$$
+
+$$\tau_{tFK} = `r round(tau_tFK, 3)` \dfrac{N}{mm^{2}}$$
+
+# 3 Gestaltfestigkeit
+
+$$\sigma_{bADK} = `r round(sigma_bADK, 3)` \dfrac{n}{mm^{2}}$$
+
+$$\tau_{tADK} = `r round(tau_tADK, 3)` \dfrac{N}{mm^{2}}$$
+
+# 4 Sicherheiten
+
+$$S_F = `r round(S_F, 3)`$$
+
+$$S_D = `r round(S_D, 3)`$$

@@ -405,7 +405,7 @@ class Welle:
 class Welle_Absatz():
     """einzelne nachzuweisende Wellenabsätze
     """
-    def __init__(self,welle:Welle,z, Art, *args):
+    def __init__(self,welle:Welle,z_Koordinate, Art, *args):
         """Wellenabsatz
 
         Args:
@@ -430,12 +430,12 @@ class Welle_Absatz():
         umlaufende Rechtecknut: Tiefe der Nut, Radius, Breite der Nut
         """
         self.welle = welle
-        self.z = z
+        self.z_Koordinate = z_Koordinate
         self.Art = Art
         self.Werte = []
         if self.Art == "Absatz":
-            self.D = max(self.welle.d(self.z-1), self.welle.d(self.z+1))
-            self.d = min(self.welle.d(self.z-1), self.welle.d(self.z+1))
+            self.D = max(self.welle.d(self.z_Koordinate-1), self.welle.d(self.z_Koordinate+1))
+            self.d = min(self.welle.d(self.z_Koordinate-1), self.welle.d(self.z_Koordinate+1))
             r = args[0]
             self.r = r
             self.t = (self.D-self.d)/2
@@ -444,7 +444,7 @@ class Welle_Absatz():
             self.d = d
             self.r = r
             self.b = b
-            self.D = self.welle.d(self.z)
+            self.D = self.welle.d(self.z_Koordinate)
             self.t = (self.D-self.d)/2
         if Art == "umlaufende Rechtecknut":
             t, r, b = args
@@ -463,7 +463,7 @@ class Welle_Absatz():
         Returns:
             K_1 (float): Einflussfaktor K1
         """
-        D = max(self.welle.d(self.z-1), self.welle.d(self.z+1))
+        D = max(self.welle.d(self.z_Koordinate-1), self.welle.d(self.z_Koordinate+1))
         w = Werkstoff.Werkstoffe[self.welle.werkstoff]
         if B_oder_S == "B":
             if w.art == "Nitrierstahl" or w.art == "Baustahl":
@@ -566,7 +566,7 @@ class Welle_Absatz():
         Returns:
             sigma_s: Streckgrenze für D
         """
-        D = max(self.welle.d(self.z-1), self.welle.d(self.z+1))
+        D = max(self.welle.d(self.z_Koordinate-1), self.welle.d(self.z_Koordinate+1))
         sigma_S = int(Werkstoff.Werkstoffe[self.welle.werkstoff].sigma_S)
         K_1 = self.K1("S")
         return(sigma_S*K_1)
@@ -581,7 +581,7 @@ class Welle_Absatz():
         Returns:
             K3(dBK/K3(d))
         """
-        d = self.welle.d(self.z)
+        d = self.welle.d(self.z_Koordinate)
         if d >= 7.5 and d < 150:
             K_3_dBK = 1-0.2*np.log10(alpha_dBK_beta_dBK)*(np.log10(dBK/7.5)/np.log10(20))
         elif d >= 150:
@@ -616,8 +616,8 @@ class Welle_Absatz():
             beta_zd (float): Kerbwirkungszahl Zug/Druck
         """
         Art = self.Art
-        D = max(self.welle.d(self.z-1), self.welle.d(self.z+1))
-        d = self.welle.d(self.z)
+        D = max(self.welle.d(self.z_Koordinate-1), self.welle.d(self.z_Koordinate+1))
+        d = self.welle.d(self.z_Koordinate)
         def Formzahl_Unterfunktion_Formel(A,B,C,z,d,D,r,t):
             a = 1+ 1/(np.sqrt(A*r/t+2*B*r/d*(1+2*r/d)**2+C*(r/t)**z*d/D))
             return a
@@ -744,7 +744,7 @@ class Welle_Absatz():
         Returns:
             K2
         """
-        d = self.welle.d(self.z)
+        d = self.welle.d(self.z_Koordinate)
         if d < 150:
             K_2 = 1-0.2*(np.log10(d/7.5))/np.log10(20)
         else:
@@ -768,7 +768,7 @@ class Welle_Absatz():
         """
         Rz = self.welle.Rz
         werkstoff = self.welle.werkstoff
-        D = self.welle.d(self.z)
+        D = self.welle.d(self.z_Koordinate)
         sigma_B = self.Zugfestigkeit()
         K_F_sigma = 1-0.22*np.log10(Rz)*(np.log10(sigma_B/20)-1)
         K_F_tau = 0.575*K_F_sigma+0.425
@@ -790,7 +790,7 @@ class Welle_Absatz():
         irgendwie komisch beschrieben in pdf, vielleicht ist KV auch immer 1?
         """
         Art = self.Art 
-        D = self.welle.d(self.z)
+        D = self.welle.d(self.z_Koordinate)
         if Art == "umlaufende Rundnut" or Art == "Absatz":
             K_V = 1
         Oberflächenverfestigung = self.welle.Oberflächenverfestigung
@@ -861,8 +861,8 @@ class Welle_Absatz():
             K_tau (float): Gesamteinflussfaktor Torsion
         """
         beta_sigma, beta_tau, _ = self.Kerbwirkungszahl()
-        d = min(self.welle.d(self.z-1), self.welle.d(self.z+1))
-        D = max(self.welle.d(self.z-1), self.welle.d(self.z+1))
+        d = min(self.welle.d(self.z_Koordinate-1), self.welle.d(self.z_Koordinate+1))
+        D = max(self.welle.d(self.z_Koordinate-1), self.welle.d(self.z_Koordinate+1))
 
         K_2 = self.K2()
         K_V = self.KV()
@@ -888,7 +888,7 @@ class Welle_Absatz():
             tau_tWK (float): Torsionswechselfestigkeit
         """
         K_sigma, K_tau = self.Gesamtgrößeneinflussfaktor()
-        D = max(self.welle.d(self.z+1), self.welle.d(self.z-1))
+        D = max(self.welle.d(self.z_Koordinate+1), self.welle.d(self.z_Koordinate-1))
         werkstoff = self.welle.werkstoff
         K_1 = self.K1("B")
         sigma_bW = Werkstoff.Werkstoffe[werkstoff].sigma_bW
@@ -996,7 +996,7 @@ class Welle_Absatz():
             Psi_tauK (float): Mittelspannungsempfindlichkeit Torsion
         """
         sigma_zd_bWK, tau_tWK = self.Bauteilwechselfestigkeiten()
-        D = max(self.welle.d(self.z-1), self.welle.d(self.z+1))
+        D = max(self.welle.d(self.z_Koordinate-1), self.welle.d(self.z_Koordinate+1))
         sigma_B = int(Werkstoff.Werkstoffe[self.welle.werkstoff].sigma_B)
         K_1 = self.K1("B")
         Psi_zd_b_sigma_K = (sigma_zd_bWK)/(2*K_1*sigma_B-sigma_zd_bWK)
@@ -1031,7 +1031,7 @@ class Welle_Absatz():
         beta_sigma, _, _ = self.Kerbwirkungszahl()
         gamma_F_sigma, gamma_F_tau = self.Erhöhungsfaktor_der_Fließgrenze(beta_sigma)
         Psi_b_sigma_K, Psi_tau_K = self.Mittelspannungsempfindlichkeit()
-        D = max(self.welle.d(self.z+1), self.welle.d(self.z-1))
+        D = max(self.welle.d(self.z_Koordinate+1), self.welle.d(self.z_Koordinate-1))
         werkstoff = self.welle.werkstoff
         K2F_sigma , K2F_tau = self.K2F()
         sigma_S = int(Werkstoff.Werkstoffe[werkstoff].sigma_S)
@@ -1057,7 +1057,7 @@ class Welle_Absatz():
         # Geometrie
         self.Werte.append(str(self.Art))
         self.Werte.append(str(self.welle.werkstoff))
-        self.Werte.append(str(self.z))
+        self.Werte.append(str(self.z_Koordinate))
         self.Werte.append(str(self.welle.name))
 
         # Kerbwirkungszahlen
@@ -1098,8 +1098,8 @@ class Welle_Absatz():
             tau_ta (float): Torsionsausschlagspannung
             tau_tADK (float): Dauerfestigkeit Torsion
         """
-        sigma_bmax = np.sqrt(self.welle.Spannungen(self.z)[0]**2+self.welle.Spannungen(self.z)[1]**2)
-        tau_tmax = self.welle.Spannungen(self.z)[2]
+        sigma_bmax = np.sqrt(self.welle.Spannungen(self.z_Koordinate)[0]**2+self.welle.Spannungen(self.z_Koordinate)[1]**2)
+        tau_tmax = self.welle.Spannungen(self.z_Koordinate)[2]
         sigma_bq = sigma_bmax
         tau_ta = tau_tmax
         sigma_zdm, sigma_bm, tau_tm = (0,0,0)
@@ -1108,6 +1108,10 @@ class Welle_Absatz():
         sigma_bFK, tau_tFK = self.Bauteilfließgrenzen()
         S_F = 1/(np.sqrt((sigma_bmax/sigma_bFK)**2+(tau_tmax/tau_tFK)**2))
         S_D = 1/(np.sqrt((sigma_bq/sigma_bADK)**2+(tau_ta/tau_tADK)**2))
+
+        self.Werte.append(sigma_bmax)
+        self.Werte.append(tau_tmax)
+
 
         # Werte für csv
         self.Werte.append(str(S_F))
@@ -1119,14 +1123,15 @@ class Welle_Absatz():
         elif self.Art == "umlaufende Rechtecknut":
             self.Werte.append(str(self.t)+";"+str(self.r)+";"+str(self.b))
         else:
-            self.Werte.append("-")
+            DURCHMESSER = self.welle.d(self.z_Koordinate)
+            self.Werte.append(DURCHMESSER)
 
         return(S_F, S_D, self.Werte)
 
 # speichert Werte in CSV um daraus pdf zu erzeugen als Berechnung
 def Werte_in_CSV_speichern(*args:Welle_Absatz):
     W = []
-    W.append(["Name", "Werkstoff", "z_Wert", "Welle", "beta_sigma", "beta_tau", "K_ges_sigma", "K_ges_tau", "sigma_bWK", "tau_bWK", "sigma_bFK", "tau_tFK", "sigma_bADK", "tau_tADK", "S_F", "S_D", "anderes"])
+    W.append(["Name", "Werkstoff", "z_Wert", "Welle", "beta_sigma", "beta_tau", "K_ges_sigma", "K_ges_tau", "sigma_bWK", "tau_bWK", "sigma_bFK", "tau_tFK", "sigma_bADK", "tau_tADK", "S_F", "S_D", "Biegespannung", "Torsionsspannung", "anderes"])
     for Absatz in args:
         W.append(Absatz.Sicherheiten()[2])
 
@@ -1135,7 +1140,7 @@ def Werte_in_CSV_speichern(*args:Welle_Absatz):
 
 if __name__ == "__main__":
     Werkstoff.aus_csv_laden()
-    test = Welle("Test", 0, 200, "42CrMo4" , 2, "nein")
+    test = Welle("Testwelle", 0, 200, "42CrMo4" , 2, "nein")
 
     test.set_geometrie(
         ((0,25),

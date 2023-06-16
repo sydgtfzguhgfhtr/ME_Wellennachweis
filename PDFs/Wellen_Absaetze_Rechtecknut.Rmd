@@ -28,38 +28,72 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```
 
+# 0 gegebene Größen
 
+## Geometrie an Stelle `r z_Koordinate` mm der `r Welle`  
 
+Wellendurchmesser:
 
-# 0 gegebene Größen  
-## Geometrie  
-```{r, echo=FALSE, results='asis'}
-Tabelle_gegebene_Größen <- data.frame(
-  "Durchmesser" = c(D),
-  "Tiefe der Nut" = c(t),
-  "Radius" = c(r),
-  "Breite der Nut" = c(b)
-)
+$$
+d_w = `r D`mm
+$$
 
-library(kableExtra)
+Tiefe der Nut:
 
-kbl(t(Tabelle_gegebene_Größen), booktabs = TRUE) %>%
-  kable_styling(latex_options = c("striped", "hold_position")) %>%
-  add_header_above(c("in mm" = 2))
+$$
+t = `r t`mm
+$$
 
-```
- 
-## Beanspruchung  
+Radius:
 
-# 1 Bauteilwechselfestigkeiten  
-## Kerbwirkungszahlen  
+$$
+r = `r r`mm
+$$
+
+Breite der Nut:
+
+$$
+b = `r b`
+$$
+
+## Beanspruchung
+
+Biegemittelspannung:
+
+$$
+\sigma_{bm} = 0 \dfrac{N}{mm^{2}}
+$$ Biegeausschlagspannung:
+
+$$
+\sigma_{ba} = `r round(sigma_max, 3)` \dfrac{N}{mm^{2}}
+$$
+
+Torsionsmittelspannung:
+
+$$
+\tau_{tm} = 0 \dfrac{N}{mm^{2}}
+$$
+
+Torsionsausschlagspannung:
+
+$$
+\tau_{ta} = `r round(tau_max, 3)` \dfrac{N}{mm^{2}}
+$$
+
+# 1 Bauteilwechselfestigkeiten
+
+## Kerbwirkungszahlen
+
+```{=tex}
 \begin{center}
 $\beta_{\sigma_b} = `r beta_sigma`$ 
   
 $\beta_{\tau} = `r beta_tau`$  
-\end{center}  
+\end{center}
+```
+## Gesamteinflussfaktoren
 
-## Gesamteinflussfaktoren  
+```{=tex}
 \begin{center}
 
 $K_{\sigma ,b} = `r K_ges_sigma`$  
@@ -67,8 +101,10 @@ $K_{\sigma ,b} = `r K_ges_sigma`$
 $K_{\tau} = `r K_ges_tau`$
 
 \end{center}
+```
+## Bauteilwechselfestigkeit
 
-## Bauteilwechselfestigkeit  
+```{=tex}
 \begin{center}
 
 $\sigma_{bWK} = `r sigma_bWK`\ \dfrac{N}{mm^{2}}$
@@ -76,26 +112,33 @@ $\sigma_{bWK} = `r sigma_bWK`\ \dfrac{N}{mm^{2}}$
 $\tau_{tWK} = `r tau_bWK`\ \dfrac{N}{mm^{2}}$
 
 \end{center}
-
+```
 \pagebreak
 
-# 2 Bauteilfließgrenzen  
+# 2 Bauteilfließgrenzen
+
+```{=tex}
 \begin{center}  
 $\sigma_{bFK} = `r sigma_bFK`\ \dfrac{N}{mm^{2}}$  
 
 $\tau_{tFK} = `r tau_tFK`\ \dfrac{N}{mm^{2}}$  
-\end{center}  
+\end{center}
+```
+# 3 Gestaltfestigkeit
 
-# 3 Gestaltfestigkeit  
+```{=tex}
 \begin{center}
 $\sigma_{bADK} = `r sigma_bADK`\ \dfrac{N}{mm^{2}}$  
 
 $\tau_{tADK} = `r tau_tADK`\ \dfrac{N}{mm^{2}}$  
-\end{center}  
+\end{center}
+```
+# 4 Sicherheiten
 
-# 4 Sicherheiten  
+```{=tex}
 \begin{center}
 $S_F = `r S_F`$  
 
 $S_D = `r S_D`$
 \end{center}
+```

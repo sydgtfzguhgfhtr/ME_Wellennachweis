@@ -27,63 +27,92 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r, echo=FALSE}
 ```
 
+# 0 gegebene Größen
 
+## Geometrie Stelle `r z_Koordinate` mm der `r Welle`  
 
+großer Durchmesser:
 
-# 0 gegebene Größen  
-## Geometrie  
+$$
+D = `r D` mm
+$$
 
-```{r, echo=FALSE, results='asis'}
-Tabelle_gegebene_Größen <- data.frame(
-  "Durchmesser" = c(D),
-  "Kerbgrunddurchmesser" = c(d),
-  "Radius" = c(r),
-  "Absatzsprung" = c(t)
-)
+kleiner Durchmesser:
 
-library(kableExtra)
+$$
+d = `r d`mm
+$$
 
-knitr::kable(t(Tabelle_gegebene_Größen)) 
+Radius:
 
-```
- 
-## Beanspruchung  
+$$
+r = `r r`mm
+$$
 
-# 1 Bauteilwechselfestigkeiten  
-## Kerbwirkungszahlen  
+Absatzsprung:
 
-$$\beta_{\sigma_b} = `r round(beta_sigma, 3)`$$ 
-  
-$$\beta_{\tau} = `r round(beta_tau, 3)`$$  
+$$
+t = `r t` mm
+$$
 
-## Gesamteinflussfaktoren    
+## Beanspruchung
 
+Biegemittelspannung:
 
-$$K_{\sigma ,b} = `r round(K_ges_sigma, 3)`$$    
-  
-$$K_{\tau} = `r round(K_ges_tau, 3)`$$  
+$$
+\sigma_{bm} = 0 \dfrac{N}{mm^{2}}
+$$ Biegeausschlagspannung:
 
+$$
+\sigma_{ba} = `r round(sigma_max, 3)` \dfrac{N}{mm^{2}}
+$$
 
+Torsionsmittelspannung:
 
-## Bauteilwechselfestigkeit  
+$$
+\tau_{tm} = 0 \dfrac{N}{mm^{2}}
+$$
 
-$$\sigma_{bWK} = `r round(sigma_bWK, 3)` \dfrac{N}{mm^{2}}$$  
-  
-$$\tau_{tWK} = `r round(tau_bWK, 3)` \dfrac{N}{mm^{2}}$$  
-  
-# 2 Bauteilfließgrenzen  
-  
-$$\sigma_{bFK} = `r round(sigma_bFK, 3)` \dfrac{N}{mm^{2}}$$  
-  
-$$\tau_{tFK} = `r round(tau_tFK, 3)` \dfrac{N}{mm^{2}}$$  
+Torsionsausschlagspannung:
 
-# 3 Gestaltfestigkeit  
+$$
+\tau_{ta} = `r round(tau_max, 3)` \dfrac{N}{mm^{2}}
+$$
 
-$$\sigma_{bADK} = `r round(sigma_bADK, 3)` \dfrac{n}{mm^{2}}$$    
-  
-$$\tau_{tADK} = `r round(tau_tADK, 3)` \dfrac{N}{mm^{2}}$$  
+# 1 Bauteilwechselfestigkeiten
 
-# 4 Sicherheiten  
-$$S_F = `r round(S_F, 3)`$$    
-  
-$$S_D = `r round(S_D, 3)`$$ 
+## Kerbwirkungszahlen
+
+$$\beta_{\sigma_b} = `r round(beta_sigma, 3)`$$
+
+$$\beta_{\tau} = `r round(beta_tau, 3)`$$
+
+## Gesamteinflussfaktoren
+
+$$K_{\sigma ,b} = `r round(K_ges_sigma, 3)`$$
+
+$$K_{\tau} = `r round(K_ges_tau, 3)`$$
+
+## Bauteilwechselfestigkeit
+
+$$\sigma_{bWK} = `r round(sigma_bWK, 3)` \dfrac{N}{mm^{2}}$$
+
+$$\tau_{tWK} = `r round(tau_bWK, 3)` \dfrac{N}{mm^{2}}$$
+
+# 2 Bauteilfließgrenzen
+
+$$\sigma_{bFK} = `r round(sigma_bFK, 3)` \dfrac{N}{mm^{2}}$$
+
+$$\tau_{tFK} = `r round(tau_tFK, 3)` \dfrac{N}{mm^{2}}$$
+
+# 3 Gestaltfestigkeit
+
+$$\sigma_{bADK} = `r round(sigma_bADK, 3)` \dfrac{n}{mm^{2}}$$
+
+$$\tau_{tADK} = `r round(tau_tADK, 3)` \dfrac{N}{mm^{2}}$$
+
+# 4 Sicherheiten
+
+$$S_F = `r round(S_F, 3)`$$
+
+$$S_D = `r round(S_D, 3)`$$

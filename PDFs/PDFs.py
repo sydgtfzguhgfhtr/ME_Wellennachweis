@@ -17,6 +17,9 @@ name_values = D["Name"].tolist()
 for i in range(len(D)):
     filename = str(D.loc[i,"Welle"])+"_"+str(D.loc[i,"Name"])+"_"+str(i)+".pdf"
     files.append(filename)
+    r.assign("z_Koordinate",D.loc[i,"z_Wert"])
+    r.assign("sigma_max",D.loc[i,"Biegespannung"])
+    r.assign("tau_max",D.loc[i,"Torsionsspannung"])
     r.assign("Name",str(D.loc[i,"Name"]))
     r.assign("werkstoff",str(D.loc[i,"Werkstoff"]))
     r.assign("z_Wert",float(D.loc[i,"z_Wert"]))
@@ -68,21 +71,33 @@ for i in range(len(D)):
         knitr.knit(r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\PDFs\Wellen_Absaetze_Rechtecknut.Rmd")
         subprocess.run(["pandoc","-s","Wellen_Absaetze_Rechtecknut.md","-o",filename])
     if D.loc[i,"Name"] == "eine Passfeder" or D.loc[i,"Name"] == "zwei Passfedern":
+        dw = anderes
+        r.assign("dw",dw)
         knitr.knit(r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\PDFs\Wellen_Absaetze_Passfeder.Rmd")
         subprocess.run(["pandoc","-s","Wellen_Absaetze_Passfeder.md","-o",filename])
     if D.loc[i,"Name"] == "umlaufende Spitzkerbe":
+        dw = anderes
+        r.assign("dw",dw)
         knitr.knit(r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\PDFs\Wellen_Absaetze_Spitzkerbe.Rmd")
         subprocess.run(["pandoc","-s","Wellen_Absaetze_Spitzkerbe.md","-o",filename])
     if D.loc[i,"Name"] == "Keilwelle":
+        dw = anderes
+        r.assign("dw",dw)
         knitr.knit(r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\PDFs\Wellen_Absaetze_Keilwelle.Rmd")
         subprocess.run(["pandoc","-s","Wellen_Absaetze_Keilwelle.md","-o",filename])
     if D.loc[i,"Name"] == "Kerbzahnwelle":
+        dw = anderes
+        r.assign("dw",dw)
         knitr.knit(r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\PDFs\Wellen_Absaetze_Kerbzahnwelle.Rmd")
         subprocess.run(["pandoc","-s","Wellen_Absaetze_Kerbzahnwelle.md","-o",filename])
     if D.loc[i,"Name"] == "Zahnwelle":
+        dw = anderes
+        r.assign("dw",dw)
         knitr.knit(r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\PDFs\Wellen_Absaetze_Zahnwelle.Rmd")
         subprocess.run(["pandoc","-s","Wellen_Absaetze_Zahnwelle.md","-o",filename])
     if D.loc[i,"Name"] == "Pressverbindung":
+        dw = anderes
+        r.assign("dw",dw)
         knitr.knit(r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\PDFs\Wellen_Absaetze_Pressverbindung.Rmd")
         subprocess.run(["pandoc","-s","Wellen_Absaetze_Pressverbindung.md","-o",filename])
 

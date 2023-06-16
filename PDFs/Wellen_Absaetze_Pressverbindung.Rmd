@@ -32,21 +32,33 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 # 0 gegebene Größen  
-## Geometrie  
-```{r, echo=FALSE, results='asis'}
-Tabelle_gegebene_Größen <- data.frame(
-    "Wellendurchmesser" = c(dw)
-)
-
-library(kableExtra)
-
-kbl(t(Tabelle_gegebene_Größen), booktabs = TRUE) %>%
-  kable_styling(latex_options = c("striped", "hold_position")) %>%
-  add_header_above(c("in mm" = 2))
-
-```
+## Geometrie Stelle `r z_Koordinate` mm der `r Welle`  
+Wellendurchmesser:  
+$$d_w = `r dw`mm$$
  
 ## Beanspruchung  
+
+Biegemittelspannung:
+
+$$
+\sigma_{bm} = 0 \dfrac{N}{mm^{2}}
+$$ Biegeausschlagspannung:
+
+$$
+\sigma_{ba} = `r round(sigma_max, 3)` \dfrac{N}{mm^{2}}
+$$
+
+Torsionsmittelspannung:
+
+$$
+\tau_{tm} = 0 \dfrac{N}{mm^{2}}
+$$
+
+Torsionsausschlagspannung:
+
+$$
+\tau_{ta} = `r round(tau_max, 3)` \dfrac{N}{mm^{2}}
+$$
 
 # 1 Bauteilwechselfestigkeiten  
 ## Kerbwirkungszahlen  
