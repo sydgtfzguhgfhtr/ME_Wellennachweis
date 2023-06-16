@@ -24,10 +24,10 @@ header-includes:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r, echo=FALSE}
+![Rundnut](PDFs\\Rundnut.png#center){width=400px}  
+![Seitenansicht](PDFs\\Rundnut_iso.png#center){width=500px}  
 
-```
-
+\pagebreak
 # 0 gegebene Größen
 
 ## Geometrie Stelle `r z_Koordinate` mm der `r Welle`  
@@ -35,7 +35,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Wellendurchmesser:
 
 $$
-d_w = `r dw` mm
+d_w = `r d` mm
 $$
 
 Kerbgrunddurchmesser:
