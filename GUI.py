@@ -102,8 +102,8 @@ while running:
     [sg.Text("Oberflächenrauheit Rz ="),sg.Input(Rz,(7,any))],
 
     [sg.Text("Lagerpositionen",font=(any,20))],
-    [sg.Text("Festlager:"),sg.Input(festlager_z,size=(7,None),key="-FLZ-")],
-    [sg.Text("Loslager: "),sg.Input(loslager_z,size=(7,None),key="-LLZ-")],
+    [sg.Text("Festlager:"),sg.Input(festlager_z,size=(7,None),key="-FLZ-"),sg.Text("mm")],
+    [sg.Text("Loslager: "),sg.Input(loslager_z,size=(7,None),key="-LLZ-"),sg.Text("mm")],
 
     [sg.Column(geometrie_layout),sg.VSep(),sg.Column(kräfte_layout)],
     [sg.Button("Lagerkräfte berechnen",key="-CALC LAGERKRÄFTE-")],

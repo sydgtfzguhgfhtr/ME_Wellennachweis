@@ -49,7 +49,7 @@ Torsionswechselfestigkeit:      {self.tau_tW}
         return 1
 
 class Welle:
-    def __init__(self,name:str,festlager_z:int,loslager_z:int, werkstoff:Werkstoff, Rz, Oberflächenverfestigung,dz=1) -> None:
+    def __init__(self,name:str,festlager_z:int,loslager_z:int, werkstoff:Werkstoff, Oberflächenverfestigung,dz=1) -> None:
         self.name = str(name)
         self.Emod = 210e3 # N/mm^2
         self.dz = dz
@@ -61,7 +61,6 @@ class Welle:
         self.z_daten = []
         self.r_daten = []
         self.werkstoff = werkstoff
-        self.Rz = Rz
         self.Oberflächenverfestigung = Oberflächenverfestigung
         self.belastungen = [(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0),(0,0,0,0,0,0,0)]
         self.minL = None
@@ -405,7 +404,7 @@ class Welle:
 class Welle_Absatz():
     """einzelne nachzuweisende Wellenabsätze
     """
-    def __init__(self,welle:Welle,z_Koordinate, Art, *args):
+    def __init__(self,welle:Welle,z_Koordinate, Art,Rz, *args):
         """Wellenabsatz
 
         Args:
@@ -431,6 +430,7 @@ class Welle_Absatz():
         """
         self.welle = welle
         self.z_Koordinate = z_Koordinate
+        self.Rz = Rz
         self.Art = Art
         self.Werte = []
         if self.Art == "Absatz":
@@ -766,7 +766,7 @@ class Welle_Absatz():
         """
         aber in Übungspdf steht nichts weiter aber in gelösten Übungsaufgaben manchmal anders gemacht (keine Ahnung warum?)
         """
-        Rz = self.welle.Rz
+        Rz = self.Rz
         werkstoff = self.welle.werkstoff
         D = self.welle.d(self.z_Koordinate)
         sigma_B = self.Zugfestigkeit()
