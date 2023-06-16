@@ -23,37 +23,19 @@ header-includes:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+![](PDFs\\Absattz.png#center){width=500px}
 
-```{r, echo=FALSE}
-```
+### Geometrie an der Stelle `r z_Koordinate` mm der `r Welle`  
 
-# 0 gegebene Größen
+großer Durchmesser:  \ \ \ \ \ \ \ \       $D = `r D` mm$  
 
-## Geometrie Stelle `r z_Koordinate` mm der `r Welle`  
+kleiner Durchmesser: \ \ \ \ \ \ \ \         $d = `r d`mm$  
 
-großer Durchmesser:
+Radius:  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \       \ \ \ \ \ \ \             $r = `r r`mm$  
 
-$$
-D = `r D` mm
-$$
+Absatzsprung:  \ \ \   \ \ \ \ \ \ \ \ \ \ \ \ \          $t = `r t` mm$
 
-kleiner Durchmesser:
-
-$$
-d = `r d`mm
-$$
-
-Radius:
-
-$$
-r = `r r`mm
-$$
-
-Absatzsprung:
-
-$$
-t = `r t` mm
-$$
+\pagebreak
 
 ## Beanspruchung
 

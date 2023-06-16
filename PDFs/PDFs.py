@@ -50,7 +50,7 @@ for i in range(len(D)):
         r.assign("t",b)
         knitr.knit(r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\PDFs\Wellen_Absaetze_Absatz.Rmd")
         subprocess.run(["pandoc","-s","Wellen_Absaetze_Absatz.md","-o",filename])
-    if D.loc[i,"Name"] == "umlaufende Rundnut":
+    if D.loc[i,"Name"] == "umlaufende Rundnut":     # Rmd Datei fertig
         l = anderes.split(";")
         d = l[0]
         R = l[1]
