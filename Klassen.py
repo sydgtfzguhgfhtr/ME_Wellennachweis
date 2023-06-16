@@ -163,7 +163,7 @@ class Welle:
         """Gibt Durchmesser der Welle an Stelle z aus. Alle Längen werden in `mm` angegeben"""
         return self.d(z)
     def plot(self):
-        """Stellt die Welle dar."""
+        """Stellt die Welle und die Belastungen dar."""
         _,z_kräfte,_,_,_,_,_=zip(*self.belastungen)
         max_z_k = max(z_kräfte)
         max_z = max(self.z_daten)
@@ -239,6 +239,27 @@ class Welle:
 
         ax[0,0].invert_yaxis() # Achse invertieren
 
+        plt.show()
+
+    def welle_darstellen(self):
+        """Stellt die Wellengeometrie dar"""
+        max_z = max(self.z_daten)
+        min_z = min(self.z_daten)
+
+        zrange = np.linspace(min_z,max_z,10000)
+        rrange = np.fromiter(map(self.radius,zrange),float,len(zrange))
+
+        fig,ax = plt.subplots(1,1,num=self.name+" Belastungsplot")
+        fig.set_size_inches(15,10)
+        fig.suptitle(f'Welle "{self.name}"',fontsize=18)
+        ax.plot(zrange,rrange,"k")
+        ax.plot(zrange,rrange*-1,"k")
+        ax.hlines(0,min_z-self.länge*0.05,self.z_daten[-1]+self.länge*0.05,linestyles="dashdot",colors="black")
+        for i,z in enumerate(self.z_daten):
+            ax.vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
+
+        ax.set_xlabel("$Z\\ [mm]$")
+        ax.set_ylabel("$r\\ [mm]$")
         plt.show()
 
     def plot_torsion(self):
@@ -1140,7 +1161,7 @@ def Werte_in_CSV_speichern(*args:Welle_Absatz):
 
 if __name__ == "__main__":
     Werkstoff.aus_csv_laden()
-    test = Welle("Testwelle", 0, 200, "42CrMo4" , 2, "nein")
+    test = Welle("Testwelle", 0, 200, "42CrMo4" ,"nein")
 
     test.set_geometrie(
         ((0,25),
@@ -1155,8 +1176,10 @@ if __name__ == "__main__":
     test.set_Kraft(3500, "r", 20, 0, 0)
     test.set_Kraft(-4500, "r", 280, 0, 0)
 
-    test.lagerkräfte_berechnen()
-    test.verformung_berechnen()
+    test.welle_darstellen()
+
+    # test.lagerkräfte_berechnen()
+    # test.verformung_berechnen()
 
 
     # test.plot()
@@ -1167,17 +1190,17 @@ if __name__ == "__main__":
     # plt.gca().invert_yaxis()
     # plt.show()
 
-    Abschnitt1 = Welle_Absatz(test, 40, "Absatz", 5)
-    Abschnitt2 = Welle_Absatz(test, 40, "eine Passfeder")
-    Abschnitt3 = Welle_Absatz(test, 40, "umlaufende Rundnut", 10, 1, 2)
-    Abschnitt4 = Welle_Absatz(test, 40, "zwei Passfedern")
-    Abschnitt5 = Welle_Absatz(test, 40, "umlaufende Spitzkerbe")
-    Abschnitt6 = Welle_Absatz(test, 40, "Keilwelle")
-    Abschnitt7 = Welle_Absatz(test, 40, "Kerbzahnwelle")
-    Abschnitt8 = Welle_Absatz(test, 40, "Zahnwelle")
-    Abschnitt9 = Welle_Absatz(test, 40, "Pressverbindung")
-    Abschnitt10 = Welle_Absatz(test, 40, "umlaufende Rechtecknut", 2, 1, 3)
-    Werte_in_CSV_speichern(Abschnitt1, Abschnitt2, Abschnitt3, Abschnitt4, Abschnitt5, Abschnitt6, Abschnitt7, Abschnitt8, Abschnitt9, Abschnitt10)
+    # Abschnitt1 = Welle_Absatz(test, 40, "Absatz", 5)
+    # Abschnitt2 = Welle_Absatz(test, 40, "eine Passfeder")
+    # Abschnitt3 = Welle_Absatz(test, 40, "umlaufende Rundnut", 10, 1, 2)
+    # Abschnitt4 = Welle_Absatz(test, 40, "zwei Passfedern")
+    # Abschnitt5 = Welle_Absatz(test, 40, "umlaufende Spitzkerbe")
+    # Abschnitt6 = Welle_Absatz(test, 40, "Keilwelle")
+    # Abschnitt7 = Welle_Absatz(test, 40, "Kerbzahnwelle")
+    # Abschnitt8 = Welle_Absatz(test, 40, "Zahnwelle")
+    # Abschnitt9 = Welle_Absatz(test, 40, "Pressverbindung")
+    # Abschnitt10 = Welle_Absatz(test, 40, "umlaufende Rechtecknut", 2, 1, 3)
+    # Werte_in_CSV_speichern(Abschnitt1, Abschnitt2, Abschnitt3, Abschnitt4, Abschnitt5, Abschnitt6, Abschnitt7, Abschnitt8, Abschnitt9, Abschnitt10)
 
 
     # welle = Welle("Online Rechner",1,5)
