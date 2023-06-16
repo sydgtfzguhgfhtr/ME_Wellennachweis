@@ -262,9 +262,14 @@ class Welle:
         ax.scatter(px,py)  # Absätze markieren
         for i,punkt in enumerate(self.geometrie):
             ax.annotate(f"P{i} ({punkt[0]},{punkt[1]})",punkt,(5,5),textcoords="offset pixels")
+        
+        ax.scatter((self.festlager_z,self.loslager_z),(0,0),(100,100),marker="^") # Lagermarkierungen
+        ax.annotate("Festlager",(self.festlager_z,0),(5,-20),textcoords="offset pixels")
+        ax.annotate("Loslager",(self.loslager_z,0),(5,-20),textcoords="offset pixels")
         ax.set_xlabel("$Z\\ [mm]$")
         ax.set_ylabel("$r\\ [mm]$")
         ax.axis("equal")
+        ax.grid()
         plt.show()
 
     def plot_torsion(self):
