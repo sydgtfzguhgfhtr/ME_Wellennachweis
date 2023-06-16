@@ -124,20 +124,28 @@ while running:
             break
         if event == "-DRAW WELLE-":
             save_all()
-            welle = Welle(name=wellenname,festlager_z=festlager_z,loslager_z=loslager_z,werkstoff=material,Oberflächenverfestigung=oberflächenv)
-            geometrie = [(float(punkt[1]),float(punkt[2])) for punkt in punkteinput]
-            welle.set_geometrie(geometrie)
-            welle.welle_darstellen()
+            try:
+                welle = Welle(name=wellenname,festlager_z=festlager_z,loslager_z=loslager_z,werkstoff=material,Oberflächenverfestigung=oberflächenv)
+                geometrie = [(float(punkt[1]),float(punkt[2])) for punkt in punkteinput]
+                welle.set_geometrie(geometrie)
+                welle.welle_darstellen()
+            except:
+                sg.PopupError("Es ist ein Fehler aufgetreten.\nBitte die Eingaben auf Vollständigkeit überprüfen!",title="Fehlermeldung")
 
         if event=="-CALC LAGERKRÄFTE-":
             save_all()
-            welle = Welle(name=wellenname,festlager_z=festlager_z,loslager_z=loslager_z,werkstoff=material,Oberflächenverfestigung=oberflächenv)
-            geometrie = [(float(punkt[1]),float(punkt[2])) for punkt in punkteinput]
-            welle.set_geometrie(geometrie)
-            for kraft in kräfteinput:
-                welle.set_Kraft(float(kraft[0]),kraft[4],float(kraft[1]),float(kraft[2]),float(kraft[3]))
-            welle.lagerkräfte_berechnen()
-            welle.plot()
+            try:
+                welle = Welle(name=wellenname,festlager_z=festlager_z,loslager_z=loslager_z,werkstoff=material,Oberflächenverfestigung=oberflächenv)
+                geometrie = [(float(punkt[1]),float(punkt[2])) for punkt in punkteinput]
+                welle.set_geometrie(geometrie)
+                for kraft in kräfteinput:
+                    welle.set_Kraft(float(kraft[0]),kraft[4],float(kraft[1]),float(kraft[2]),float(kraft[3]))
+                welle.lagerkräfte_berechnen()
+                welle.plot()
+            except:
+                sg.PopupError("Es ist ein Fehler aufgetreten.\nBitte die Eingaben auf Vollständigkeit überprüfen!",title="Fehlermeldung")
+
+
         if event=="-ADD_PUNKT-":
             save_all()
             n_punkte += 1

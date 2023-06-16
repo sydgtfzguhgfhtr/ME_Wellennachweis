@@ -249,7 +249,7 @@ class Welle:
         zrange = np.linspace(min_z,max_z,10000)
         rrange = np.fromiter(map(self.radius,zrange),float,len(zrange))
 
-        fig,ax = plt.subplots(1,1,num=self.name+" Belastungsplot")
+        fig,ax = plt.subplots(1,1,num=self.name+" Darstellung")
         fig.set_size_inches(15,10)
         fig.suptitle(f'Welle "{self.name}"',fontsize=18)
         ax.plot(zrange,rrange,"k")
@@ -258,8 +258,13 @@ class Welle:
         for i,z in enumerate(self.z_daten):
             ax.vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
 
+        px, py = zip(*self.geometrie)
+        ax.scatter(px,py)  # Absätze markieren
+        for i,punkt in enumerate(self.geometrie):
+            ax.annotate(f"P{i} ({punkt[0]},{punkt[1]})",punkt,(5,5),textcoords="offset pixels")
         ax.set_xlabel("$Z\\ [mm]$")
         ax.set_ylabel("$r\\ [mm]$")
+        ax.axis("equal")
         plt.show()
 
     def plot_torsion(self):
