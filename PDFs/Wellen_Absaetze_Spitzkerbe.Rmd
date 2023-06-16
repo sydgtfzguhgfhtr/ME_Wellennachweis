@@ -25,23 +25,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r, echo=FALSE}
-dw = 50
-Name = "umlaufende Spitzkerbe"
-werkstoff = "42CrMo4"
-z_Wert = 40
-Welle = "Test"
-beta_sigma = 2
-beta_tau = 3
-K_ges_sigma = 30
-K_ges_tau = 29
-sigma_bWK = 2038
-tau_bWK = 239848
-sigma_bFK = 48
-tau_tFK = 439875
-sigma_bADK = 34
-tau_tADK = 457
-S_F = 2
-S_D = 4
+
 ```
 
 

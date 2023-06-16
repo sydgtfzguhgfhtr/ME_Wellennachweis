@@ -25,26 +25,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r, echo=FALSE}
-dw = 50
-d = 42
-r = 5
-b = 4
-Name = "Absatz"
-werkstoff = "42CrMo4"
-z_Wert = 40
-Welle = "Test"
-beta_sigma = 2
-beta_tau = 3
-K_ges_sigma = 30
-K_ges_tau = 29
-sigma_bWK = 2038
-tau_bWK = 239848
-sigma_bFK = 48
-tau_tFK = 439875
-sigma_bADK = 34
-tau_tADK = 457
-S_F = 2
-S_D = 4
+
 ```
 
 
@@ -72,38 +53,39 @@ kbl(t(Tabelle_gegebene_Größen), booktabs = TRUE) %>%
 
 # 1 Bauteilwechselfestigkeiten  
 ## Kerbwirkungszahlen  
-\begin{center}
-$\beta_{\sigma_b} = `r round(beta_sigma, 3)`$ 
+
+$$\beta_{\sigma_b} = `r round(beta_sigma, 3)`$$ 
   
-$\beta_{\tau} = `r round(beta_tau, 3)`$  
-\end{center}  
+$$\beta_{\tau} = `r round(beta_tau, 3)`$$  
 
-## Gesamteinflussfaktoren  
-\begin{center}
+## Gesamteinflussfaktoren    
 
-$K_{\sigma ,b} = `r round(K_ges_sigma, 3)`$  
 
-$K_{\tau} = `r round(K_ges_tau, 3)`$
+$$K_{\sigma ,b} = `r round(K_ges_sigma, 3)`$$    
+  
+$$K_{\tau} = `r round(K_ges_tau, 3)`$$  
 
-\end{center}
+
 
 ## Bauteilwechselfestigkeit  
 
 $$\sigma_{bWK} = `r round(sigma_bWK, 3)` \dfrac{N}{mm^{2}}$$  
   
 $$\tau_{tWK} = `r round(tau_bWK, 3)` \dfrac{N}{mm^{2}}$$  
-
+  
 # 2 Bauteilfließgrenzen  
+  
 $$\sigma_{bFK} = `r round(sigma_bFK, 3)` \dfrac{N}{mm^{2}}$$  
   
 $$\tau_{tFK} = `r round(tau_tFK, 3)` \dfrac{N}{mm^{2}}$$  
 
 # 3 Gestaltfestigkeit  
-$$\sigma_{bADK} = `r round(sigma_bADK, 3)` \dfrac{N}{mm^{2}}$$  
+
+$$\sigma_{bADK} = `r round(sigma_bADK, 3)` \dfrac{n}{mm^{2}}$$    
   
 $$\tau_{tADK} = `r round(tau_tADK, 3)` \dfrac{N}{mm^{2}}$$  
 
 # 4 Sicherheiten  
-$$S_F = `r round(S_F, 3)`$$  
+$$S_F = `r round(S_F, 3)`$$    
   
-$$S_D = `r round(S_D, 3)`$$
+$$S_D = `r round(S_D, 3)`$$ 

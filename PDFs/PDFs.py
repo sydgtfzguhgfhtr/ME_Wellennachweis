@@ -1,4 +1,6 @@
 import subprocess
+import os
+import shutil
 from rpy2.robjects import r 
 from rpy2.robjects import pandas2ri, packages
 import rpy2.robjects.packages as rpackages
@@ -84,14 +86,22 @@ for i in range(len(D)):
         knitr.knit(r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\PDFs\Wellen_Absaetze_Pressverbindung.Rmd")
         subprocess.run(["pandoc","-s","Wellen_Absaetze_Pressverbindung.md","-o",filename])
 
+Dateien_md = [
+    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Absatz.md",
+    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Keilwelle.md",
+    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Kerbzahnwelle.md",
+    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Passfeder.md",
+    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Pressverbindung.md",
+    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Rechtecknut.md",
+    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Rundnut.md",
+    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Spitzkerbe.md",
+    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Zahnwelle.md"
+    ]
 
 
-# r.assign("dw",float(dw_eingabe.text()))
-# r.assign("MT",float(mt_eingabe.text()))
-# r.assign("w_welle",w_welle.curentText())
-# r.assign("w_nabe",w_nabe.curentText())
-# r.assign("w_passfeder",w_passfeder.curentText())
-# r.assign("s_f",float(sf_eingabe.text()))
-# r.assign("anzahl_passfeder",2)
-# knitr.knit("Passfeder.rmd")
-# subprocess.run(["pandoc","-s","Passfeder.md","-o","Passfeder_2.pdf"])
+for line in Dateien_md:
+    if os.path.exists(line):
+        os.remove(line)
+
+for file in files:
+    shutil.move(file, r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\PDFs\Ergebnisse")
