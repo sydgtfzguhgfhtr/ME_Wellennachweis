@@ -1,6 +1,5 @@
 import subprocess
 import os
-import shutil
 from rpy2.robjects import r 
 from rpy2.robjects import pandas2ri, packages
 import rpy2.robjects.packages as rpackages
@@ -39,7 +38,7 @@ for i in range(len(D)):
     r.assign("S_F",D.loc[i,"S_F"])
     r.assign("S_D",D.loc[i,"S_D"])
     anderes = D.loc[i,"anderes"]
-    if D.loc[i,"Name"] == "Absatz":
+    if D.loc[i,"Name"] == "Absatz":             # fertig
         l = anderes.split(";")
         Durch = l[0]
         print(D)
@@ -52,11 +51,13 @@ for i in range(len(D)):
         r.assign("t",b)
         knitr.knit(r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\PDFs\Wellen_Absaetze_Absatz.Rmd")
         subprocess.run(["pandoc","-s","Wellen_Absaetze_Absatz.md","-o",filename])
-    if D.loc[i,"Name"] == "umlaufende Rundnut":     # Rmd Datei fertig
+    if D.loc[i,"Name"] == "umlaufende Rundnut":     # fertig
         l = anderes.split(";")
         d = l[0]
         R = l[1]
         b = l[2]
+        dw = l[3]
+        r.assign("dw",dw)
         r.assign("d",d)
         r.assign("r",R)
         r.assign("b",b)
@@ -67,6 +68,8 @@ for i in range(len(D)):
         t = l[0]
         R = l[1]
         b = l[2]
+        dw = l[3]
+        r.assign("dw",dw)
         r.assign("t",t)
         r.assign("r",R)
         r.assign("b",b)
@@ -116,9 +119,7 @@ Dateien_md = [
     ]
 
 
-for line in Dateien_md:
-    if os.path.exists(line):
-        os.remove(line)
+
 
 
 def merge_pdfs(input_files, output_file):
@@ -144,5 +145,9 @@ def merge_pdfs(input_files, output_file):
 # Rufe die Funktion auf, um die PDF-Dateien zusammenzuführen
 merge_pdfs(files, output_file)
 
-for file in files:
-    shutil.move(file, r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\PDFs\Ergebnisse")
+for line in Dateien_md:
+    if os.path.exists(line):
+        os.remove(line)
+
+for line in files:
+    os.remove(line)

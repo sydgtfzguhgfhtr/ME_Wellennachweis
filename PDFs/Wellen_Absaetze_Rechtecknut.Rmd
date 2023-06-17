@@ -1,7 +1,7 @@
 ---
 title: "Wellennachweis - umlaufende Rechtecknut"
 author: "Quentin Huss, Nadine Schulz"
-date: "14.06.2023"
+date: "`r format(Sys.time(), '%d.%m.%y, %X')`"
 output: pdf_document
 header-includes:
 - \usepackage{booktabs}
@@ -28,33 +28,23 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```
 
+![](C:\\Users\\Nadine\\Documents\\Studium\\Studium\\1234567890\\ME_Wellen\\ME_Wellennachweis\\PDFs\\Rechtecknut.png)
+
 # 0 gegebene Größen
 
 ## Geometrie an Stelle `r z_Koordinate` mm der `r Welle`  
 
-Wellendurchmesser:
+\begin{center}
+\begin{tabular}{|ll|}
+Wellendurchmesser & $D = `r dw`mm$ \\
+Tiefe der Nut & $t = `r t`mm$ \\
+Radius & $r = `r r`mm$ \\
+Breite der Nut & $b = `r b`mm$
+\end{tabular}
+\end{center}
 
-$$
-d_w = `r D`mm
-$$
+\pagebreak
 
-Tiefe der Nut:
-
-$$
-t = `r t`mm
-$$
-
-Radius:
-
-$$
-r = `r r`mm
-$$
-
-Breite der Nut:
-
-$$
-b = `r b`
-$$
 
 ## Beanspruchung
 
@@ -84,61 +74,36 @@ $$
 
 ## Kerbwirkungszahlen
 
-```{=tex}
-\begin{center}
-$\beta_{\sigma_b} = `r beta_sigma`$ 
-  
-$\beta_{\tau} = `r beta_tau`$  
-\end{center}
-```
+$$\beta_{\sigma_b} = `r round(beta_sigma, 3)`$$
+
+$$\beta_{\tau} = `r round(beta_tau, 3)`$$
+
 ## Gesamteinflussfaktoren
 
-```{=tex}
-\begin{center}
+$$K_{\sigma ,b} = `r round(K_ges_sigma, 3)`$$
 
-$K_{\sigma ,b} = `r K_ges_sigma`$  
+$$K_{\tau} = `r round(K_ges_tau, 3)`$$
 
-$K_{\tau} = `r K_ges_tau`$
-
-\end{center}
-```
 ## Bauteilwechselfestigkeit
 
-```{=tex}
-\begin{center}
+$$\sigma_{bWK} = `r round(sigma_bWK, 3)` \dfrac{N}{mm^{2}}$$
 
-$\sigma_{bWK} = `r sigma_bWK`\ \dfrac{N}{mm^{2}}$
-
-$\tau_{tWK} = `r tau_bWK`\ \dfrac{N}{mm^{2}}$
-
-\end{center}
-```
-\pagebreak
+$$\tau_{tWK} = `r round(tau_bWK, 3)` \dfrac{N}{mm^{2}}$$
 
 # 2 Bauteilfließgrenzen
 
-```{=tex}
-\begin{center}  
-$\sigma_{bFK} = `r sigma_bFK`\ \dfrac{N}{mm^{2}}$  
+$$\sigma_{bFK} = `r round(sigma_bFK, 3)` \dfrac{N}{mm^{2}}$$
 
-$\tau_{tFK} = `r tau_tFK`\ \dfrac{N}{mm^{2}}$  
-\end{center}
-```
+$$\tau_{tFK} = `r round(tau_tFK, 3)` \dfrac{N}{mm^{2}}$$
+
 # 3 Gestaltfestigkeit
 
-```{=tex}
-\begin{center}
-$\sigma_{bADK} = `r sigma_bADK`\ \dfrac{N}{mm^{2}}$  
+$$\sigma_{bADK} = `r round(sigma_bADK, 3)` \dfrac{n}{mm^{2}}$$
 
-$\tau_{tADK} = `r tau_tADK`\ \dfrac{N}{mm^{2}}$  
-\end{center}
-```
+$$\tau_{tADK} = `r round(tau_tADK, 3)` \dfrac{N}{mm^{2}}$$
+
 # 4 Sicherheiten
 
-```{=tex}
-\begin{center}
-$S_F = `r S_F`$  
+$$S_F = `r round(S_F, 3)`$$
 
-$S_D = `r S_D`$
-\end{center}
-```
+$$S_D = `r round(S_D, 3)`$$

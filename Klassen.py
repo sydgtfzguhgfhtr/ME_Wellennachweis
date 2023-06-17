@@ -1150,9 +1150,9 @@ class Welle_Absatz():
         if self.Art == "Absatz":
             self.Werte.append(str(self.D)+";"+str(self.d)+";"+str(self.r)+";"+str((self.D-self.d)/2))
         elif self.Art == "umlaufende Rundnut":
-            self.Werte.append(str(self.d)+";"+str(self.r)+";"+str(self.b))
+            self.Werte.append(str(self.d)+";"+str(self.r)+";"+str(self.b)+";"+str(self.welle.d(self.z_Koordinate)))
         elif self.Art == "umlaufende Rechtecknut":
-            self.Werte.append(str(self.t)+";"+str(self.r)+";"+str(self.b))
+            self.Werte.append(str(self.t)+";"+str(self.r)+";"+str(self.b)+";"+str(self.welle.d(self.z_Koordinate)))
         else:
             DURCHMESSER = self.welle.d(self.z_Koordinate)
             self.Werte.append(DURCHMESSER)
