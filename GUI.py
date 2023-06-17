@@ -14,10 +14,12 @@ Rz = 20
 n_punkte = 2 # Standardwert für die Punktzahl
 n_kräfte = 1 # Standardwert für die Kräftezahl
 lasttab = "Lager"
+add_n_p = 1
+add_n_k = 1
 
 welle = None
 optionen_oberfl = ("nein","Nitrieren","Einsatzhärten","Karbonierhärten","Festwalzen","Kugelstrahlen","Flammhärten")
-
+FL_Fx,FL_Fy,FL_Fz,LL_Fx,LL_Fy = 0,0,0,0,0 
 
 punkteinput = [] # Beinhaltet die Nutzerdaten für die Punkte
 punktreihe_stdwerte = {"NW":False,"Z":0,"R":0,"EXTRA":"","Rz":0,"RUNDUNGSR":0,"KERBGRUNDD":0,"NUTT":0,"NUTR":0,"NUTB":0}
@@ -147,11 +149,12 @@ Werkstoff.aus_csv_laden()
 
 while running:
     instance = True
-    punkteinput.append(punktreihe_stdwerte)
+    for i in range(add_n_p):
+        punkteinput.append(punktreihe_stdwerte)
 
     geometrie_layout = [
     [sg.Text("Geometrie definieren",font=(any,20))],
-    [sg.Button("Punkt hinzufügen",key="-ADD_PUNKT-"),sg.Button("Punkt entfernen",key="-REM_PUNKT-")],
+    [sg.Input(1,(5,None),key="ADD_N_P"),sg.Button("hinzufügen",key="-ADD_PUNKT-"),sg.Button("entfernen",key="-REM_PUNKT-")],
     [sg.Text("Punkte",font=(any,15))],
     ]
     for i in range(n_punkte):
@@ -159,7 +162,7 @@ while running:
 
     kräfte_layout = [
         [sg.Text("Belastung definieren",font=(any,20))],
-        [sg.Button("Kraft hinzufügen",key="-ADD_KRAFT-"),sg.Button("Kraft entfernen",key="-REM_KRAFT-")],
+        [sg.Input(1,(5,None),key="ADD_N_K"),sg.Button("hinzufügen",key="-ADD_KRAFT-"),sg.Button("entfernen",key="-REM_KRAFT-")],
     ]
     for i in range(n_kräfte):
         kräfte_layout.append(kraftreihe(i))
@@ -177,6 +180,26 @@ while running:
     tab_geometrie = sg.Tab("Geometrie",geometrie_layout)
     tab_kräfte = sg.Tab("Belastungen",kräfte_layout)
 
+    # Auswertetabs
+    tab_plots = sg.Tab("Plots",[
+        [sg.Text("Plots",font=(any,17))],
+        [sg.Button("Plot Verformung",key="-PLOT VERFORMUNG-",size=(30,None))],
+        [sg.Button("Plot Neigung",key="-PLOT NEIGUNG-",size=(30,None))],
+        [sg.Button("Plot Kräfte/Biegung",key="-PLOT KRÄFTE BIEGUNG-",size=(30,None))],
+        [sg.Button("Plot Torsion",key="-PLOT TORSION-",size=(30,None))],
+        ])
+    tab_lagerkräfte = sg.Tab("Lagerkräfte",[
+        [sg.Text("Lagerkräfte",font=(any,17))],
+        [sg.Table((("Festlager",10000,10000,10000),("Loslager",10000,10000,10000)),("","Fx","Fy","Fz"),key="LAGERKRÄFTE TABLE")],
+    ])
+    tab_absätze = sg.Tab("Absätze",[
+        [sg.Text("Absätze",font=(any,17))],
+    ])
+    tab_auswertung = sg.Tab("Auswertung",layout=[
+        [sg.Text("Auswertung",font=(any,20))],
+        [sg.TabGroup([[tab_lagerkräfte,tab_plots,tab_absätze]])]
+    ],visible=False,key="TAB AUSWERTUNG")
+
     layout = [
     [sg.Titlebar("Wellennachweis")],
     [sg.Text("Wellennachweis nach DIN 743",font=(any,30))],
@@ -186,8 +209,8 @@ while running:
     [sg.Text("Name der Welle",font=(any,20))],
     [sg.Input(wellenname,key="-NAME-")],
 
-    [sg.TabGroup([[tab_werkstoff,tab_Lagerpositionen,tab_geometrie,tab_kräfte]])],
-    [sg.Button("Welle darstellen",key="-DRAW WELLE-"),sg.Button("Belastungen darstellen",key="-CALC LAGERKRÄFTE-"),sg.Button("vollständige Auswertung",key="-CALC ALL-")],
+    [sg.TabGroup([[tab_werkstoff,tab_Lagerpositionen,tab_geometrie,tab_kräfte,tab_auswertung]])],
+    [sg.Button("Welle darstellen",key="-DRAW WELLE-"),sg.Button("Belastungen darstellen",key="-CALC LAGERKRÄFTE-"),sg.Button("vollständige Auswertung",key="-CALC ALL-"),sg.Text("RECHNE...",key="-RECHNE-",visible=False)],
     ]
 
     window = new_window()
@@ -195,6 +218,8 @@ while running:
 
     while True:
         event,values = window.read()
+        add_n_k = abs(int(values["ADD_N_K"]))
+        add_n_p = abs(int(values["ADD_N_P"]))
         update_artparameter()
         if event == sg.WIN_CLOSED or event == 'Cancel':
             running = False
@@ -225,26 +250,56 @@ while running:
             except:
                 sg.PopupError("Es ist ein Fehler aufgetreten.\nBitte die Eingaben auf Vollständigkeit überprüfen!",title="Fehlermeldung")
 
-
+        if event=="-CALC ALL-":
+            save_all()
+            window["-RECHNE-"].update(visible=True)
+            try:
+                welle = Welle(name=wellenname,festlager_z=festlager_z,loslager_z=loslager_z,werkstoff=material,Oberflächenverfestigung=oberflächenv)
+                geometrie = [(float(punkt["Z"]),float(punkt["R"])) for punkt in punkteinput]
+                welle.set_geometrie(geometrie)
+                for kraft in kräfteinput:
+                    welle.set_Kraft(float(kraft["F"]),kraft["ART"],float(kraft["Z"]),float(kraft["R"]),float(kraft["PHI"]))
+                welle.lagerkräfte_berechnen()
+                welle.verformung_berechnen()
+                FL_Fx,FL_Fy,FL_Fz,LL_Fx,LL_Fy = welle.FL_Fx,welle.FL_Fy,welle.FL_Fz,welle.LL_Fx,welle.LL_Fy
+                window["LAGERKRÄFTE TABLE"].update(values=(("Festlager",FL_Fx,FL_Fy,FL_Fz),("Loslager",LL_Fx,LL_Fy,0)))
+                window["TAB AUSWERTUNG"].update(visible=True)
+            except:
+                sg.PopupError("Es ist ein Fehler aufgetreten.\nBitte die Eingaben überprüfen!",title="Fehlermeldung")
+            window["-RECHNE-"].update(visible=False)
+        if event=="-PLOT VERFORMUNG-":
+            welle.plot_biegung()
+        if event=="-PLOT NEIGUNG-":
+            welle.plot_neigung()
+        if event=="-PLOT KRÄFTE BIEGUNG-":
+            welle.plot()
+        if event=="-PLOT TORSION-":
+            welle.plot_torsion()
         if event=="-ADD_PUNKT-":
             save_all()
-            n_punkte += 1
+            n_punkte += add_n_p
             window.close()
             break
         if event=="-REM_PUNKT-":
             save_all()
-            if n_punkte>2:
-                n_punkte -= 1
+            if n_kräfte<2+add_n_p:
+                n_punkte = 2
+                print("TRUE")
+            else:
+                n_punkte -= add_n_p
             window.close()
             break
         if event=="-ADD_KRAFT-":
             save_all()
-            n_kräfte += 1
+            n_kräfte += add_n_k
             window.close()
             break
         if event=="-REM_KRAFT-":
             save_all()
-            if n_kräfte>1:
-                n_kräfte -= 1
+            if n_kräfte<1+add_n_k:
+                n_kräfte = 1
+                print("TRUE")
+            else:
+                n_kräfte -= add_n_k
             window.close()
             break
