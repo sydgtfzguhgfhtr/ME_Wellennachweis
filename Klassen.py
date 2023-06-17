@@ -592,7 +592,6 @@ class Welle:
 
         fig,ax = plt.subplots(1,1,num=self.name+" Darstellung")
         fig.set_size_inches(15,10)
-        fig.suptitle(f'Welle "{self.name}"',fontsize=18)
         ax.plot(zrange,rrange,"k")
         ax.plot(zrange,rrange*-1,"k")
         ax.hlines(0,min_z-self.länge*0.05,self.z_daten[-1]+self.länge*0.05,linestyles="dashdot",colors="black")
