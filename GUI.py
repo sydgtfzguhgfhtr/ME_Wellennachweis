@@ -13,7 +13,7 @@ loslager_z = 100
 Rz = 20
 n_punkte = 2 # Standardwert für die Punktzahl
 n_kräfte = 1 # Standardwert für die Kräftezahl
-
+lasttab = "Lager"
 
 welle = None
 optionen_oberfl = ("nein","Nitrieren","Einsatzhärten","Karbonierhärten","Festwalzen","Kugelstrahlen","Flammhärten")
@@ -163,6 +163,19 @@ while running:
     ]
     for i in range(n_kräfte):
         kräfte_layout.append(kraftreihe(i))
+    tab_werkstoff = sg.Tab("Werkstoff",[
+        [sg.Text("Werkstoff",font=(any,20))],
+        [sg.Text('aus Datei "Werkstoffdaten.csv"'),sg.Combo(list(Werkstoff.Werkstoffe.keys()),material,key="-WERKSTOFF-")],
+        [sg.Text("Oberflächenrauheit Rz ="),sg.Input(Rz,(7,any),key="-RZ-")],
+        [sg.Text("Oberfläche verfestigt?"),sg.OptionMenu(optionen_oberfl,oberflächenv,key="-OBERFV-")],
+        ])
+    tab_Lagerpositionen = sg.Tab("Lager",[
+        [sg.Text("Lagerpositionen",font=(any,20))],
+        [sg.Text("Festlager:"),sg.Input(festlager_z,size=(7,None),key="-FLZ-"),sg.Text("mm")],
+        [sg.Text("Loslager: "),sg.Input(loslager_z,size=(7,None),key="-LLZ-"),sg.Text("mm")],
+        ])
+    tab_geometrie = sg.Tab("Geometrie",geometrie_layout)
+    tab_kräfte = sg.Tab("Belastungen",kräfte_layout)
 
     layout = [
     [sg.Titlebar("Wellennachweis")],
@@ -173,15 +186,7 @@ while running:
     [sg.Text("Name der Welle",font=(any,20))],
     [sg.Input(wellenname,key="-NAME-")],
 
-    [sg.Text("Werkstoff",font=(any,20))],
-    [sg.Text('aus Datei "Werkstoffdaten.csv"'),sg.Combo(list(Werkstoff.Werkstoffe.keys()),material,key="-WERKSTOFF-")],
-    [sg.Text("Oberflächenrauheit Rz ="),sg.Input(Rz,(7,any),key="-RZ-")],
-    [sg.Text("Oberfläche verfestigt?"),sg.OptionMenu(optionen_oberfl,oberflächenv,key="-OBERFV-")],
-
-    [sg.Text("Lagerpositionen",font=(any,20))],
-    [sg.Text("Festlager:"),sg.Input(festlager_z,size=(7,None),key="-FLZ-"),sg.Text("mm")],
-    [sg.Text("Loslager: "),sg.Input(loslager_z,size=(7,None),key="-LLZ-"),sg.Text("mm")],
-    ]+geometrie_layout+kräfte_layout+[
+    [sg.TabGroup([[tab_werkstoff,tab_Lagerpositionen,tab_geometrie,tab_kräfte]])],
     [sg.Button("Welle darstellen",key="-DRAW WELLE-"),sg.Button("Belastungen darstellen",key="-CALC LAGERKRÄFTE-"),sg.Button("vollständige Auswertung",key="-CALC ALL-")],
     ]
 
