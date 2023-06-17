@@ -1,7 +1,0 @@
-
----
-title: Wellennachweis - Antriebswelle
-author: "Quentin Huss, Nadine Schulz"
-date: "17.06.2023"
----
-\pagebreak

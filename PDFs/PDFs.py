@@ -24,6 +24,8 @@ knitr = rpackages.importr('knitr')
 D = pd.read_csv(r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\PDFs\Absaetze.csv")
 
 
+plot1 = "C:\\Users\\Nadine\\Documents\\Studium\\Studium\\1234567890\\ME_Wellen\\ME_Wellennachweis\\"+D.loc[0,"Welle"]+"WELLE.png"
+plot2 = D.loc[0,"Welle"]+"plot.png"
 
 erste_Seite_PDF = f"""
 ---
@@ -32,6 +34,11 @@ author: "Quentin Huss, Nadine Schulz"
 date: "{formatiertes_datum}"
 ---
 \pagebreak
+![]({plot1})  
+
+![]({plot2})
+
+
 """
 
 with open('erste_Seite.Rmd','w') as file:
@@ -145,12 +152,9 @@ Dateien_md = [
     r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Rundnut.md",
     r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Spitzkerbe.md",
     r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Zahnwelle.md",
-    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\erste_Seite.md"
+    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\erste_Seite.md",
+    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\erste_Seite.Rmd"
     ]
-
-
-
-
 
 def merge_pdfs(input_files, output_file):
     merger = PyPDF4.PdfFileMerger()
@@ -166,13 +170,6 @@ def merge_pdfs(input_files, output_file):
 
     print("Die PDF-Dateien wurden erfolgreich zusammengeführt!")
 
-# Liste der PDF-Dateien, die zusammengeführt werden sollen
-
-
-# Dateiname der zusammengeführten PDF-Datei
-
-
-# Rufe die Funktion auf, um die PDF-Dateien zusammenzuführen
 merge_pdfs(files, output_file)
 
 for line in Dateien_md:
@@ -181,3 +178,6 @@ for line in Dateien_md:
 
 for line in files:
     os.remove(line)
+
+os.remove(plot1)
+os.remove(plot2)

@@ -46,6 +46,8 @@ Rechtecknut = Welle_Absatz(Antriebswelle, 363, "umlaufende Rechtecknut", 10, 7, 
 a5 = Welle_Absatz(Antriebswelle, 367, "Absatz", 10, 5)
 a6 = Welle_Absatz(Antriebswelle, 387, "Absatz", 10, 5)
 p1 = Welle_Absatz(Antriebswelle, 450, "eine Passfeder", 10)
+
+Antriebswelle.plots_speichern()
 # Antriebswelle.plot()
 
 

@@ -240,6 +240,8 @@ class Welle:
         ax[0,0].invert_yaxis() # Achse invertieren
 
         plt.show()
+        
+
 
     def welle_darstellen(self):
         """Stellt die Wellengeometrie dar"""
@@ -431,6 +433,116 @@ class Welle:
             betrag,z,r,phi,fx,fy,fz = self.belastungen[i]
             print("|",i,": ",str(round(fx,3)).center(10),"|",str(round(fy,3)).center(10),"|",str(round(fz,3)).center(10),"|",str(round(z,3)).center(10),"|",sep="")
             print("-"*48)
+
+    def plots_speichern(self):
+        _,z_kräfte,_,_,_,_,_=zip(*self.belastungen)
+        max_z_k = max(z_kräfte)
+        max_z = max(self.z_daten)
+        min_z = min(self.z_daten)
+        min_z_k = min(z_kräfte)
+
+        zrange = np.linspace(min_z,max_z,1000)
+        z_range_k = np.linspace(min_z_k,max_z_k,1000)
+        rrange = np.fromiter(map(self.radius,zrange),float,len(zrange))
+
+        MB_Darstellung,ax = plt.subplots(3,2,constrained_layout=True,num=self.name+" Belastungsplot")
+        MB_Darstellung.set_size_inches(15,10)
+
+        # Mbx Biegemomentenverlauf
+        mbx_daten = np.fromiter(map(self.Mbx,z_range_k),float,len(z_range_k))
+        ax[0,0].plot(z_range_k,mbx_daten)
+        ax[0,0].fill_between(z_range_k,0,mbx_daten,alpha=0.3)
+        ax[0,0].set_xlabel("$z\\,[mm]$")
+        ax[0,0].set_ylabel("$Mb_x\\,[Nm]$")
+        ax[0,0].set_title("Biegemoment um X")
+        ax[0,0].grid()
+
+        # Mby Biegemomentenverlauf
+        mby_daten = np.fromiter(map(self.Mby,z_range_k),float,len(z_range_k))
+        ax[0,1].plot(z_range_k,mby_daten)
+        ax[0,1].fill_between(z_range_k,0,mby_daten,alpha=0.3)
+        ax[0,1].set_xlabel("$z\\,[mm]$")
+        ax[0,1].set_ylabel("$Mb_y\\,[Nm]$")
+        ax[0,1].set_title("Biegemoment um Y")
+        ax[0,1].grid()
+
+
+        Mt = tuple(map(lambda x: self.Mt(x), zrange))
+
+        ax[1,0].plot(z_range_k,Mt)
+        ax[1,0].fill_between(z_range_k,0,Mt,alpha=0.3)
+        ax[1,0].set_xlabel("$z\\,[mm]$")
+        ax[1,0].set_ylabel("$M_t\\,[Nm]$")
+        ax[1,0].set_title("Torsionsmoment")
+        ax[1,0].grid()
+
+        sigma_x = tuple(map(lambda x: self.Spannungen(x)[0], zrange))
+        sigma_y = tuple(map(lambda x: self.Spannungen(x)[1], zrange))
+        tau = tuple(map(lambda x: self.Spannungen(x)[2], zrange))
+
+        ax[1,1].plot(sigma_x, label=r"$\sigma_x$")
+        ax[1,1].plot(sigma_y, label=r"$\sigma_y$")
+        ax[1,1].plot(tau, label=r"$\tau$")
+        ax[1,1].set_title(r"Spannungen in $\dfrac{N}{mm^{2}}$")
+        ax[1,1].legend()
+        ax[1,1].grid(True)
+        ax[1,1].set_ylabel(r"Spannung in $\dfrac{N}{mm^{2}}$")
+        ax[1,1].set_xlabel("x in mm")
+
+
+
+        ax[2,0].plot(self.biegung_x, label="Verformung in x")
+        ax[2,0].plot(self.biegung_y, label = "Verformung in y")
+        ax[2,0].set_title(r"Verformung in mm")
+        ax[2,0].legend()
+        ax[2,0].grid(True)
+        ax[2,0].set_ylabel(r"Verformung in mm")
+        ax[2,0].set_xlabel("x in mm")
+
+        ax[2,1].plot(self.neigung_x, label="Neigung x")
+        ax[2,1].plot(self.neigung_y, label = "Neigung y")
+        ax[2,1].set_title(r"Neigung in rad")
+        ax[2,1].legend()
+        ax[2,1].grid(True)
+        ax[2,1].set_ylabel(r"Neigung in rad")
+        ax[2,1].set_xlabel("x in mm")
+
+        MB_Darstellung.set_size_inches(11.69291,8.267717)
+
+        name1 = self.name+"plot.png"
+        MB_Darstellung.savefig(name1, dpi=300)
+
+        max_z = max(self.z_daten)
+        min_z = min(self.z_daten)
+
+        zrange = np.linspace(min_z,max_z,10000)
+        rrange = np.fromiter(map(self.radius,zrange),float,len(zrange))
+
+        fig,ax = plt.subplots(1,1,num=self.name+" Darstellung")
+        fig.set_size_inches(15,10)
+        fig.suptitle(f'Welle "{self.name}"',fontsize=18)
+        ax.plot(zrange,rrange,"k")
+        ax.plot(zrange,rrange*-1,"k")
+        ax.hlines(0,min_z-self.länge*0.05,self.z_daten[-1]+self.länge*0.05,linestyles="dashdot",colors="black")
+        for i,z in enumerate(self.z_daten):
+            ax.vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
+
+        px, py = zip(*self.geometrie)
+        ax.scatter(px,py)  # Absätze markieren
+        for i,punkt in enumerate(self.geometrie):
+            ax.annotate(f"P{i} ({punkt[0]},{punkt[1]})",punkt,(5,5),textcoords="offset pixels")
+        
+        ax.scatter((self.festlager_z,self.loslager_z),(0,0),(100,100),marker="^") # Lagermarkierungen
+        ax.annotate("Festlager",(self.festlager_z,0),(5,-20),textcoords="offset pixels")
+        ax.annotate("Loslager",(self.loslager_z,0),(5,-20),textcoords="offset pixels")
+        ax.set_xlabel("$Z\\ [mm]$")
+        ax.set_ylabel("$r\\ [mm]$")
+        ax.axis("equal")
+        ax.grid()
+
+        name2 = self.name+"WELLE.png"
+
+        fig.savefig(name2, dpi = 300)
 
 class Welle_Absatz():
     """einzelne nachzuweisende Wellenabsätze
