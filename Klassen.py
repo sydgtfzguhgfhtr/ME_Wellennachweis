@@ -1265,15 +1265,6 @@ if __name__ == "__main__":
     test.plot_torsion()
     test.plot_neigung()
     test.plot_biegung()
-    exit()
-
-    # test.plot()
-    # plt.plot(test.z_range,test.biegung_x,label="X")
-    # plt.plot(test.z_range,test.biegung_y,label="Y")
-    # plt.grid()
-    # plt.legend()
-    # plt.gca().invert_yaxis()
-    # plt.show()
 
     Abschnitt1 = Welle_Absatz(test, 40, "Absatz", 2, 5)
     Abschnitt2 = Welle_Absatz(test, 40, "eine Passfeder", 2)

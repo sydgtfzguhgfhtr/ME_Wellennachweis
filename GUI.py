@@ -183,14 +183,14 @@ while running:
     # Auswertetabs
     tab_plots = sg.Tab("Plots",[
         [sg.Text("Plots",font=(any,17))],
-        [sg.Button("Plot Verformung",key="-PLOT VERFORMUNG-")],
-        [sg.Button("Plot Neigung",key="-PLOT Neigung-")],
-        [sg.Button("Plot Kräfte/Biegung",key="-PLOT KRÄFTE BIEGUNG-")],
-        [sg.Button("Plot Torsion",key="-PLOT TORSION-")],
+        [sg.Button("Plot Verformung",key="-PLOT VERFORMUNG-",size=(30,None))],
+        [sg.Button("Plot Neigung",key="-PLOT NEIGUNG-",size=(30,None))],
+        [sg.Button("Plot Kräfte/Biegung",key="-PLOT KRÄFTE BIEGUNG-",size=(30,None))],
+        [sg.Button("Plot Torsion",key="-PLOT TORSION-",size=(30,None))],
         ])
     tab_lagerkräfte = sg.Tab("Lagerkräfte",[
         [sg.Text("Lagerkräfte",font=(any,17))],
-        [sg.Table((("Festlager",FL_Fx,FL_Fy,FL_Fz),("Loslager",LL_Fx,LL_Fy,0)),("","Fx","Fy","Fz"))],
+        [sg.Table((("Festlager",10000,10000,10000),("Loslager",10000,10000,10000)),("","Fx","Fy","Fz"),key="LAGERKRÄFTE TABLE")],
     ])
     tab_absätze = sg.Tab("Absätze",[
         [sg.Text("Absätze",font=(any,17))],
@@ -251,6 +251,7 @@ while running:
                 sg.PopupError("Es ist ein Fehler aufgetreten.\nBitte die Eingaben auf Vollständigkeit überprüfen!",title="Fehlermeldung")
 
         if event=="-CALC ALL-":
+            save_all()
             window["-RECHNE-"].update(visible=True)
             try:
                 welle = Welle(name=wellenname,festlager_z=festlager_z,loslager_z=loslager_z,werkstoff=material,Oberflächenverfestigung=oberflächenv)
@@ -260,12 +261,20 @@ while running:
                     welle.set_Kraft(float(kraft["F"]),kraft["ART"],float(kraft["Z"]),float(kraft["R"]),float(kraft["PHI"]))
                 welle.lagerkräfte_berechnen()
                 welle.verformung_berechnen()
+                FL_Fx,FL_Fy,FL_Fz,LL_Fx,LL_Fy = welle.FL_Fx,welle.FL_Fy,welle.FL_Fz,welle.LL_Fx,welle.LL_Fy
+                window["LAGERKRÄFTE TABLE"].update(values=(("Festlager",FL_Fx,FL_Fy,FL_Fz),("Loslager",LL_Fx,LL_Fy,0)))
                 window["TAB AUSWERTUNG"].update(visible=True)
             except:
                 sg.PopupError("Es ist ein Fehler aufgetreten.\nBitte die Eingaben überprüfen!",title="Fehlermeldung")
             window["-RECHNE-"].update(visible=False)
         if event=="-PLOT VERFORMUNG-":
             welle.plot_biegung()
+        if event=="-PLOT NEIGUNG-":
+            welle.plot_neigung()
+        if event=="-PLOT KRÄFTE BIEGUNG-":
+            welle.plot()
+        if event=="-PLOT TORSION-":
+            welle.plot_torsion()
         if event=="-ADD_PUNKT-":
             save_all()
             n_punkte += add_n_p
