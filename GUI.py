@@ -218,9 +218,12 @@ while running:
 
     while True:
         event,values = window.read()
-        add_n_k = abs(int(values["ADD_N_K"]))
-        add_n_p = abs(int(values["ADD_N_P"]))
-        update_artparameter()
+        try:
+            add_n_k = abs(int(values["ADD_N_K"]))
+            add_n_p = abs(int(values["ADD_N_P"]))
+            update_artparameter()
+        except TypeError:
+            pass
         if event == sg.WIN_CLOSED or event == 'Cancel':
             running = False
             window.close()
