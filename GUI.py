@@ -74,6 +74,74 @@ def save_all():
     read_force_vals()
     read_misc_vals()
 
+def update_artparameter():
+    global values
+    for i in range(n_punkte):
+        art = values["EXTRA"+str(i)]
+        if art == "Absatz":
+            # RUNDUNGSRADIUS
+            window["RUNDUNGSRTEXT"+str(i)].update(visible=True)
+            window["RUNDUNGSRIN"+str(i)].update(visible=True)
+            # KERBGRUNDDURCHMESSER
+            window["KERBGRUNDDTEXT"+str(i)].update(visible=False)
+            window["KERBGRUNDDIN"+str(i)].update(visible=False)
+            # NUTTIEFE
+            window["NUTTTEXT"+str(i)].update(visible=False)
+            window["NUTTIN"+str(i)].update(visible=False)
+            # NUTRADIUS
+            window["NUTRTEXT"+str(i)].update(visible=False)
+            window["NUTRIN"+str(i)].update(visible=False)
+            # NUTBREITE
+            window["NUTBTEXT"+str(i)].update(visible=False)
+            window["NUTBIN"+str(i)].update(visible=False)
+        elif art == "umlaufende Rundnut":
+            # RUNDUNGSRADIUS
+            window["RUNDUNGSRTEXT"+str(i)].update(visible=False)
+            window["RUNDUNGSRIN"+str(i)].update(visible=False)
+            # KERBGRUNDDURCHMESSER
+            window["KERBGRUNDDTEXT"+str(i)].update(visible=True)
+            window["KERBGRUNDDIN"+str(i)].update(visible=True)
+            # NUTTIEFE
+            window["NUTTTEXT"+str(i)].update(visible=False)
+            window["NUTTIN"+str(i)].update(visible=False)
+            # NUTRADIUS
+            window["NUTRTEXT"+str(i)].update(visible=True)
+            window["NUTRIN"+str(i)].update(visible=True)
+            # NUTBREITE
+            window["NUTBTEXT"+str(i)].update(visible=True)
+            window["NUTBIN"+str(i)].update(visible=True)
+        elif art == "umlaufende Rechtecknut":
+            # RUNDUNGSRADIUS
+            window["RUNDUNGSRTEXT"+str(i)].update(visible=False)
+            window["RUNDUNGSRIN"+str(i)].update(visible=False)
+            # KERBGRUNDDURCHMESSER
+            window["KERBGRUNDDTEXT"+str(i)].update(visible=False)
+            window["KERBGRUNDDIN"+str(i)].update(visible=False)
+            # NUTTIEFE
+            window["NUTTTEXT"+str(i)].update(visible=True)
+            window["NUTTIN"+str(i)].update(visible=True)
+            # NUTRADIUS
+            window["NUTRTEXT"+str(i)].update(visible=True)
+            window["NUTRIN"+str(i)].update(visible=True)
+            # NUTBREITE
+            window["NUTBTEXT"+str(i)].update(visible=True)
+            window["NUTBIN"+str(i)].update(visible=True)
+        else:
+            # RUNDUNGSRADIUS
+            window["RUNDUNGSRTEXT"+str(i)].update(visible=False)
+            window["RUNDUNGSRIN"+str(i)].update(visible=False)
+            # KERBGRUNDDURCHMESSER
+            window["KERBGRUNDDTEXT"+str(i)].update(visible=False)
+            window["KERBGRUNDDIN"+str(i)].update(visible=False)
+            # NUTTIEFE
+            window["NUTTTEXT"+str(i)].update(visible=False)
+            window["NUTTIN"+str(i)].update(visible=False)
+            # NUTRADIUS
+            window["NUTRTEXT"+str(i)].update(visible=False)
+            window["NUTRIN"+str(i)].update(visible=False)
+            # NUTBREITE
+            window["NUTBTEXT"+str(i)].update(visible=False)
+            window["NUTBIN"+str(i)].update(visible=False)
 
 Werkstoff.aus_csv_laden()
 
@@ -88,8 +156,6 @@ while running:
     ]
     for i in range(n_punkte):
         geometrie_layout.append(punktreihe(i))
-
-
 
     kräfte_layout = [
         [sg.Text("Belastung definieren",font=(any,20))],
@@ -125,80 +191,13 @@ while running:
 
     while True:
         event,values = window.read()
+        update_artparameter()
         if event == sg.WIN_CLOSED or event == 'Cancel':
             running = False
             window.close()
             #print("FENSTER GESCHLOSSEN")
             break
         # Was passiert wenn die Absatzart geändert wurde?
-        for i in range(n_punkte):
-            if event=="EXTRA"+str(i):
-                art = values["EXTRA"+str(i)]
-                if art == "Absatz":
-                    # RUNDUNGSRADIUS
-                    window["RUNDUNGSRTEXT"+str(i)].update(visible=True)
-                    window["RUNDUNGSRIN"+str(i)].update(visible=True)
-                    # KERBGRUNDDURCHMESSER
-                    window["KERBGRUNDDTEXT"+str(i)].update(visible=False)
-                    window["KERBGRUNDDIN"+str(i)].update(visible=False)
-                    # NUTTIEFE
-                    window["NUTTTEXT"+str(i)].update(visible=False)
-                    window["NUTTIN"+str(i)].update(visible=False)
-                    # NUTRADIUS
-                    window["NUTRTEXT"+str(i)].update(visible=False)
-                    window["NUTRIN"+str(i)].update(visible=False)
-                    # NUTBREITE
-                    window["NUTBTEXT"+str(i)].update(visible=False)
-                    window["NUTBIN"+str(i)].update(visible=False)
-                elif art == "umlaufende Rundnut":
-                    # RUNDUNGSRADIUS
-                    window["RUNDUNGSRTEXT"+str(i)].update(visible=False)
-                    window["RUNDUNGSRIN"+str(i)].update(visible=False)
-                    # KERBGRUNDDURCHMESSER
-                    window["KERBGRUNDDTEXT"+str(i)].update(visible=True)
-                    window["KERBGRUNDDIN"+str(i)].update(visible=True)
-                    # NUTTIEFE
-                    window["NUTTTEXT"+str(i)].update(visible=False)
-                    window["NUTTIN"+str(i)].update(visible=False)
-                    # NUTRADIUS
-                    window["NUTRTEXT"+str(i)].update(visible=True)
-                    window["NUTRIN"+str(i)].update(visible=True)
-                    # NUTBREITE
-                    window["NUTBTEXT"+str(i)].update(visible=True)
-                    window["NUTBIN"+str(i)].update(visible=True)
-                elif art == "umlaufende Rechtecknut":
-                    # RUNDUNGSRADIUS
-                    window["RUNDUNGSRTEXT"+str(i)].update(visible=False)
-                    window["RUNDUNGSRIN"+str(i)].update(visible=False)
-                    # KERBGRUNDDURCHMESSER
-                    window["KERBGRUNDDTEXT"+str(i)].update(visible=False)
-                    window["KERBGRUNDDIN"+str(i)].update(visible=False)
-                    # NUTTIEFE
-                    window["NUTTTEXT"+str(i)].update(visible=True)
-                    window["NUTTIN"+str(i)].update(visible=True)
-                    # NUTRADIUS
-                    window["NUTRTEXT"+str(i)].update(visible=True)
-                    window["NUTRIN"+str(i)].update(visible=True)
-                    # NUTBREITE
-                    window["NUTBTEXT"+str(i)].update(visible=True)
-                    window["NUTBIN"+str(i)].update(visible=True)
-                else:
-                    # RUNDUNGSRADIUS
-                    window["RUNDUNGSRTEXT"+str(i)].update(visible=False)
-                    window["RUNDUNGSRIN"+str(i)].update(visible=False)
-                    # KERBGRUNDDURCHMESSER
-                    window["KERBGRUNDDTEXT"+str(i)].update(visible=False)
-                    window["KERBGRUNDDIN"+str(i)].update(visible=False)
-                    # NUTTIEFE
-                    window["NUTTTEXT"+str(i)].update(visible=False)
-                    window["NUTTIN"+str(i)].update(visible=False)
-                    # NUTRADIUS
-                    window["NUTRTEXT"+str(i)].update(visible=False)
-                    window["NUTRIN"+str(i)].update(visible=False)
-                    # NUTBREITE
-                    window["NUTBTEXT"+str(i)].update(visible=False)
-                    window["NUTBIN"+str(i)].update(visible=False)
-
         if event == "-DRAW WELLE-":
             save_all()
             try:
