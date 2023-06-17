@@ -181,9 +181,8 @@ while running:
     [sg.Text("Lagerpositionen",font=(any,20))],
     [sg.Text("Festlager:"),sg.Input(festlager_z,size=(7,None),key="-FLZ-"),sg.Text("mm")],
     [sg.Text("Loslager: "),sg.Input(loslager_z,size=(7,None),key="-LLZ-"),sg.Text("mm")],
-
-    [sg.Column(geometrie_layout),sg.VSep(),sg.Column(kräfte_layout)],
-    [sg.Button("Welle darstellen",key="-DRAW WELLE-"),sg.Button("Belastungen berechnen",key="-CALC LAGERKRÄFTE-")],
+    ]+geometrie_layout+kräfte_layout+[
+    [sg.Button("Welle darstellen",key="-DRAW WELLE-"),sg.Button("Belastungen darstellen",key="-CALC LAGERKRÄFTE-"),sg.Button("vollständige Auswertung",key="-CALC ALL-")],
     ]
 
     window = new_window()
