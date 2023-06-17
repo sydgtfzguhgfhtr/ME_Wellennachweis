@@ -14,6 +14,8 @@ Rz = 20
 n_punkte = 2 # Standardwert für die Punktzahl
 n_kräfte = 1 # Standardwert für die Kräftezahl
 lasttab = "Lager"
+add_n_p = 1
+add_n_k = 1
 
 welle = None
 optionen_oberfl = ("nein","Nitrieren","Einsatzhärten","Karbonierhärten","Festwalzen","Kugelstrahlen","Flammhärten")
@@ -147,11 +149,12 @@ Werkstoff.aus_csv_laden()
 
 while running:
     instance = True
-    punkteinput.append(punktreihe_stdwerte)
+    for i in range(add_n_p):
+        punkteinput.append(punktreihe_stdwerte)
 
     geometrie_layout = [
     [sg.Text("Geometrie definieren",font=(any,20))],
-    [sg.Button("Punkt hinzufügen",key="-ADD_PUNKT-"),sg.Button("Punkt entfernen",key="-REM_PUNKT-")],
+    [sg.Input(1,(5,None),key="ADD_N_P"),sg.Button("hinzufügen",key="-ADD_PUNKT-"),sg.Button("entfernen",key="-REM_PUNKT-")],
     [sg.Text("Punkte",font=(any,15))],
     ]
     for i in range(n_punkte):
@@ -159,7 +162,7 @@ while running:
 
     kräfte_layout = [
         [sg.Text("Belastung definieren",font=(any,20))],
-        [sg.Button("Kraft hinzufügen",key="-ADD_KRAFT-"),sg.Button("Kraft entfernen",key="-REM_KRAFT-")],
+        [sg.Input(1,(5,None),key="ADD_N_K"),sg.Button("hinzufügen",key="-ADD_KRAFT-"),sg.Button("entfernen",key="-REM_KRAFT-")],
     ]
     for i in range(n_kräfte):
         kräfte_layout.append(kraftreihe(i))
@@ -195,6 +198,8 @@ while running:
 
     while True:
         event,values = window.read()
+        add_n_k = abs(int(values["ADD_N_K"]))
+        add_n_p = abs(int(values["ADD_N_P"]))
         update_artparameter()
         if event == sg.WIN_CLOSED or event == 'Cancel':
             running = False
@@ -228,23 +233,29 @@ while running:
 
         if event=="-ADD_PUNKT-":
             save_all()
-            n_punkte += 1
+            n_punkte += add_n_p
             window.close()
             break
         if event=="-REM_PUNKT-":
             save_all()
-            if n_punkte>2:
-                n_punkte -= 1
+            if n_kräfte<2+add_n_p:
+                n_punkte = 2
+                print("TRUE")
+            else:
+                n_punkte -= add_n_p
             window.close()
             break
         if event=="-ADD_KRAFT-":
             save_all()
-            n_kräfte += 1
+            n_kräfte += add_n_k
             window.close()
             break
         if event=="-REM_KRAFT-":
             save_all()
-            if n_kräfte>1:
-                n_kräfte -= 1
+            if n_kräfte<1+add_n_k:
+                n_kräfte = 1
+                print("TRUE")
+            else:
+                n_kräfte -= add_n_k
             window.close()
             break
