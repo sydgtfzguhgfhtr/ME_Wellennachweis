@@ -6,6 +6,15 @@ import rpy2.robjects.packages as rpackages
 import PyPDF4
 import numpy as np
 import pandas as pd
+from datetime import datetime
+
+
+aktuelles_datum = datetime.now()
+
+
+formatiertes_datum = aktuelles_datum.strftime("%d.%m.%Y")
+
+
 
 pandas2ri.activate()
 knitr = rpackages.importr('knitr')
@@ -14,11 +23,13 @@ knitr = rpackages.importr('knitr')
 
 D = pd.read_csv(r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\PDFs\Absaetze.csv")
 
+
+
 erste_Seite_PDF = f"""
 ---
 title: Wellennachweis - {D.loc[0,"Welle"]}
 author: "Quentin Huss, Nadine Schulz"
-date: "`r format(Sys.time(), '%d.%m.%y, %X')`"
+date: "{formatiertes_datum}"
 ---
 \pagebreak
 """
@@ -27,7 +38,7 @@ with open('erste_Seite.Rmd','w') as file:
     file.write(erste_Seite_PDF)
 
 knitr.knit(r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\erste_Seite.Rmd")
-subprocess.run(["pandoc","-s","erste_Seite.Rmd","-o","erste_Seite.pdf"])
+subprocess.run(["pandoc","-s","erste_Seite.md","-o","erste_Seite.pdf"])
 
 files = ["erste_Seite.pdf"]
 name_values = D["Name"].tolist()
@@ -134,8 +145,7 @@ Dateien_md = [
     r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Rundnut.md",
     r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Spitzkerbe.md",
     r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Zahnwelle.md",
-    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\erste_Seite.md",
-    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\erste_Seite.Rmd"
+    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\erste_Seite.md"
     ]
 
 
