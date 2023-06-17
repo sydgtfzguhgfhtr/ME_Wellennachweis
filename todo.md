@@ -2,5 +2,5 @@
 - [x] Biegemomentenverläufe
 - [ ] Werkstoff mit Klasse Welle verbinden
 - [ ] Eingaben automatisieren
-- [ ] Spannungsverläufe
-- [ ] Verformung
+- [x] Spannungsverläufe
+- [x] Verformung

@@ -4,6 +4,7 @@ import shutil
 from rpy2.robjects import r 
 from rpy2.robjects import pandas2ri, packages
 import rpy2.robjects.packages as rpackages
+import PyPDF4
 import numpy as np
 import pandas as pd
 
@@ -15,8 +16,9 @@ files = []
 name_values = D["Name"].tolist()
 
 for i in range(len(D)):
-    filename = str(D.loc[i,"Welle"])+"_"+str(D.loc[i,"Name"])+"_"+str(i)+".pdf"
+    filename ="C:\\Users\\Nadine\\Documents\\Studium\\Studium\\1234567890\\ME_Wellen\\ME_Wellennachweis\\"+ str(D.loc[i,"Welle"])+"_"+str(D.loc[i,"Name"])+"_"+str(i)+".pdf"
     files.append(filename)
+    output_file = "Wellennachweis"+str(D.loc[i,"Welle"])+".pdf"
     r.assign("z_Koordinate",D.loc[i,"z_Wert"])
     r.assign("sigma_max",D.loc[i,"Biegespannung"])
     r.assign("tau_max",D.loc[i,"Torsionsspannung"])
@@ -117,6 +119,30 @@ Dateien_md = [
 for line in Dateien_md:
     if os.path.exists(line):
         os.remove(line)
+
+
+def merge_pdfs(input_files, output_file):
+    merger = PyPDF4.PdfFileMerger()
+
+    # Füge jede PDF-Datei der Merger-Instanz hinzu
+    for file in input_files:
+        with open(file, 'rb') as pdf_file:
+            merger.append(pdf_file)
+
+    # Speichere die zusammengeführte PDF-Datei
+    with open(output_file, 'wb') as output:
+        merger.write(output)
+
+    print("Die PDF-Dateien wurden erfolgreich zusammengeführt!")
+
+# Liste der PDF-Dateien, die zusammengeführt werden sollen
+
+
+# Dateiname der zusammengeführten PDF-Datei
+
+
+# Rufe die Funktion auf, um die PDF-Dateien zusammenzuführen
+merge_pdfs(files, output_file)
 
 for file in files:
     shutil.move(file, r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\PDFs\Ergebnisse")
