@@ -20,7 +20,7 @@ optionen_oberfl = ("nein","Nitrieren","Einsatzhärten","Karbonierhärten","Festw
 
 
 punkteinput = [] # Beinhaltet die Nutzerdaten für die Punkte
-punktreihe_stdwerte = (False,0,0,"",0)
+punktreihe_stdwerte = {"NW":False,"Z":0,"R":0,"EXTRA":"","Rz":0,"RUNDUNGSR":0,"KERBGRUNDD":0,"NUTT":0,"NUTR":0,"NUTB":0}
 for i in range(n_punkte):
     punkteinput.append(punktreihe_stdwerte)
 
@@ -30,16 +30,16 @@ def punktreihe(key:str):
     i = int(key)
     key = str(key)
     arten = ["Absatz","umlaufende Rundnut","umlaufende Rechtecknut","eine Passfeder","zwei Passfedern","umlaufende Spitzkerbe","Keilwelle","Kerbzahnwelle","Zahnwelle","Pressverbindung"]
-    art_ui = [sg.Text("Rundungsradius =",visible=False,key="RUNDUNGSRTEXT"+key),sg.Input(size=(5,None),visible=False,key="RUNDUNGSRIN"+key),sg.Text("Kerbgrunddurchmesser =",visible=False,key="KERBGRUNDDTEXT"+key),sg.Input(size=(5,None),visible=False,key="KERBGRUNDDIN"+key),sg.Text("Nuttiefe =",visible=False,key="NUTTTEXT"+key),sg.Input(size=(5,None),visible=False,key="NUTTIN"+key),sg.Text("Nutradius =",visible=False,key="NUTRTEXT"+key),sg.Input(size=(5,None),visible=False,key="NUTRIN"+key),sg.Text("Nutbreite =",visible=False,key="NUTBTEXT"+key),sg.Input(size=(5,None),visible=False,key="NUTBIN"+key)]
+    art_ui = [sg.Text("Rundungsradius =",visible=False,key="RUNDUNGSRTEXT"+key),sg.Input(punkteinput[i]["RUNDUNGSR"],size=(5,None),visible=False,key="RUNDUNGSRIN"+key),sg.Text("Kerbgrunddurchmesser =",visible=False,key="KERBGRUNDDTEXT"+key),sg.Input(punkteinput[i]["KERBGRUNDD"],size=(5,None),visible=False,key="KERBGRUNDDIN"+key),sg.Text("Nuttiefe =",visible=False,key="NUTTTEXT"+key),sg.Input(punkteinput[i]["NUTT"],size=(5,None),visible=False,key="NUTTIN"+key),sg.Text("Nutradius =",visible=False,key="NUTRTEXT"+key),sg.Input(punkteinput[i]["NUTR"],size=(5,None),visible=False,key="NUTRIN"+key),sg.Text("Nutbreite =",visible=False,key="NUTBTEXT"+key),sg.Input(punkteinput[i]["NUTB"],size=(5,None),visible=False,key="NUTBIN"+key)]
 
-    return [sg.Text(key),sg.Checkbox("Nachweisen",key="NW"+key,default=punkteinput[i][0]),sg.Text("z [mm]="),sg.Input(punkteinput[i][1],size=(5,None),key="Z"+key),sg.Text("r [mm]="),sg.Input(punkteinput[i][2],size=(5,None),key="R"+key),sg.Text("Rz [m^-6]="),sg.Input(punkteinput[i][4],(5,None),key="RZ"+key),sg.Combo(default_value=punkteinput[i][3],values=arten,key="EXTRA"+key,enable_events=True)]+art_ui
+    return [sg.Text(key),sg.Checkbox("Nachweisen",key="NW"+key,default=punkteinput[i]["NW"]),sg.Text("z [mm]="),sg.Input(punkteinput[i]["Z"],size=(5,None),key="Z"+key),sg.Text("r [mm]="),sg.Input(punkteinput[i]["R"],size=(5,None),key="R"+key),sg.Text("Rz [m^-6]="),sg.Input(punkteinput[i]["Rz"],(5,None),key="RZ"+key),sg.Combo(default_value=punkteinput[i]["EXTRA"],values=arten,key="EXTRA"+key,enable_events=True)]+art_ui
 
 def kraftreihe(key):
     i = int(key)
     key = str(key)
     arten = ("Axial","Radial","Tangential")
     try:
-        return [sg.Text(key),sg.Text("F [N]="),sg.Input(kräfteinput[i][0],key="F"+key,size=(7,None)),sg.Text("N     z [mm]="),sg.Input(kräfteinput[i][1],size=(7,None),key="FZ"+key),sg.Text("r [mm]="),sg.Input(kräfteinput[i][2],size=(7,None),key="FR"+key),sg.Text("phi [grad]="),sg.Input(kräfteinput[i][3],size=(7,None),key="FPHI"+key),sg.Text("Art:"),sg.OptionMenu(arten,key="FART"+key,default_value=kräfteinput[i][4],)]
+        return [sg.Text(key),sg.Text("F [N]="),sg.Input(kräfteinput[i]["F"],key="F"+key,size=(7,None)),sg.Text("N     z [mm]="),sg.Input(kräfteinput[i]["Z"],size=(7,None),key="FZ"+key),sg.Text("r [mm]="),sg.Input(kräfteinput[i]["R"],size=(7,None),key="FR"+key),sg.Text("phi [grad]="),sg.Input(kräfteinput[i]["PHI"],size=(7,None),key="FPHI"+key),sg.Text("Art:"),sg.OptionMenu(arten,key="FART"+key,default_value=kräfteinput[i]["ART"])]
     except IndexError:
         return [sg.Text(key),sg.Text("F [N]="),sg.Input(key="F"+key,size=(7,None)),sg.Text("N     z [mm]="),sg.Input("",size=(7,None),key="FZ"+key),sg.Text("r [mm]="),sg.Input("",size=(7,None),key="FR"+key),sg.Text("phi [grad]="),sg.Input("",size=(7,None),key="FPHI"+key),sg.Text("Art:"),sg.OptionMenu(arten,key="FART"+key)]
 
@@ -51,7 +51,7 @@ def read_point_vals():
     punkteinput = []
     for i in range(n_punkte):
         key = str(i)
-        punkteinput.append({"NW":values["NW"+key],"Z":values["Z"+key],"R":values["R"+key],"EXTRA":values["EXTRA"+key],"Rz":values["RZ"+key]})
+        punkteinput.append({"NW":values["NW"+key],"Z":values["Z"+key],"R":values["R"+key],"EXTRA":values["EXTRA"+key],"Rz":values["RZ"+key],"RUNDUNGSR":values["RUNDUNGSRIN"+key],"KERBGRUNDD":values["KERBGRUNDDIN"+key],"NUTT":values["NUTTIN"+key],"NUTR":values["NUTRIN"+key],"NUTB":values["NUTBIN"+key]})
 
 def read_force_vals():
     global kräfteinput
@@ -73,6 +73,7 @@ def save_all():
     read_point_vals()
     read_force_vals()
     read_misc_vals()
+
 
 Werkstoff.aus_csv_laden()
 
