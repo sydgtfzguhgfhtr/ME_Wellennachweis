@@ -1140,13 +1140,15 @@ class Welle_Absatz():
         S_F = 1/(np.sqrt((sigma_bmax/sigma_bFK)**2+(tau_tmax/tau_tFK)**2))
         S_D = 1/(np.sqrt((sigma_bq/sigma_bADK)**2+(tau_ta/tau_tADK)**2))
 
+        self.Werte.append(str(S_F))
+        self.Werte.append(str(S_D))
+
         self.Werte.append(sigma_bmax)
         self.Werte.append(tau_tmax)
 
 
         # Werte für csv
-        self.Werte.append(str(S_F))
-        self.Werte.append(str(S_D))
+
         if self.Art == "Absatz":
             self.Werte.append(str(self.D)+";"+str(self.d)+";"+str(self.r)+";"+str((self.D-self.d)/2))
         elif self.Art == "umlaufende Rundnut":
