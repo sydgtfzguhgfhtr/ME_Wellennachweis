@@ -10,8 +10,26 @@ import pandas as pd
 pandas2ri.activate()
 knitr = rpackages.importr('knitr')
 
+
+
 D = pd.read_csv(r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\PDFs\Absaetze.csv")
-files = []
+
+erste_Seite_PDF = f"""
+---
+title: Wellennachweis - {D.loc[0,"Welle"]}
+author: "Quentin Huss, Nadine Schulz"
+date: "`r format(Sys.time(), '%d.%m.%y, %X')`"
+---
+\pagebreak
+"""
+
+with open('erste_Seite.Rmd','w') as file:
+    file.write(erste_Seite_PDF)
+
+knitr.knit(r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\erste_Seite.Rmd")
+subprocess.run(["pandoc","-s","erste_Seite.Rmd","-o","erste_Seite.pdf"])
+
+files = ["erste_Seite.pdf"]
 name_values = D["Name"].tolist()
 
 for i in range(len(D)):
@@ -115,7 +133,9 @@ Dateien_md = [
     r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Rechtecknut.md",
     r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Rundnut.md",
     r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Spitzkerbe.md",
-    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Zahnwelle.md"
+    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Wellen_Absaetze_Zahnwelle.md",
+    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\erste_Seite.md",
+    r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\erste_Seite.Rmd"
     ]
 
 

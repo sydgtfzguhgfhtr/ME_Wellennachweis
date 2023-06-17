@@ -1,6 +1,0 @@
-
----
-title: Wellennachweis - Antriebswelle
-author: "Quentin Huss, Nadine Schulz"
-date: "`r format(Sys.time(), '%d.%m.%y, %X')`"
----

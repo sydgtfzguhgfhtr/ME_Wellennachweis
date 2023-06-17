@@ -48,16 +48,7 @@ a6 = Welle_Absatz(Antriebswelle, 387, "Absatz", 10, 5)
 p1 = Welle_Absatz(Antriebswelle, 450, "eine Passfeder", 10)
 # Antriebswelle.plot()
 
-erste_Seite_PDF = """
----
-title: Wellennachweis - Antriebswelle
-author: \"Quentin Huss, Nadine Schulz\"
-date: \"`r format(Sys.time(), \'%d.%m.%y, %X\')`\"
----
-"""
 
-with open('erste_Seite.Rmd','w') as file:
-    file.write(erste_Seite_PDF)
 
 sigma_x = []
 sigma_y = []
