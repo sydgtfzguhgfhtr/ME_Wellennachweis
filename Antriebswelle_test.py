@@ -48,6 +48,8 @@ a6 = Welle_Absatz(Antriebswelle, 387, "Absatz", 10, 5)
 p1 = Welle_Absatz(Antriebswelle, 450, "eine Passfeder", 10)
 # Antriebswelle.plot()
 
+
+
 sigma_x = []
 sigma_y = []
 tau = []
