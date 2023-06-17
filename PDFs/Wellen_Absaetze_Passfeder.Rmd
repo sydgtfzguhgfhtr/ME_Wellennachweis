@@ -1,7 +1,5 @@
 ---
 title: "Wellennachweis - Passfeder"
-author: "Quentin Huss, Nadine Schulz"
-date: "`r format(Sys.time(), '%d.%m.%y, %X')`"
 output: pdf_document
 header-includes:
 - \usepackage{booktabs}
