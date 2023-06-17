@@ -49,10 +49,10 @@ Torsionswechselfestigkeit:      {self.tau_tW}
         return 1
 
 class Welle:
-    def __init__(self,name:str,festlager_z:int,loslager_z:int, werkstoff:Werkstoff, Oberflächenverfestigung,dz=1) -> None:
+    def __init__(self,name:str,festlager_z:int,loslager_z:int, werkstoff:Werkstoff, Oberflächenverfestigung,res=500) -> None:
         self.name = str(name)
         self.Emod = 210e3 # N/mm^2
-        self.dz = dz
+        self.res = res
         self.festlager_z = festlager_z
         self.loslager_z = loslager_z
         self.lagerabstand = abs(festlager_z-loslager_z)
@@ -137,7 +137,7 @@ class Welle:
         self.minL = min(self.z_daten)
         self.maxL = max(self.z_daten)
         self.länge = abs(self.maxL-self.minL)
-        self.z_range = np.arange(self.minL,self.maxL,self.dz)
+        self.z_range = np.linspace(self.minL,self.maxL,self.res)
         self.len_z_range = len(self.z_range)
 
 
@@ -284,14 +284,17 @@ class Welle:
         z_range_k = np.linspace(min_z_k,max_z_k,1000)
         rrange = np.array(tuple(map(self.radius,zrange)))
 
-        fig,ax = plt.subplots(2,1,constrained_layout=True,sharex="col",sharey="row",num=self.name+" Belastungsplot")
+        fig,ax = plt.subplots(2,1,constrained_layout=True,sharex="col",sharey="row",num=self.name+" Torsionsplot")
         fig.set_size_inches(15,10)
-        fig.suptitle(f'Welle "{self.name}"',fontsize=18)
+        fig.suptitle(f'Welle "{self.name}" - Torsion',fontsize=18)
         ax[0].plot(zrange,rrange,"k")
         ax[0].plot(zrange,rrange*-1,"k")
         ax[0].hlines(0,min_z-self.länge*0.05,self.z_daten[-1]+self.länge*0.05,linestyles="dashdot",colors="black")
         for z in self.z_daten:
             ax[0].vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
+        ax[0].scatter((self.festlager_z,self.loslager_z),(0,0),(100,100),marker="^") # Lagermarkierungen
+        ax[0].annotate("Festlager",(self.festlager_z,0),(5,-20),textcoords="offset pixels")
+        ax[0].annotate("Loslager",(self.loslager_z,0),(5,-20),textcoords="offset pixels")
         ax[0].set_title("Darstellung")
         
         mt = tuple(map(self.Mt,z_range_k))
@@ -303,6 +306,75 @@ class Welle:
         ax[0].grid()
         ax[1].grid()
 
+        plt.show()
+
+    def plot_neigung(self):
+        max_z = max(self.z_daten)
+        min_z = min(self.z_daten)
+
+        zrange = np.linspace(min_z,max_z,1000)
+        rrange = np.array(tuple(map(self.radius,zrange)))
+
+        fig,ax = plt.subplots(2,1,constrained_layout=True,sharex="col",sharey="row",num=self.name+" Neigungsplot")
+        fig.set_size_inches(15,10)
+        fig.suptitle(f'Welle "{self.name}" - Neigung',fontsize=18)
+        ax[0].plot(zrange,rrange,"k")
+        ax[0].plot(zrange,rrange*-1,"k")
+        ax[0].hlines(0,min_z-self.länge*0.05,self.z_daten[-1]+self.länge*0.05,linestyles="dashdot",colors="black")
+        for z in self.z_daten:
+            ax[0].vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
+        ax[0].set_title("Darstellung")
+        
+        ax[0].scatter((self.festlager_z,self.loslager_z),(0,0),(100,100),marker="^") # Lagermarkierungen
+        ax[0].annotate("Festlager",(self.festlager_z,0),(5,-20),textcoords="offset pixels")
+        ax[0].annotate("Loslager",(self.loslager_z,0),(5,-20),textcoords="offset pixels")
+
+        neigungx = self.neigung_x
+        neigungy = self.neigung_y
+        if neigungx is not None:
+            ax[1].plot(self.z_range,neigungx,label="um X")
+        if neigungy is not None:
+            ax[1].plot(self.z_range,neigungy,label="um Y")
+        
+        ax[1].set_xlabel("$z\\,[mm]$")
+        ax[1].set_ylabel("$Neigung\\,[rad]$")
+        ax[1].set_title("Neigung")
+        ax[0].grid()
+        ax[1].grid()
+        plt.show()
+
+    def plot_biegung(self):
+        max_z = max(self.z_daten)
+        min_z = min(self.z_daten)
+
+        zrange = np.linspace(min_z,max_z,1000)
+        rrange = np.array(tuple(map(self.radius,zrange)))
+
+        fig,ax = plt.subplots(2,1,constrained_layout=True,sharex="col",sharey="row",num=self.name+" Verformungsplot")
+        fig.set_size_inches(15,10)
+        fig.suptitle(f'Welle "{self.name}" - Verformung',fontsize=18)
+        ax[0].plot(zrange,rrange,"k")
+        ax[0].plot(zrange,rrange*-1,"k")
+        ax[0].hlines(0,min_z-self.länge*0.05,self.z_daten[-1]+self.länge*0.05,linestyles="dashdot",colors="black")
+        for z in self.z_daten:
+            ax[0].vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
+        ax[0].scatter((self.festlager_z,self.loslager_z),(0,0),(100,100),marker="^") # Lagermarkierungen
+        ax[0].annotate("Festlager",(self.festlager_z,0),(5,-20),textcoords="offset pixels")
+        ax[0].annotate("Loslager",(self.loslager_z,0),(5,-20),textcoords="offset pixels")
+        ax[0].set_title("Darstellung")
+
+        biegungx = self.biegung_x
+        biegungy = self.biegung_y
+        if biegungx is not None:
+            ax[1].plot(self.z_range,biegungx,label="in X")
+        if biegungy is not None:
+            ax[1].plot(self.z_range,biegungy,label="in Y")
+        
+        ax[1].set_xlabel("$z\\,[mm]$")
+        ax[1].set_ylabel("$Biegung\\,[\\mu m]$")
+        ax[1].set_title("Biegung")
+        ax[0].grid()
+        ax[1].grid()
         plt.show()
 
     def Mbx(self,z):
@@ -1188,11 +1260,12 @@ if __name__ == "__main__":
     test.set_Kraft(3500, "r", 20, 0, 0)
     test.set_Kraft(-4500, "r", 280, 0, 0)
 
-    test.welle_darstellen()
-
-    # test.lagerkräfte_berechnen()
-    # test.verformung_berechnen()
-
+    test.lagerkräfte_berechnen()
+    test.verformung_berechnen()
+    test.plot_torsion()
+    test.plot_neigung()
+    test.plot_biegung()
+    exit()
 
     # test.plot()
     # plt.plot(test.z_range,test.biegung_x,label="X")

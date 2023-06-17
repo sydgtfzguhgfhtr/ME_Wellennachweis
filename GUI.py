@@ -19,7 +19,7 @@ add_n_k = 1
 
 welle = None
 optionen_oberfl = ("nein","Nitrieren","Einsatzhärten","Karbonierhärten","Festwalzen","Kugelstrahlen","Flammhärten")
-
+FL_Fx,FL_Fy,FL_Fz,LL_Fx,LL_Fy = 0,0,0,0,0 
 
 punkteinput = [] # Beinhaltet die Nutzerdaten für die Punkte
 punktreihe_stdwerte = {"NW":False,"Z":0,"R":0,"EXTRA":"","Rz":0,"RUNDUNGSR":0,"KERBGRUNDD":0,"NUTT":0,"NUTR":0,"NUTB":0}
@@ -180,6 +180,26 @@ while running:
     tab_geometrie = sg.Tab("Geometrie",geometrie_layout)
     tab_kräfte = sg.Tab("Belastungen",kräfte_layout)
 
+    # Auswertetabs
+    tab_plots = sg.Tab("Plots",[
+        [sg.Text("Plots",font=(any,17))],
+        [sg.Button("Plot Verformung",key="-PLOT VERFORMUNG-")],
+        [sg.Button("Plot Neigung",key="-PLOT Neigung-")],
+        [sg.Button("Plot Kräfte/Biegung",key="-PLOT KRÄFTE BIEGUNG-")],
+        [sg.Button("Plot Torsion",key="-PLOT TORSION-")],
+        ])
+    tab_lagerkräfte = sg.Tab("Lagerkräfte",[
+        [sg.Text("Lagerkräfte",font=(any,17))],
+        [sg.Table((("Festlager",FL_Fx,FL_Fy,FL_Fz),("Loslager",LL_Fx,LL_Fy,0)),("","Fx","Fy","Fz"))],
+    ])
+    tab_absätze = sg.Tab("Absätze",[
+        [sg.Text("Absätze",font=(any,17))],
+    ])
+    tab_auswertung = sg.Tab("Auswertung",layout=[
+        [sg.Text("Auswertung",font=(any,20))],
+        [sg.TabGroup([[tab_lagerkräfte,tab_plots,tab_absätze]])]
+    ],visible=False,key="TAB AUSWERTUNG")
+
     layout = [
     [sg.Titlebar("Wellennachweis")],
     [sg.Text("Wellennachweis nach DIN 743",font=(any,30))],
@@ -189,8 +209,8 @@ while running:
     [sg.Text("Name der Welle",font=(any,20))],
     [sg.Input(wellenname,key="-NAME-")],
 
-    [sg.TabGroup([[tab_werkstoff,tab_Lagerpositionen,tab_geometrie,tab_kräfte]])],
-    [sg.Button("Welle darstellen",key="-DRAW WELLE-"),sg.Button("Belastungen darstellen",key="-CALC LAGERKRÄFTE-"),sg.Button("vollständige Auswertung",key="-CALC ALL-")],
+    [sg.TabGroup([[tab_werkstoff,tab_Lagerpositionen,tab_geometrie,tab_kräfte,tab_auswertung]])],
+    [sg.Button("Welle darstellen",key="-DRAW WELLE-"),sg.Button("Belastungen darstellen",key="-CALC LAGERKRÄFTE-"),sg.Button("vollständige Auswertung",key="-CALC ALL-"),sg.Text("RECHNE...",key="-RECHNE-",visible=False)],
     ]
 
     window = new_window()
@@ -230,7 +250,22 @@ while running:
             except:
                 sg.PopupError("Es ist ein Fehler aufgetreten.\nBitte die Eingaben auf Vollständigkeit überprüfen!",title="Fehlermeldung")
 
-
+        if event=="-CALC ALL-":
+            window["-RECHNE-"].update(visible=True)
+            try:
+                welle = Welle(name=wellenname,festlager_z=festlager_z,loslager_z=loslager_z,werkstoff=material,Oberflächenverfestigung=oberflächenv)
+                geometrie = [(float(punkt["Z"]),float(punkt["R"])) for punkt in punkteinput]
+                welle.set_geometrie(geometrie)
+                for kraft in kräfteinput:
+                    welle.set_Kraft(float(kraft["F"]),kraft["ART"],float(kraft["Z"]),float(kraft["R"]),float(kraft["PHI"]))
+                welle.lagerkräfte_berechnen()
+                welle.verformung_berechnen()
+                window["TAB AUSWERTUNG"].update(visible=True)
+            except:
+                sg.PopupError("Es ist ein Fehler aufgetreten.\nBitte die Eingaben überprüfen!",title="Fehlermeldung")
+            window["-RECHNE-"].update(visible=False)
+        if event=="-PLOT VERFORMUNG-":
+            welle.plot_biegung()
         if event=="-ADD_PUNKT-":
             save_all()
             n_punkte += add_n_p
