@@ -78,6 +78,10 @@ class Welle:
         self.FL_Fz = None  # Festlager FZ
         self.LL_Fx = None  # Loslager FX
         self.LL_Fy = None  # Loslager FY
+        self.NeigungFLx = None # Neigung im Festlager
+        self.NeigungFLy = None
+        self.NeigungLLx = None
+        self.NeigungLLy = None
 
     
     def set_Kraft(self,betrag,typ:str,z=0,r=0,phi=0):
@@ -433,13 +437,13 @@ class Welle:
         def F_ers_x():
             def integfuncx(z):
                 return q_ers_x(z)*(länge-z)
-            integral,_ = quad(integfuncx,minl,maxl,epsabs=1e-5,limit=100)
+            integral,_ = quad(integfuncx,minl,maxl,epsabs=1e-5,limit=100,full_output=0)
             F_ers = 1/länge * integral
             return (F_ers)*1000 # N/mm^2
         def F_ers_y():
             def integfuncy(z):
                 return q_ers_y(z)*(länge-z)
-            integral,_ = quad(integfuncy,minl,maxl,epsabs=1e-5,limit=100)
+            integral,_ = quad(integfuncy,minl,maxl,epsabs=1e-5,limit=100,full_output=0)
             F_ers = 1/länge * integral
             return (F_ers)*1000 # N/mm^2
         
@@ -454,26 +458,31 @@ class Welle:
         def Biegung_x(z):
             def integfuncx(s):
                 return q_ers_x(s)*(z-s)
-            integral,_ = quad(integfuncx,minl,z,epsabs=1e-5)
+            integral,_ = quad(integfuncx,minl,z,epsabs=1e-5,full_output=0)
             return 1/E*(F_ex*z-integral*1000)
 
         def Biegung_y(z):
             def integfuncy(s):
                 return q_ers_y(s)*(z-s)
-            integral,_ = quad(integfuncy,minl,z,epsabs=1e-5)
+            integral,_ = quad(integfuncy,minl,z,epsabs=1e-5,full_output=0)
             return 1/E*(F_ey*z-integral*1000)
         
         def Neigung_x(z):
-            integral,_ = quad(q_ers_x,minl,z,epsabs=1e-5)
+            integral,_ = quad(q_ers_x,minl,z,epsabs=1e-5,full_output=0)
             return 1/E * (F_ex-integral*1000)
         def Neigung_y(z):
-            integral,_ = quad(q_ers_y,minl,z,epsabs=1e-5)
+            integral,_ = quad(q_ers_y,minl,z,epsabs=1e-5,full_output=0)
             return 1/E * (F_ey-integral*1000)
 
         self.biegung_x = np.fromiter(map(Biegung_x,z_range),float,self.len_z_range)
         self.biegung_y = np.fromiter(map(Biegung_y,z_range),float,self.len_z_range)
         self.neigung_x = np.fromiter(map(Neigung_x,z_range),float,self.len_z_range)
         self.neigung_y = np.fromiter(map(Neigung_y,z_range),float,self.len_z_range)
+
+        self.NeigungFLx = Neigung_x(self.festlager_z)
+        self.NeigungFLy = Neigung_y(self.festlager_z)
+        self.NeigungLLx = Neigung_x(self.loslager_z)
+        self.NeigungLLy = Neigung_y(self.loslager_z)
 
         # Schlusslinie in X
         m = (Biegung_x(self.festlager_z) - Biegung_x(self.loslager_z))/ (self.festlager_z - self.loslager_z)    # Gerade zwischen Lagern
@@ -487,6 +496,10 @@ class Welle:
         y_range = m * z_range + n
         self.biegung_y = self.biegung_y - y_range
 
+        self.maxVerf_x = max(self.biegung_x) #mm
+        self.maxVerf_y = max(self.biegung_y) #mm
+        self.maxVerf_x_PM = self.maxVerf_x/(self.länge/1000) #mm/m
+        self.maxVerf_y_PM = self.maxVerf_y/(self.länge/1000) #mm/m
 
     def Spannungen(self, z):
         """Spannungen
@@ -1360,27 +1373,26 @@ def Werte_in_CSV_speichern(*args:Welle_Absatz, name):
 
 if __name__ == "__main__":
     Werkstoff.aus_csv_laden()
-    test = Welle("Testwelle", 0, 200, "42CrMo4" ,"nein")
+    test = Welle("Testwelle", 0, 300, "42CrMo4" ,"nein")
 
     test.set_geometrie(
-        ((0,25),
-        (40,25),
-        (40,21),
-        (80,21),
+        ((0,10),
+        (40,10),
+        (40,20),
+        (80,20),
         (80,27.5),
         (160,27.5),
         (160,15),
-        (300,15))
+        (195,15))
     )
-    test.set_Kraft(3500, "r", 20, 0, 0)
-    test.set_Kraft(-4500, "r", 280, 0, 0)
+    test.set_Kraft(-3500, "r", 20, 0, 0)
+    test.set_Kraft(4500, "r", 135, 0, 0)
 
     test.lagerkräfte_berechnen()
     test.verformung_berechnen()
-    test.plot_torsion()
-    test.plot_neigung()
+    print(test.maxVerf_x,test.maxVerf_x_PM)
     test.plot_biegung()
-
+    exit()
     Abschnitt1 = Welle_Absatz(test, 40, "Absatz", 2, 5)
     Abschnitt2 = Welle_Absatz(test, 40, "eine Passfeder", 2)
     Abschnitt3 = Welle_Absatz(test, 40, "umlaufende Rundnut", 2, 10, 1, 2)
