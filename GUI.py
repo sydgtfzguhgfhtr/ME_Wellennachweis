@@ -1,4 +1,4 @@
-from Klassen import Welle,Werkstoff,Welle_Absatz
+from Klassen import Welle,Werkstoff,Welle_Absatz,Werte_in_CSV_speichern
 
 import PySimpleGUI as sg
 
@@ -16,6 +16,8 @@ n_kräfte = 1 # Standardwert für die Kräftezahl
 lasttab = "Lager"
 add_n_p = 1
 add_n_k = 1
+csvname = "TEST"
+
 
 welle = None
 optionen_oberfl = ("nein","Nitrieren","Einsatzhärten","Karbonierhärten","Festwalzen","Kugelstrahlen","Flammhärten")
@@ -205,14 +207,20 @@ while running:
     ])
     tab_verformung = sg.Tab("Verformung",[
         [sg.Text("Lagerkräfte",font=(any,17))],
-        [sg.Text("Maximale Verformung in X: ",size=(30,None)),sg.Text("",key="MAXVERFX"),sg.Text("[m^-6]")],
-        [sg.Text("Maximaler Verformungsgradient in X: ",size=(30,None)),sg.Text("",key="MAXVERFXGRAD"),sg.Text("[mm/m]")],
-        [sg.Text("Maximale Verformung in Y: ",size=(30,None)),sg.Text("",key="MAXVERFY"),sg.Text("[m^-6]")],
-        [sg.Text("Maximaler Verformungsgradient in Y: ",size=(30,None)),sg.Text("",key="MAXVERFYGRAD"),sg.Text("[mm/m]")],
+        [sg.Text("Maximale Verformung in X: ",size=(30,None)),sg.Text("",key="MAXVERFX",size=(7,None)),sg.Text("[m^-6]")],
+        [sg.Text("Maximaler Verformungsgradient in X: ",size=(30,None)),sg.Text("",key="MAXVERFXGRAD",size=(7,None)),sg.Text("[mm/m]")],
+        [sg.Text("Maximale Verformung in Y: ",size=(30,None)),sg.Text("",key="MAXVERFY",size=(7,None)),sg.Text("[m^-6]")],
+        [sg.Text("Maximaler Verformungsgradient in Y: ",size=(30,None)),sg.Text("",key="MAXVERFYGRAD",size=(7,None)),sg.Text("[mm/m]")],
+        [sg.HorizontalSeparator()],
+        [sg.Text("Neigung im Festlager in X:",size=(30,None)),sg.Text("",key="NEIGUNGFLX",size=(7,None)),sg.Text("[rad]")],
+        [sg.Text("Neigung im Festlager in Y:",size=(30,None)),sg.Text("",key="NEIGUNGFLY",size=(7,None)),sg.Text("[rad]")],
+        [sg.Text("Neigung im Loslager in X:",size=(30,None)),sg.Text("",key="NEIGUNGLLX",size=(7,None)),sg.Text("[rad]")],
+        [sg.Text("Neigung im Loslager in Y:",size=(30,None)),sg.Text("",key="NEIGUNGLLY",size=(7,None)),sg.Text("[rad]")],
     ])
     tab_absätze = sg.Tab("Absätze",[
         [sg.Text("Absätze",font=(any,17))],
         [sg.Table([],("Name der Welle","Werkstoff","z_Wert","Welle","beta_sigma","beta_tau","K_ges_sigma","K_ges_tau","sigma_bWK","tau_bWK","sigma_bFK","tau_tFK","sigma_bADK","tau_tADK","S_F","S_D","Biegespannung","Torsionsspannung"),key="ABSATZTABLE",def_col_width=5)],
+        [sg.Button("als CSV speichern",key="SAVETOCSV"),sg.Text(csvname,visible=False,key="SAVED")],
     ])
     tab_auswertung = sg.Tab("Auswertung",layout=[
         [sg.Text("Auswertung",font=(any,20))],
@@ -310,16 +318,27 @@ while running:
                         absatzerg.append(infos)
                     window["ABSATZTABLE"].update(values=absatzerg)
 
-                    window["MAXVERFX"].update(str(round(welle.maxVerf_x*1000,3)))
-                    window["MAXVERFXGRAD"].update(str(round(welle.maxVerf_x_PM,3)))
-                    window["MAXVERFY"].update(str(round(welle.maxVerf_y*1000,3)))
-                    window["MAXVERFYGRAD"].update(str(round(welle.maxVerf_y_PM,3)))
+                    window["MAXVERFX"].update(str(round(welle.maxVerf_x*1000,5)))
+                    window["MAXVERFXGRAD"].update(str(round(welle.maxVerf_x_PM,5)))
+                    window["MAXVERFY"].update(str(round(welle.maxVerf_y*1000,5)))
+                    window["MAXVERFYGRAD"].update(str(round(welle.maxVerf_y_PM,5)))
+                    window["NEIGUNGFLX"].update(str(round(welle.NeigungFLx,5)))
+                    window["NEIGUNGFLY"].update(str(round(welle.NeigungFLy,5)))
+                    window["NEIGUNGLLX"].update(str(round(welle.NeigungLLx,5)))
+                    window["NEIGUNGLLY"].update(str(round(welle.NeigungLLy,5)))
 
                 except ValueError:
                     fehler("Unvollständige Eingaben. (ValueError)")
                 except ZeroDivisionError:
                     fehler("Fehler bei der Berechnung. Eingaben überprüfen. (ZeroDivisionError)")
                 window["-RECHNE-"].update(visible=False)
+                window["SAVED"].update(visible=False)
+        
+        if event=="SAVETOCSV":
+            csvname = "PDFs\\"+wellenname+".csv"
+            window["SAVED"].update(f"unter '{csvname}' gespeichert...",visible=True)
+            Werte_in_CSV_speichern(wellenname,*absätze)
+
         if event=="-PLOT VERFORMUNG-":
             welle.plot_biegung()
         if event=="-PLOT NEIGUNG-":
