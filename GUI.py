@@ -190,7 +190,7 @@ while running:
         ])
     tab_lagerkräfte = sg.Tab("Lagerkräfte",[
         [sg.Text("Lagerkräfte",font=(any,17))],
-        [sg.Table((("Festlager",10000,10000,10000),("Loslager",10000,10000,10000)),("","Fx","Fy","Fz"),key="LAGERKRÄFTE TABLE")],
+        [sg.Table((("Festlager",1e10,1e10,1e10),("Loslager",1e10,1e10,1e10)),("","Fx [N]","Fy [N]","Fz [N]"),key="LAGERKRÄFTE TABLE")],
     ])
     tab_absätze = sg.Tab("Absätze",[
         [sg.Text("Absätze",font=(any,17))],
@@ -265,7 +265,7 @@ while running:
                 welle.lagerkräfte_berechnen()
                 welle.verformung_berechnen()
                 FL_Fx,FL_Fy,FL_Fz,LL_Fx,LL_Fy = welle.FL_Fx,welle.FL_Fy,welle.FL_Fz,welle.LL_Fx,welle.LL_Fy
-                window["LAGERKRÄFTE TABLE"].update(values=(("Festlager",FL_Fx,FL_Fy,FL_Fz),("Loslager",LL_Fx,LL_Fy,0)))
+                window["LAGERKRÄFTE TABLE"].update(values=(("Festlager",round(FL_Fx,3),round(FL_Fy,3),round(FL_Fz,3)),("Loslager",round(LL_Fx,3),round(LL_Fy,3),0)))
                 window["TAB AUSWERTUNG"].update(visible=True)
             except:
                 sg.PopupError("Es ist ein Fehler aufgetreten.\nBitte die Eingaben überprüfen!",title="Fehlermeldung")
@@ -285,9 +285,8 @@ while running:
             break
         if event=="-REM_PUNKT-":
             save_all()
-            if n_kräfte<2+add_n_p:
+            if n_punkte<2+add_n_p:
                 n_punkte = 2
-                print("TRUE")
             else:
                 n_punkte -= add_n_p
             window.close()
@@ -301,7 +300,6 @@ while running:
             save_all()
             if n_kräfte<1+add_n_k:
                 n_kräfte = 1
-                print("TRUE")
             else:
                 n_kräfte -= add_n_k
             window.close()
