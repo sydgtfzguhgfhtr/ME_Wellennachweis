@@ -237,7 +237,7 @@ while running:
     [sg.Input(wellenname,key="-NAME-")],
 
     [sg.TabGroup([[tab_werkstoff,tab_Lagerpositionen,tab_geometrie,tab_kräfte,tab_auswertung]])],
-    [sg.Button("Welle darstellen",key="-DRAW WELLE-"),sg.Button("vollständige Auswertung",key="-CALC ALL-")],
+    [sg.Button("Welle darstellen",key="-DRAW WELLE-"),sg.Button("vollständige Auswertung",key="-CALC ALL-"),sg.Text("RECHNE...",visible=False,key="-RECHNE-")],
     ]
 
     window = new_window()
