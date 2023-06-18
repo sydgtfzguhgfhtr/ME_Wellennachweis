@@ -215,7 +215,7 @@ while running:
     [sg.Input(wellenname,key="-NAME-")],
 
     [sg.TabGroup([[tab_werkstoff,tab_Lagerpositionen,tab_geometrie,tab_kräfte,tab_auswertung]])],
-    [sg.Button("Welle darstellen",key="-DRAW WELLE-"),sg.Button("Belastungen darstellen",key="-CALC LAGERKRÄFTE-"),sg.Button("vollständige Auswertung",key="-CALC ALL-"),sg.Text("RECHNE...",key="-RECHNE-",visible=False)],
+    [sg.Button("Welle darstellen",key="-DRAW WELLE-"),sg.Button("vollständige Auswertung",key="-CALC ALL-"),sg.Text("RECHNE...",key="-RECHNE-",visible=False)],
     ]
 
     window = new_window()
@@ -242,19 +242,6 @@ while running:
                 geometrie = [(float(punkt["Z"]),float(punkt["R"])) for punkt in punkteinput]
                 welle.set_geometrie(geometrie)
                 welle.welle_darstellen()
-            except:
-                sg.PopupError("Es ist ein Fehler aufgetreten.\nBitte die Eingaben auf Vollständigkeit überprüfen!",title="Fehlermeldung")
-
-        if event=="-CALC LAGERKRÄFTE-":
-            save_all()
-            try:
-                welle = Welle(name=wellenname,festlager_z=festlager_z,loslager_z=loslager_z,werkstoff=material,Oberflächenverfestigung=oberflächenv)
-                geometrie = [(float(punkt["Z"]),float(punkt["R"])) for punkt in punkteinput]
-                welle.set_geometrie(geometrie)
-                for kraft in kräfteinput:
-                    welle.set_Kraft(float(kraft["F"]),kraft["ART"],float(kraft["Z"]),float(kraft["R"]),float(kraft["PHI"]))
-                welle.lagerkräfte_berechnen()
-                welle.plot()
             except:
                 sg.PopupError("Es ist ein Fehler aufgetreten.\nBitte die Eingaben auf Vollständigkeit überprüfen!",title="Fehlermeldung")
 
@@ -298,7 +285,7 @@ while running:
                     
                     absatzerg = []
                     for absatz in absätze:
-                        absatzerg.append(absatz.Sicherheiten())
+                        absatzerg.append(absatz.Sicherheiten()[2])
                     window["ABSATZTABLE"].update(values=absatzerg)
 
                 except ValueError:
