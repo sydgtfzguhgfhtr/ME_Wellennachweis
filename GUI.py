@@ -155,21 +155,27 @@ while running:
     for i in range(add_n_p):
         punkteinput.append(punktreihe_stdwerte)
 
+    punkte_reihe = []
+    for i in range(n_punkte):
+        punkte_reihe.append(punktreihe(i))
+
     geometrie_layout = [
     [sg.Text("Geometrie definieren",font=(any,20))],
     [sg.Input(1,(5,None),key="ADD_N_P"),sg.Button("hinzufügen",key="-ADD_PUNKT-"),sg.Button("entfernen",key="-REM_PUNKT-")],
     [sg.Text("Punkte",font=(any,15))],
+    [sg.Column(punkte_reihe,scrollable=True,vertical_scroll_only=True,expand_y=5)],
     ]
-    for i in range(n_punkte):
-        geometrie_layout.append(punktreihe(i))
 
+    kräfte_reihe = []
+    for i in range(n_kräfte):
+        kräfte_reihe.append(kraftreihe(i))
     kräfte_layout = [
         [sg.Text("Belastung definieren",font=(any,20))],
         [sg.Input(1,(5,None),key="ADD_N_K"),sg.Button("hinzufügen",key="-ADD_KRAFT-"),sg.Button("entfernen",key="-REM_KRAFT-")],
         [sg.Text("Kräfte",font=(any,15))],
+        [sg.Column(kräfte_reihe,scrollable=True,vertical_scroll_only=True,expand_y=5)],
     ]
-    for i in range(n_kräfte):
-        kräfte_layout.append(kraftreihe(i))
+
     tab_werkstoff = sg.Tab("Werkstoff",[
         [sg.Text("Werkstoff",font=(any,20))],
         [sg.Text('aus Datei "Werkstoffdaten.csv"'),sg.Combo(list(Werkstoff.Werkstoffe.keys()),material,key="-WERKSTOFF-")],
@@ -206,12 +212,12 @@ while running:
     ])
     tab_absätze = sg.Tab("Absätze",[
         [sg.Text("Absätze",font=(any,17))],
-        [sg.Table([],("Name","Werkstoff","z_Wert","Welle","beta_sigma","beta_tau","K_ges_sigma","K_ges_tau","sigma_bWK","tau_bWK","sigma_bFK","tau_tFK","sigma_bADK","tau_tADK","S_F","S_D","Biegespannung","Torsionsspannung"),key="ABSATZTABLE")],
+        [sg.Table([],("Name der Welle","Werkstoff","z_Wert","Welle","beta_sigma","beta_tau","K_ges_sigma","K_ges_tau","sigma_bWK","tau_bWK","sigma_bFK","tau_tFK","sigma_bADK","tau_tADK","S_F","S_D","Biegespannung","Torsionsspannung"),key="ABSATZTABLE",def_col_width=5)],
     ])
     tab_auswertung = sg.Tab("Auswertung",layout=[
         [sg.Text("Auswertung",font=(any,20))],
         [sg.TabGroup([[tab_lagerkräfte,tab_verformung,tab_plots,tab_absätze]])]
-    ],visible=True,key="TAB AUSWERTUNG")
+    ],visible=False,key="TAB AUSWERTUNG")
 
     layout = [
     [sg.Titlebar("Wellennachweis")],
@@ -295,7 +301,13 @@ while running:
                     
                     absatzerg = []
                     for absatz in absätze:
-                        absatzerg.append(absatz.Sicherheiten()[2][:-1])
+                        infos = []
+                        for wert in absatz.Sicherheiten()[2][:-1]:
+                            try:
+                                infos.append(round(float(wert),3))
+                            except:
+                                infos.append(wert)
+                        absatzerg.append(infos)
                     window["ABSATZTABLE"].update(values=absatzerg)
 
                     window["MAXVERFX"].update(str(round(welle.maxVerf_x*1000,3)))
