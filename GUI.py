@@ -28,6 +28,9 @@ for i in range(n_punkte):
 
 kräfteinput = [] # Beinhaltet die Nutzerdaten für die Kräfte
 
+def fehler(nachricht:str):
+    sg.PopupError(nachricht,title="Fehlermeldung")
+
 def punktreihe(key:str):
     i = int(key)
     key = str(key)
@@ -176,6 +179,7 @@ while running:
         [sg.Text("Lagerpositionen",font=(any,20))],
         [sg.Text("Festlager:"),sg.Input(festlager_z,size=(7,None),key="-FLZ-"),sg.Text("mm")],
         [sg.Text("Loslager: "),sg.Input(loslager_z,size=(7,None),key="-LLZ-"),sg.Text("mm")],
+        [sg.Text("Hinweis: Zur Berechnung der Verformung müssen sich die Lager innerhalb der Wellengeometrie befinden.")]
         ])
     tab_geometrie = sg.Tab("Geometrie",geometrie_layout)
     tab_kräfte = sg.Tab("Belastungen",kräfte_layout)
@@ -194,6 +198,7 @@ while running:
     ])
     tab_absätze = sg.Tab("Absätze",[
         [sg.Text("Absätze",font=(any,17))],
+        [sg.Table([],("Name","Werkstoff","z_Wert","Welle","beta_sigma","beta_tau","K_ges_sigma","K_ges_tau","sigma_bWK","tau_bWK","sigma_bFK","tau_tFK","sigma_bADK","tau_tADK","S_F","S_D","Biegespannung","Torsionsspannung","anderes"),key="ABSATZTABLE")],
     ])
     tab_auswertung = sg.Tab("Auswertung",layout=[
         [sg.Text("Auswertung",font=(any,20))],
@@ -255,21 +260,52 @@ while running:
 
         if event=="-CALC ALL-":
             save_all()
-            window["-RECHNE-"].update(visible=True)
-            try:
-                welle = Welle(name=wellenname,festlager_z=festlager_z,loslager_z=loslager_z,werkstoff=material,Oberflächenverfestigung=oberflächenv)
-                geometrie = [(float(punkt["Z"]),float(punkt["R"])) for punkt in punkteinput]
-                welle.set_geometrie(geometrie)
-                for kraft in kräfteinput:
-                    welle.set_Kraft(float(kraft["F"]),kraft["ART"],float(kraft["Z"]),float(kraft["R"]),float(kraft["PHI"]))
-                welle.lagerkräfte_berechnen()
-                welle.verformung_berechnen()
-                FL_Fx,FL_Fy,FL_Fz,LL_Fx,LL_Fy = welle.FL_Fx,welle.FL_Fy,welle.FL_Fz,welle.LL_Fx,welle.LL_Fy
-                window["LAGERKRÄFTE TABLE"].update(values=(("Festlager",round(FL_Fx,3),round(FL_Fy,3),round(FL_Fz,3)),("Loslager",round(LL_Fx,3),round(LL_Fy,3),0)))
-                window["TAB AUSWERTUNG"].update(visible=True)
-            except:
-                sg.PopupError("Es ist ein Fehler aufgetreten.\nBitte die Eingaben überprüfen!",title="Fehlermeldung")
-            window["-RECHNE-"].update(visible=False)
+            if material=="":
+                fehler("Es wurde kein Werkstoff festgelegt.")
+            else:
+                window["-RECHNE-"].update(visible=True)
+                window.refresh()
+
+                try:
+                    welle = Welle(name=wellenname,festlager_z=festlager_z,loslager_z=loslager_z,werkstoff=material,Oberflächenverfestigung=oberflächenv)
+                    geometrie = [(float(punkt["Z"]),float(punkt["R"])) for punkt in punkteinput]
+                    welle.set_geometrie(geometrie)
+                    for kraft in kräfteinput:
+                        welle.set_Kraft(float(kraft["F"]),kraft["ART"],float(kraft["Z"]),float(kraft["R"]),float(kraft["PHI"]))
+                    welle.lagerkräfte_berechnen()
+                    welle.verformung_berechnen()
+                    FL_Fx,FL_Fy,FL_Fz,LL_Fx,LL_Fy = welle.FL_Fx,welle.FL_Fy,welle.FL_Fz,welle.LL_Fx,welle.LL_Fy
+                    window["LAGERKRÄFTE TABLE"].update(values=(("Festlager",round(FL_Fx,3),round(FL_Fy,3),round(FL_Fz,3)),("Loslager",round(LL_Fx,3),round(LL_Fy,3),0)))
+                    window["TAB AUSWERTUNG"].update(visible=True)
+
+                    absätze = []
+                    for punkt in punkteinput:
+                        nw = punkt["NW"]
+                        if nw:
+                            z = float(punkt["Z"])
+                            rz = float(punkt["Rz"])
+                            art = punkt["EXTRA"]
+                            if art=="Absatz":
+                                args = [float(punkt["RUNDUNGSR"])]
+                                print("Absatz",args)
+                            elif art=="umlaufende Rundnut":
+                                args = [float(punkt["KERBGRUNDD"]),float(punkt["NUTR"]),float(punkt["NUTB"])]
+                                print("uml. Rundnut",args)
+                            elif art=="umlaufende Rechtecknut":
+                                args = [float(punkt["NUTT"]),float(punkt["NUTR"]),float(punkt["NUTB"])]
+                                print("uml. Rechtecknut",args)
+                            absätze.append(Welle_Absatz(welle,z,art,rz,*args))
+                    
+                    absatzerg = []
+                    for absatz in absätze:
+                        absatzerg.append(absatz.Sicherheiten())
+                    window["ABSATZTABLE"].update(values=absatzerg)
+
+                except ValueError:
+                    fehler("Unvollständige Eingaben. (ValueError)")
+                except ZeroDivisionError:
+                    fehler("Fehler bei der Berechnung. Eingaben überprüfen. (ZeroDivisionError)")
+                window["-RECHNE-"].update(visible=False)
         if event=="-PLOT VERFORMUNG-":
             welle.plot_biegung()
         if event=="-PLOT NEIGUNG-":
