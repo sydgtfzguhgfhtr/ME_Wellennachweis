@@ -382,6 +382,7 @@ class Welle:
         ax[1].set_xlabel("$z\\,[mm]$")
         ax[1].set_ylabel("$Biegung\\,[\\mu m]$")
         ax[1].set_title("Biegung")
+        ax[1].legend()
         ax[0].grid()
         ax[1].grid()
         plt.show()
@@ -478,6 +479,8 @@ class Welle:
         self.biegung_y = np.fromiter(map(Biegung_y,z_range),float,self.len_z_range)
         self.neigung_x = np.fromiter(map(Neigung_x,z_range),float,self.len_z_range)
         self.neigung_y = np.fromiter(map(Neigung_y,z_range),float,self.len_z_range)
+
+        self.biegung_x,self.biegung_y = self.biegung_y,self.biegung_x # Tauscht Werte damit biegung_x Biegung in x ist und nicht um X
 
         self.NeigungFLx = Neigung_x(self.festlager_z)
         self.NeigungFLy = Neigung_y(self.festlager_z)
