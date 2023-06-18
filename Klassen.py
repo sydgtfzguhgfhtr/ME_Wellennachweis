@@ -523,6 +523,13 @@ class Welle:
             print("-"*48)
 
     def plots_speichern(self):
+
+        max_z = max(self.z_daten)
+        min_z = min(self.z_daten)
+
+        zrange = np.linspace(min_z,max_z,1000)
+        rrange = np.array(tuple(map(self.radius,zrange)))
+
         _,z_kräfte,_,_,_,_,_=zip(*self.belastungen)
         max_z_k = max(z_kräfte)
         max_z = max(self.z_daten)
@@ -539,36 +546,36 @@ class Welle:
         MB_Darstellung.set_size_inches(15,10)
 
         # Mbx Biegemomentenverlauf
-        mbx_daten = np.fromiter(map(self.Mbx,z_range_k),float,len(z_range_k))
-        ax[0,0].plot(z_range_k,mbx_daten)
-        ax[0,0].fill_between(z_range_k,0,mbx_daten,alpha=0.3)
+        mbx_daten = np.fromiter(map(self.Mbx,self.z_range),float,len(self.z_range))
+        ax[0,0].plot(self.z_range,mbx_daten)
+        ax[0,0].fill_between(self.z_range,0,mbx_daten,alpha=0.3)
         ax[0,0].set_xlabel("$z\\,[mm]$")
         ax[0,0].set_ylabel("$Mb_x\\,[Nm]$")
         ax[0,0].set_title("Biegemoment um X")
         ax[0,0].grid()
 
         # Mby Biegemomentenverlauf
-        mby_daten = np.fromiter(map(self.Mby,z_range_k),float,len(z_range_k))
-        ax[0,1].plot(z_range_k,mby_daten)
-        ax[0,1].fill_between(z_range_k,0,mby_daten,alpha=0.3)
+        mby_daten = np.fromiter(map(self.Mby,self.z_range),float,len(self.z_range))
+        ax[0,1].plot(self.z_range,mby_daten)
+        ax[0,1].fill_between(self.z_range,0,mby_daten,alpha=0.3)
         ax[0,1].set_xlabel("$z\\,[mm]$")
         ax[0,1].set_ylabel("$Mb_y\\,[Nm]$")
         ax[0,1].set_title("Biegemoment um Y")
         ax[0,1].grid()
 
 
-        Mt = tuple(map(lambda x: self.Mt(x), l))
+        Mt = tuple(map(lambda x: self.Mt(x), self.z_range))
 
-        ax[1,0].plot(l,Mt)
-        ax[1,0].fill_between(l,0,Mt,alpha=0.3)
+        ax[1,0].plot(self.z_range,Mt)
+        ax[1,0].fill_between(self.z_range,0,Mt,alpha=0.3)
         ax[1,0].set_xlabel("$z\\,[mm]$")
         ax[1,0].set_ylabel("$M_t\\,[Nm]$")
         ax[1,0].set_title("Torsionsmoment")
         ax[1,0].grid()
 
-        sigma_x = tuple(map(lambda x: self.Spannungen(x)[0], l))
-        sigma_y = tuple(map(lambda x: self.Spannungen(x)[1], l))
-        tau = tuple(map(lambda x: self.Spannungen(x)[2], l))
+        sigma_x = tuple(map(lambda x: self.Spannungen(x)[0], self.z_range))
+        sigma_y = tuple(map(lambda x: self.Spannungen(x)[1], self.z_range))
+        tau = tuple(map(lambda x: self.Spannungen(x)[2], self.z_range))
 
         ax[1,1].plot(sigma_x, label=r"$\sigma_x$")
         ax[1,1].plot(sigma_y, label=r"$\sigma_y$")
