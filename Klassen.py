@@ -387,6 +387,40 @@ class Welle:
         ax[1].grid()
         plt.show()
 
+    def plot_spannungen(self):
+        max_z = max(self.z_daten)
+        min_z = min(self.z_daten)
+
+        zrange = np.linspace(min_z,max_z,1000)
+        rrange = np.array(tuple(map(self.radius,zrange)))
+
+        fig,ax = plt.subplots(2,1,constrained_layout=True,sharex="col",sharey="row",num=self.name+" Spannungsplot")
+        fig.set_size_inches(15,10)
+        fig.suptitle(f'Welle "{self.name}" - Spannungen',fontsize=18)
+        ax[0].plot(zrange,rrange,"k")
+        ax[0].plot(zrange,rrange*-1,"k")
+        ax[0].hlines(0,min_z-self.länge*0.05,self.z_daten[-1]+self.länge*0.05,linestyles="dashdot",colors="black")
+        for z in self.z_daten:
+            ax[0].vlines(z,self.radius(z)*-1,self.radius(z),colors="black")
+        ax[0].scatter((self.festlager_z,self.loslager_z),(0,0),(100,100),marker="^") # Lagermarkierungen
+        ax[0].annotate("Festlager",(self.festlager_z,0),(5,-20),textcoords="offset pixels")
+        ax[0].annotate("Loslager",(self.loslager_z,0),(5,-20),textcoords="offset pixels")
+        ax[0].set_title("Darstellung")
+        
+        datamatrix = np.fromiter(map(self.Spannungen,self.z_range),"3f")
+        sigmax,sigmay,tau = datamatrix.T
+        ax[1].plot(self.z_range,sigmax,label="$\\sigma_x$")
+        ax[1].plot(self.z_range,sigmay,label="$\\sigma_y$")
+        ax[1].plot(self.z_range,tau,label="$\\tau$")
+
+        ax[1].set_xlabel("$z\\,[mm]$")
+        ax[1].set_ylabel("$\sigma,\tau \\,[N/mm^2]$")
+        ax[1].set_title("Spannungen")
+        ax[1].legend()
+        ax[0].grid()
+        ax[1].grid()
+        plt.show()
+
     def Mbx(self,z):
         """Berechnet numerisch den Biegemomentenverlauf um die globale X-Achse in `N*m`"""
         result = 0
@@ -507,7 +541,7 @@ class Welle:
 
     def Spannungen(self, z):
         """Spannungen
-        Gibt Biegepannung in x, y und Torsionsspannung an z aus 
+        Gibt Biegepannung in x, y und Torsionsspannung an z in `N*mm^-2` aus 
         """
         wbz = self.Wb(z)
         sigma_x = self.Mbx(z)*1000/wbz
@@ -1411,7 +1445,7 @@ if __name__ == "__main__":
 
     test.lagerkräfte_berechnen()
     test.verformung_berechnen()
-    print(test.maxVerf_x,test.maxVerf_x_PM)
+    test.plot_spannungen()
     exit()
     Abschnitt1 = Welle_Absatz(test, 40, "Absatz", 2, 5)
     Abschnitt2 = Welle_Absatz(test, 40, "eine Passfeder", 2)

@@ -68,12 +68,11 @@ def read_force_vals():
         kräfteinput.append({"F":values["F"+key],"Z":values["FZ"+key],"R":values["FR"+key],"PHI":values["FPHI"+key],"ART":values["FART"+key]})
 
 def read_misc_vals():
-    global wellenname,material,festlager_z,loslager_z,Rz,oberflächenv
+    global wellenname,material,festlager_z,loslager_z,oberflächenv
     wellenname = values["-NAME-"]
     material = values["-WERKSTOFF-"]
     festlager_z = float(values["-FLZ-"])
     loslager_z = float(values["-LLZ-"])
-    Rz = float(values["-RZ-"])
     oberflächenv = values["-OBERFV-"]
 
 def save_all():
@@ -181,7 +180,6 @@ while running:
     tab_werkstoff = sg.Tab("Werkstoff",[
         [sg.Text("Werkstoff",font=(any,20))],
         [sg.Text('aus Datei "Werkstoffdaten.csv"'),sg.Combo(list(Werkstoff.Werkstoffe.keys()),material,key="-WERKSTOFF-")],
-        [sg.Text("Oberflächenrauheit Rz ="),sg.Input(Rz,(7,any),key="-RZ-")],
         [sg.Text("Oberfläche verfestigt?"),sg.OptionMenu(optionen_oberfl,oberflächenv,key="-OBERFV-")],
         ])
     tab_Lagerpositionen = sg.Tab("Lager",[
@@ -196,10 +194,11 @@ while running:
     # Auswertetabs
     tab_plots = sg.Tab("Plots",[
         [sg.Text("Plots",font=(any,17))],
-        [sg.Button("Plot Verformung",key="-PLOT VERFORMUNG-",size=(30,None))],
-        [sg.Button("Plot Neigung",key="-PLOT NEIGUNG-",size=(30,None))],
         [sg.Button("Plot Kräfte/Biegung",key="-PLOT KRÄFTE BIEGUNG-",size=(30,None))],
         [sg.Button("Plot Torsion",key="-PLOT TORSION-",size=(30,None))],
+        [sg.Button("Plot Spannungen",key="-PLOT SPANNUNG-",size=(30,None))],
+        [sg.Button("Plot Verformung",key="-PLOT VERFORMUNG-",size=(30,None))],
+        [sg.Button("Plot Neigung",key="-PLOT NEIGUNG-",size=(30,None))],
         ])
     tab_lagerkräfte = sg.Tab("Lagerkräfte",[
         [sg.Text("Lagerkräfte",font=(any,17))],
@@ -339,6 +338,8 @@ while running:
             window["SAVED"].update(f"unter '{csvname}' gespeichert...",visible=True)
             Werte_in_CSV_speichern(wellenname,*absätze)
 
+        if event=="-PLOT SPANNUNG-":
+            welle.plot_spannungen()
         if event=="-PLOT VERFORMUNG-":
             welle.plot_biegung()
         if event=="-PLOT NEIGUNG-":
