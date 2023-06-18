@@ -368,8 +368,8 @@ class Welle:
         ax[0].annotate("Loslager",(self.loslager_z,0),(5,-20),textcoords="offset pixels")
         ax[0].set_title("Darstellung")
 
-        biegungx = self.biegung_x
-        biegungy = self.biegung_y
+        biegungx = 1000*self.biegung_x
+        biegungy = 1000*self.biegung_y
         if biegungx is not None:
             ax[1].plot(self.z_range,biegungx,label="in X")
         if biegungy is not None:
