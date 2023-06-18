@@ -1411,7 +1411,6 @@ if __name__ == "__main__":
     test.lagerkräfte_berechnen()
     test.verformung_berechnen()
     print(test.maxVerf_x,test.maxVerf_x_PM)
-    test.plot_biegung()
     exit()
     Abschnitt1 = Welle_Absatz(test, 40, "Absatz", 2, 5)
     Abschnitt2 = Welle_Absatz(test, 40, "eine Passfeder", 2)
