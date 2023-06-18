@@ -536,6 +536,8 @@ class Welle:
         z_range_k = np.linspace(min_z_k,max_z_k,1000)
         rrange = np.fromiter(map(self.radius,zrange),float,len(zrange))
 
+        l = np.arange(start=0,step=1,stop=self.länge)
+
         MB_Darstellung,ax = plt.subplots(3,2,constrained_layout=True,num=self.name+" Belastungsplot")
         MB_Darstellung.set_size_inches(15,10)
 
@@ -558,18 +560,18 @@ class Welle:
         ax[0,1].grid()
 
 
-        Mt = tuple(map(lambda x: self.Mt(x), zrange))
+        Mt = tuple(map(lambda x: self.Mt(x), l))
 
-        ax[1,0].plot(z_range_k,Mt)
-        ax[1,0].fill_between(z_range_k,0,Mt,alpha=0.3)
+        ax[1,0].plot(l,Mt)
+        ax[1,0].fill_between(l,0,Mt,alpha=0.3)
         ax[1,0].set_xlabel("$z\\,[mm]$")
         ax[1,0].set_ylabel("$M_t\\,[Nm]$")
         ax[1,0].set_title("Torsionsmoment")
         ax[1,0].grid()
 
-        sigma_x = tuple(map(lambda x: self.Spannungen(x)[0], zrange))
-        sigma_y = tuple(map(lambda x: self.Spannungen(x)[1], zrange))
-        tau = tuple(map(lambda x: self.Spannungen(x)[2], zrange))
+        sigma_x = tuple(map(lambda x: self.Spannungen(x)[0], l))
+        sigma_y = tuple(map(lambda x: self.Spannungen(x)[1], l))
+        tau = tuple(map(lambda x: self.Spannungen(x)[2], l))
 
         ax[1,1].plot(sigma_x, label=r"$\sigma_x$")
         ax[1,1].plot(sigma_y, label=r"$\sigma_y$")
@@ -966,6 +968,7 @@ class Welle_Absatz():
             beta_zd = alpha_zd/n_zd
             beta_sigma = alpha_b/n_sigma
             beta_tau = alpha_t/n_tau
+            # wenn Fehler sigma_beta referenced before asignement: wahrscheinlich Rechtschreibfehler in Art
         return(beta_sigma, beta_tau, beta_zd)
 
     def K2(self):
@@ -1282,8 +1285,6 @@ class Welle_Absatz():
         
         return(sigma_bADK, tau_tADK)
 
-    def Spannungen(self, z):
-        pass
 
     def Werte_speichern(self):
         self.Werte = []
@@ -1364,14 +1365,14 @@ class Welle_Absatz():
         return(S_F, S_D, self.Werte)
 
 # speichert Werte in CSV um daraus pdf zu erzeugen als Berechnung
-def Werte_in_CSV_speichern(*args:Welle_Absatz, name):
+def Werte_in_CSV_speichern(name,*args:Welle_Absatz):
     W = []
     W.append(["Name", "Werkstoff", "z_Wert", "Welle", "beta_sigma", "beta_tau", "K_ges_sigma", "K_ges_tau", "sigma_bWK", "tau_bWK", "sigma_bFK", "tau_tFK", "sigma_bADK", "tau_tADK", "S_F", "S_D", "Biegespannung", "Torsionsspannung", "anderes"])
     for Absatz in args:
         W.append(Absatz.Sicherheiten()[2])
 
     csv_name = "PDFs\\"+name+".csv"
-    np.savetxt(r"PDFs\Absaetze.csv", np.array(W), fmt='%s', delimiter=',')
+    np.savetxt(csv_name, np.array(W), fmt='%s', delimiter=',')
 
 
 if __name__ == "__main__":

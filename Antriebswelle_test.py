@@ -51,27 +51,6 @@ Antriebswelle.plots_speichern()
 # Antriebswelle.plot()
 
 
-
-sigma_x = []
-sigma_y = []
-tau = []
-
-for i in range(Antriebswelle.länge):
-    sigma_x.append(Antriebswelle.Spannungen(i)[0])
-    sigma_y.append(Antriebswelle.Spannungen(i)[1])
-    tau.append(Antriebswelle.Spannungen(i)[2])
-
-# plt.plot(sigma_x)
-# plt.plot(sigma_y)
-# plt.plot(tau)
-# plt.show()
-
 L = [z11, a1, a2, a3, a4, Rechtecknut, a5, a6, p1]
 
-Werte_in_CSV_speichern(z11, a1, a2, a3, a4, Rechtecknut, a5, a6, p1)
-
-# Warnung beim Ausführen:
-# PS C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis> & "C:/Program Files/Python310/python.exe" c:/Users/Nadine/Documents/Studium/Studium/1234567890/ME_Wellen/ME_Wellennachweis/Antriebswelle_test.py
-# c:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\Klassen.py:390: IntegrationWarning: The integral is probably divergent, or slowly convergent.
-#   integral,_ = quad(q_ers_x,minl,z,epsabs=1e-4)
-# PS C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis> 
+Werte_in_CSV_speichern("Antriebswelle",z11, a1, a2, a3, a4, Rechtecknut, a5, a6, p1)

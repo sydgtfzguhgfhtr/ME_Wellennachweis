@@ -21,7 +21,7 @@ knitr = rpackages.importr('knitr')
 
 
 
-D = pd.read_csv(r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\PDFs\Absaetze.csv")
+D = pd.read_csv(r"PDFs\Zwischenwelle.csv")
 
 
 plot1 = "C:\\Users\\Nadine\\Documents\\Studium\\Studium\\1234567890\\ME_Wellen\\ME_Wellennachweis\\"+D.loc[0,"Welle"]+"WELLE.png"
@@ -45,7 +45,7 @@ with open('erste_Seite.Rmd','w') as file:
     file.write(erste_Seite_PDF)
 
 knitr.knit(r"C:\Users\Nadine\Documents\Studium\Studium\1234567890\ME_Wellen\ME_Wellennachweis\erste_Seite.Rmd")
-subprocess.run(["pandoc","-s","erste_Seite.md","-o","erste_Seite.pdf"])
+subprocess.run(["pandoc","-s","C:\\Users\\Nadine\\Documents\\Studium\\Studium\\1234567890\\ME_Wellen\\ME_Wellennachweis\\erste_Seite.md","-o","erste_Seite.pdf"])
 
 files = ["erste_Seite.pdf"]
 name_values = D["Name"].tolist()
