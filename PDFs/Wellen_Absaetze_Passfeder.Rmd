@@ -85,6 +85,6 @@ $$\tau_{tADK} = `r round(tau_tADK, 3)` \dfrac{N}{mm^{2}}$$
 
 # 4 Sicherheiten
 
-$$S_F = `r round(S_F, 3)`$$
+$$S_F = `r S_F`$$
 
-$$S_D = `r round(S_D, 3)`$$
+$$S_D = `r S_D`$$

@@ -1347,8 +1347,16 @@ class Welle_Absatz():
         self.Werte_speichern()
         sigma_bADK, tau_tADK = self.Gestaltfestigkeit()
         sigma_bFK, tau_tFK = self.Bauteilfließgrenzen()
-        S_F = 1/(np.sqrt((sigma_bmax/sigma_bFK)**2+(tau_tmax/tau_tFK)**2))
-        S_D = 1/(np.sqrt((sigma_bq/sigma_bADK)**2+(tau_ta/tau_tADK)**2))
+
+        if tau_ta == 0 and tau_tmax == 0 and tau_tADK == 0 and tau_tFK == 0 and sigma_bADK == 0 and sigma_bmax == 0 and sigma_bFK == 0 and sigma_bq == 0:
+            S_D = "\\text{Unendlich}"
+            S_F = "\\text{Unendlich}"
+        else:
+            S_F = round(1/(np.sqrt((sigma_bmax/sigma_bFK)**2+(tau_tmax/tau_tFK)**2)),3)
+            S_D = round(1/(np.sqrt((sigma_bq/sigma_bADK)**2+(tau_ta/tau_tADK)**2)),3)
+        if tau_ta == 0 and tau_tmax == 0 and sigma_bm == 0 and sigma_bmax == 0:
+            S_D = r"\infty"
+            S_F = r"\infty"
 
         self.Werte.append(str(S_F))
         self.Werte.append(str(S_D))
