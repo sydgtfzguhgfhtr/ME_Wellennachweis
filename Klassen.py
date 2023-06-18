@@ -963,6 +963,7 @@ class Welle_Absatz():
             beta_zd = alpha_zd/n_zd
             beta_sigma = alpha_b/n_sigma
             beta_tau = alpha_t/n_tau
+            # wenn Fehler sigma_beta referenced before asignement: wahrscheinlich Rechtschreibfehler in Art
         return(beta_sigma, beta_tau, beta_zd)
 
     def K2(self):
@@ -1279,8 +1280,6 @@ class Welle_Absatz():
         
         return(sigma_bADK, tau_tADK)
 
-    def Spannungen(self, z):
-        pass
 
     def Werte_speichern(self):
         self.Werte = []
@@ -1368,7 +1367,7 @@ def Werte_in_CSV_speichern(name,*args:Welle_Absatz):
         W.append(Absatz.Sicherheiten()[2])
 
     csv_name = "PDFs\\"+name+".csv"
-    np.savetxt(r"PDFs\Absaetze.csv", np.array(W), fmt='%s', delimiter=',')
+    np.savetxt(csv_name, np.array(W), fmt='%s', delimiter=',')
 
 
 if __name__ == "__main__":
