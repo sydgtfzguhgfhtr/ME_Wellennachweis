@@ -1,0 +1,12 @@
+---
+title: "Maschinenelemente 2 - AP4"
+author: "Quentin Huss, Nadine Schulz, Christoffer Schröter"
+date: "18.06.23"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+![](Getriebe.png)
