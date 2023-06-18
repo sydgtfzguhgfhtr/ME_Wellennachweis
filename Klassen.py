@@ -480,8 +480,6 @@ class Welle:
         self.neigung_x = np.fromiter(map(Neigung_x,z_range),float,self.len_z_range)
         self.neigung_y = np.fromiter(map(Neigung_y,z_range),float,self.len_z_range)
 
-        self.biegung_x,self.biegung_y = self.biegung_y,self.biegung_x # Tauscht Werte damit biegung_x Biegung in x ist und nicht um X
-
         self.NeigungFLx = Neigung_x(self.festlager_z)
         self.NeigungFLy = Neigung_y(self.festlager_z)
         self.NeigungLLx = Neigung_x(self.loslager_z)
@@ -499,10 +497,13 @@ class Welle:
         y_range = m * z_range + n
         self.biegung_y = self.biegung_y - y_range
 
+        self.biegung_x,self.biegung_y = self.biegung_y,self.biegung_x # Tauscht Werte damit biegung_x Biegung in x ist und nicht um X
+
         self.maxVerf_x = max(self.biegung_x) #mm
         self.maxVerf_y = max(self.biegung_y) #mm
         self.maxVerf_x_PM = self.maxVerf_x/(self.länge/1000) #mm/m
         self.maxVerf_y_PM = self.maxVerf_y/(self.länge/1000) #mm/m
+
 
     def Spannungen(self, z):
         """Spannungen

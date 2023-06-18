@@ -206,7 +206,7 @@ while running:
     ])
     tab_absätze = sg.Tab("Absätze",[
         [sg.Text("Absätze",font=(any,17))],
-        [sg.Table([],("Name","Werkstoff","z_Wert","Welle","beta_sigma","beta_tau","K_ges_sigma","K_ges_tau","sigma_bWK","tau_bWK","sigma_bFK","tau_tFK","sigma_bADK","tau_tADK","S_F","S_D","Biegespannung","Torsionsspannung","anderes"),key="ABSATZTABLE")],
+        [sg.Table([],("Name","Werkstoff","z_Wert","Welle","beta_sigma","beta_tau","K_ges_sigma","K_ges_tau","sigma_bWK","tau_bWK","sigma_bFK","tau_tFK","sigma_bADK","tau_tADK","S_F","S_D","Biegespannung","Torsionsspannung"),key="ABSATZTABLE")],
     ])
     tab_auswertung = sg.Tab("Auswertung",layout=[
         [sg.Text("Auswertung",font=(any,20))],
@@ -289,11 +289,13 @@ while running:
                             elif art=="umlaufende Rechtecknut":
                                 args = [float(punkt["NUTT"]),float(punkt["NUTR"]),float(punkt["NUTB"])]
                                 print("uml. Rechtecknut",args)
+                            else:
+                                args = []
                             absätze.append(Welle_Absatz(welle,z,art,rz,*args))
                     
                     absatzerg = []
                     for absatz in absätze:
-                        absatzerg.append(absatz.Sicherheiten()[2])
+                        absatzerg.append(absatz.Sicherheiten()[2][:-1])
                     window["ABSATZTABLE"].update(values=absatzerg)
 
                     window["MAXVERFX"].update(str(round(welle.maxVerf_x*1000,3)))
