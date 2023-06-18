@@ -533,6 +533,8 @@ class Welle:
         z_range_k = np.linspace(min_z_k,max_z_k,1000)
         rrange = np.fromiter(map(self.radius,zrange),float,len(zrange))
 
+        l = np.arange(start=0,step=1,stop=self.länge)
+
         MB_Darstellung,ax = plt.subplots(3,2,constrained_layout=True,num=self.name+" Belastungsplot")
         MB_Darstellung.set_size_inches(15,10)
 
@@ -555,18 +557,18 @@ class Welle:
         ax[0,1].grid()
 
 
-        Mt = tuple(map(lambda x: self.Mt(x), zrange))
+        Mt = tuple(map(lambda x: self.Mt(x), l))
 
-        ax[1,0].plot(z_range_k,Mt)
-        ax[1,0].fill_between(z_range_k,0,Mt,alpha=0.3)
+        ax[1,0].plot(l,Mt)
+        ax[1,0].fill_between(l,0,Mt,alpha=0.3)
         ax[1,0].set_xlabel("$z\\,[mm]$")
         ax[1,0].set_ylabel("$M_t\\,[Nm]$")
         ax[1,0].set_title("Torsionsmoment")
         ax[1,0].grid()
 
-        sigma_x = tuple(map(lambda x: self.Spannungen(x)[0], zrange))
-        sigma_y = tuple(map(lambda x: self.Spannungen(x)[1], zrange))
-        tau = tuple(map(lambda x: self.Spannungen(x)[2], zrange))
+        sigma_x = tuple(map(lambda x: self.Spannungen(x)[0], l))
+        sigma_y = tuple(map(lambda x: self.Spannungen(x)[1], l))
+        tau = tuple(map(lambda x: self.Spannungen(x)[2], l))
 
         ax[1,1].plot(sigma_x, label=r"$\sigma_x$")
         ax[1,1].plot(sigma_y, label=r"$\sigma_y$")
