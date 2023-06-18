@@ -1345,12 +1345,13 @@ class Welle_Absatz():
         return(S_F, S_D, self.Werte)
 
 # speichert Werte in CSV um daraus pdf zu erzeugen als Berechnung
-def Werte_in_CSV_speichern(*args:Welle_Absatz):
+def Werte_in_CSV_speichern(*args:Welle_Absatz, name):
     W = []
     W.append(["Name", "Werkstoff", "z_Wert", "Welle", "beta_sigma", "beta_tau", "K_ges_sigma", "K_ges_tau", "sigma_bWK", "tau_bWK", "sigma_bFK", "tau_tFK", "sigma_bADK", "tau_tADK", "S_F", "S_D", "Biegespannung", "Torsionsspannung", "anderes"])
     for Absatz in args:
         W.append(Absatz.Sicherheiten()[2])
 
+    csv_name = "PDFs\\"+name+".csv"
     np.savetxt(r"PDFs\Absaetze.csv", np.array(W), fmt='%s', delimiter=',')
 
 
