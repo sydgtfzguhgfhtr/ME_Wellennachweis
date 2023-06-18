@@ -82,6 +82,10 @@ class Welle:
         self.NeigungFLy = None
         self.NeigungLLx = None
         self.NeigungLLy = None
+        self.maxVerf_x = None
+        self.maxVerf_y = None
+        self.maxVerf_x_PM = None
+        self.maxVerf_y_PM = None
 
     
     def set_Kraft(self,betrag,typ:str,z=0,r=0,phi=0):
