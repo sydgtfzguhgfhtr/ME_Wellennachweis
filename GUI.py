@@ -196,6 +196,13 @@ while running:
         [sg.Text("Lagerkräfte",font=(any,17))],
         [sg.Table((("Festlager",1e10,1e10,1e10),("Loslager",1e10,1e10,1e10)),("","Fx [N]","Fy [N]","Fz [N]"),key="LAGERKRÄFTE TABLE")],
     ])
+    tab_verformung = sg.Tab("Verformung",[
+        [sg.Text("Lagerkräfte",font=(any,17))],
+        [sg.Text("Maximale Verformung in X: ")],
+        [sg.Text("Maximaler Verformungsgradient in X: ")],
+        [sg.Text("Maximale Verformung in Y: ")],
+        [sg.Text("Maximaler Verformungsgradient in Y: ")],
+    ])
     tab_absätze = sg.Tab("Absätze",[
         [sg.Text("Absätze",font=(any,17))],
         [sg.Table([],("Name","Werkstoff","z_Wert","Welle","beta_sigma","beta_tau","K_ges_sigma","K_ges_tau","sigma_bWK","tau_bWK","sigma_bFK","tau_tFK","sigma_bADK","tau_tADK","S_F","S_D","Biegespannung","Torsionsspannung","anderes"),key="ABSATZTABLE")],
@@ -203,7 +210,7 @@ while running:
     tab_auswertung = sg.Tab("Auswertung",layout=[
         [sg.Text("Auswertung",font=(any,20))],
         [sg.TabGroup([[tab_lagerkräfte,tab_plots,tab_absätze]])]
-    ],visible=False,key="TAB AUSWERTUNG")
+    ],visible=True,key="TAB AUSWERTUNG")
 
     layout = [
     [sg.Titlebar("Wellennachweis")],
