@@ -37,16 +37,16 @@ def punktreihe(key:str):
     arten = ["Absatz","umlaufende Rundnut","umlaufende Rechtecknut","eine Passfeder","zwei Passfedern","umlaufende Spitzkerbe","Keilwelle","Kerbzahnwelle","Zahnwelle","Pressverbindung"]
     art_ui = [sg.Text("Rundungsradius =",visible=False,key="RUNDUNGSRTEXT"+key),sg.Input(punkteinput[i]["RUNDUNGSR"],size=(5,None),visible=False,key="RUNDUNGSRIN"+key),sg.Text("Kerbgrunddurchmesser =",visible=False,key="KERBGRUNDDTEXT"+key),sg.Input(punkteinput[i]["KERBGRUNDD"],size=(5,None),visible=False,key="KERBGRUNDDIN"+key),sg.Text("Nuttiefe =",visible=False,key="NUTTTEXT"+key),sg.Input(punkteinput[i]["NUTT"],size=(5,None),visible=False,key="NUTTIN"+key),sg.Text("Nutradius =",visible=False,key="NUTRTEXT"+key),sg.Input(punkteinput[i]["NUTR"],size=(5,None),visible=False,key="NUTRIN"+key),sg.Text("Nutbreite =",visible=False,key="NUTBTEXT"+key),sg.Input(punkteinput[i]["NUTB"],size=(5,None),visible=False,key="NUTBIN"+key)]
 
-    return [sg.Text(key),sg.Checkbox("Nachweisen",key="NW"+key,default=punkteinput[i]["NW"]),sg.Text("z [mm]="),sg.Input(punkteinput[i]["Z"],size=(5,None),key="Z"+key),sg.Text("r [mm]="),sg.Input(punkteinput[i]["R"],size=(5,None),key="R"+key),sg.Text("Rz [m^-6]="),sg.Input(punkteinput[i]["Rz"],(5,None),key="RZ"+key),sg.Combo(default_value=punkteinput[i]["EXTRA"],values=arten,key="EXTRA"+key,enable_events=True)]+art_ui
+    return [sg.Text(key,size=(3,None)),sg.Checkbox("Nachweisen",key="NW"+key,default=punkteinput[i]["NW"]),sg.Text("z [mm]="),sg.Input(punkteinput[i]["Z"],size=(5,None),key="Z"+key),sg.Text("r [mm]="),sg.Input(punkteinput[i]["R"],size=(5,None),key="R"+key),sg.Text("Rz [m^-6]="),sg.Input(punkteinput[i]["Rz"],(5,None),key="RZ"+key),sg.Combo(default_value=punkteinput[i]["EXTRA"],values=arten,key="EXTRA"+key,enable_events=True)]+art_ui
 
 def kraftreihe(key):
     i = int(key)
     key = str(key)
     arten = ("Axial","Radial","Tangential")
     try:
-        return [sg.Text(key),sg.Text("F [N]="),sg.Input(kräfteinput[i]["F"],key="F"+key,size=(7,None)),sg.Text("N     z [mm]="),sg.Input(kräfteinput[i]["Z"],size=(7,None),key="FZ"+key),sg.Text("r [mm]="),sg.Input(kräfteinput[i]["R"],size=(7,None),key="FR"+key),sg.Text("phi [grad]="),sg.Input(kräfteinput[i]["PHI"],size=(7,None),key="FPHI"+key),sg.Text("Art:"),sg.OptionMenu(arten,key="FART"+key,default_value=kräfteinput[i]["ART"])]
+        return [sg.Text(key,size=(3,None)),sg.Text("F [N]="),sg.Input(kräfteinput[i]["F"],key="F"+key,size=(7,None)),sg.Text("N     z [mm]="),sg.Input(kräfteinput[i]["Z"],size=(7,None),key="FZ"+key),sg.Text("r [mm]="),sg.Input(kräfteinput[i]["R"],size=(7,None),key="FR"+key),sg.Text("phi [grad]="),sg.Input(kräfteinput[i]["PHI"],size=(7,None),key="FPHI"+key),sg.Text("Art:"),sg.OptionMenu(arten,key="FART"+key,default_value=kräfteinput[i]["ART"])]
     except IndexError:
-        return [sg.Text(key),sg.Text("F [N]="),sg.Input(key="F"+key,size=(7,None)),sg.Text("N     z [mm]="),sg.Input("",size=(7,None),key="FZ"+key),sg.Text("r [mm]="),sg.Input("",size=(7,None),key="FR"+key),sg.Text("phi [grad]="),sg.Input("",size=(7,None),key="FPHI"+key),sg.Text("Art:"),sg.OptionMenu(arten,key="FART"+key)]
+        return [sg.Text(key,size=(3,None)),sg.Text("F [N]="),sg.Input(key="F"+key,size=(7,None)),sg.Text("N     z [mm]="),sg.Input("",size=(7,None),key="FZ"+key),sg.Text("r [mm]="),sg.Input("",size=(7,None),key="FR"+key),sg.Text("phi [grad]="),sg.Input("",size=(7,None),key="FPHI"+key),sg.Text("Art:"),sg.OptionMenu(arten,key="FART"+key)]
 
 def new_window():
     return sg.Window("Wellenachweis",layout=layout,finalize=True)
@@ -166,6 +166,7 @@ while running:
     kräfte_layout = [
         [sg.Text("Belastung definieren",font=(any,20))],
         [sg.Input(1,(5,None),key="ADD_N_K"),sg.Button("hinzufügen",key="-ADD_KRAFT-"),sg.Button("entfernen",key="-REM_KRAFT-")],
+        [sg.Text("Kräfte",font=(any,15))],
     ]
     for i in range(n_kräfte):
         kräfte_layout.append(kraftreihe(i))
@@ -198,10 +199,10 @@ while running:
     ])
     tab_verformung = sg.Tab("Verformung",[
         [sg.Text("Lagerkräfte",font=(any,17))],
-        [sg.Text("Maximale Verformung in X: ")],
-        [sg.Text("Maximaler Verformungsgradient in X: ")],
-        [sg.Text("Maximale Verformung in Y: ")],
-        [sg.Text("Maximaler Verformungsgradient in Y: ")],
+        [sg.Text("Maximale Verformung in X: ",size=(30,None)),sg.Text("",key="MAXVERFX"),sg.Text("[m^-6]")],
+        [sg.Text("Maximaler Verformungsgradient in X: ",size=(30,None)),sg.Text("",key="MAXVERFXGRAD"),sg.Text("[mm/m]")],
+        [sg.Text("Maximale Verformung in Y: ",size=(30,None)),sg.Text("",key="MAXVERFY"),sg.Text("[m^-6]")],
+        [sg.Text("Maximaler Verformungsgradient in Y: ",size=(30,None)),sg.Text("",key="MAXVERFYGRAD"),sg.Text("[mm/m]")],
     ])
     tab_absätze = sg.Tab("Absätze",[
         [sg.Text("Absätze",font=(any,17))],
@@ -209,7 +210,7 @@ while running:
     ])
     tab_auswertung = sg.Tab("Auswertung",layout=[
         [sg.Text("Auswertung",font=(any,20))],
-        [sg.TabGroup([[tab_lagerkräfte,tab_plots,tab_absätze]])]
+        [sg.TabGroup([[tab_lagerkräfte,tab_verformung,tab_plots,tab_absätze]])]
     ],visible=True,key="TAB AUSWERTUNG")
 
     layout = [
@@ -294,6 +295,11 @@ while running:
                     for absatz in absätze:
                         absatzerg.append(absatz.Sicherheiten()[2])
                     window["ABSATZTABLE"].update(values=absatzerg)
+
+                    window["MAXVERFX"].update(str(round(welle.maxVerf_x*1000,3)))
+                    window["MAXVERFXGRAD"].update(str(round(welle.maxVerf_x_PM,3)))
+                    window["MAXVERFY"].update(str(round(welle.maxVerf_y*1000,3)))
+                    window["MAXVERFYGRAD"].update(str(round(welle.maxVerf_y_PM,3)))
 
                 except ValueError:
                     fehler("Unvollständige Eingaben. (ValueError)")
