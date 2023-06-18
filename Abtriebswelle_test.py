@@ -25,13 +25,12 @@ Abtriebswelle.set_Kraft(24384,"t",442,213.785,0)
 Abtriebswelle.set_Kraft(9188,"r",442,213.785,0)
 Abtriebswelle.set_Kraft(6534,"a",442,213.785,0)
 
-Abtriebswelle.welle_darstellen()
 
 
 
 Abtriebswelle.lagerkräfte_berechnen()
 Abtriebswelle.verformung_berechnen()
-
+Abtriebswelle.plot_biegung()
 Abtriebswelle.plots_speichern()
 
 p1 = Welle_Absatz(Abtriebswelle,77.5,"eine Passfeder",10)
