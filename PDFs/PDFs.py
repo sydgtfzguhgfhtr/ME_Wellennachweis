@@ -21,7 +21,7 @@ knitr = rpackages.importr('knitr')
 
 
 
-D = pd.read_csv(r"PDFs\Abtriebswelle.csv")
+D = pd.read_csv(r"PDFs\Zwischenwelle.csv")
 print(D)
 
 plot1 = "C:\\Users\\Nadine\\Documents\\Studium\\Studium\\1234567890\\ME_Wellen\\ME_Wellennachweis\\"+D.loc[0,"Welle"]+"WELLE.png"
@@ -33,7 +33,7 @@ title: Wellennachweis - {D.loc[0,"Welle"]}
 author: "Quentin Huss, Nadine Schulz"
 date: "{formatiertes_datum}"
 ---
-\pagebreak
+
 ![]({plot1})  
 
 ![]({plot2})
@@ -44,7 +44,15 @@ date: "{formatiertes_datum}"
 \begin{center}
 \begin{tabular}{|lll|}
 """+f"""
-maximale Verformung in x: & {D.loc[0,"Neigung_FLX"]} & $m^6$ \\
+maximale Verformung in x: & {round(D.loc[0,"verfx"],3)} & $\\mu m$ \\\\
+maximaler Verformungsgradient in x: & {round(D.loc[0,"verfxPM"],3)} & $mm/m$ \\\\
+maximale Verformung in y: & {round(D.loc[0,"verfy"],3)} & $\\mu m$ \\\\
+maximaler Verformungsgradient in y: & {round(D.loc[0,"verfyPM"],3)} & $mm/m$ \\\\
+\\hline
+Neigung im Festlager x: & {round(D.loc[0,"Neigung_FLX"],7)} & rad \\\\
+Neigung im Festlager y: & {round(D.loc[0,"Neigung_FLY"],7)} & rad \\\\
+Neigung im Loslager x: & {round(D.loc[0,"Neigung_LLX"],7)} & rad \\\\
+Neigung im Loslager y: & {round(D.loc[0,"Neigung_LLY"],7)} & rad \\\\
 """+r"""
 \end{tabular}
 \end{center}
