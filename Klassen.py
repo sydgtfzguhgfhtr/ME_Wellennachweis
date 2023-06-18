@@ -82,9 +82,9 @@ class Welle:
         self.NeigungFLy = None
         self.NeigungLLx = None
         self.NeigungLLy = None
-        self.maxVerf_x = None
+        self.maxVerf_x = None # maximale Verformungen
         self.maxVerf_y = None
-        self.maxVerf_x_PM = None
+        self.maxVerf_x_PM = None # Gradient
         self.maxVerf_y_PM = None
 
     
