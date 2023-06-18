@@ -22,7 +22,7 @@ knitr = rpackages.importr('knitr')
 
 
 D = pd.read_csv(r"PDFs\Abtriebswelle.csv")
-
+print(D)
 
 plot1 = "C:\\Users\\Nadine\\Documents\\Studium\\Studium\\1234567890\\ME_Wellen\\ME_Wellennachweis\\"+D.loc[0,"Welle"]+"WELLE.png"
 plot2 = D.loc[0,"Welle"]+"plot.png"
@@ -38,7 +38,16 @@ date: "{formatiertes_datum}"
 
 ![]({plot2})
 
-
+# Verformung / Neigung  
+  
+"""+r"""
+\begin{center}
+\begin{tabular}{|lll|}
+"""+f"""
+maximale Verformung in x: & {D.loc[0,"Neigung_FLX"]} & $m^6$ \\
+"""+r"""
+\end{tabular}
+\end{center}
 """
 
 with open('erste_Seite.Rmd','w') as file:
