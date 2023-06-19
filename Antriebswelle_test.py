@@ -23,12 +23,15 @@ Antriebswelle.set_geometrie(
 
 Antriebswelle.set_Kraft(6145, "t", 0, 38.31, 0)
 Antriebswelle.set_Kraft(2380, "r", 0, 38.31, 0)
-Antriebswelle.set_Kraft(2237, "a", 0, 38.31, 0)
+Antriebswelle.set_Kraft(-2237, "a", 0, 38.31, 0)
 
 # Antriebswelle.welle_darstellen()
-
 Antriebswelle.lagerkräfte_berechnen()
 Antriebswelle.verformung_berechnen()
+
+Antriebswelle.plot()
+
+
 
 # plt.plot(Antriebswelle.z_range,Antriebswelle.neigung_x,label="X")
 # plt.plot(Antriebswelle.z_range,Antriebswelle.neigung_y,label="Y")

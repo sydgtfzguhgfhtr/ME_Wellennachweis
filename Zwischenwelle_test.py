@@ -23,19 +23,20 @@ Zwischenwelle.set_geometrie(
 
 # z12
 Zwischenwelle.set_Kraft(5961,"t",438,227.47,0)
-Zwischenwelle.set_Kraft(2309,"r",438,227.47,0)
-Zwischenwelle.set_Kraft(2170,"a",438,227.47,0)
+Zwischenwelle.set_Kraft(-2309,"r",438,227.47,0)
+Zwischenwelle.set_Kraft(-2170,"a",438,227.47,0)
 
 #z21
 Zwischenwelle.set_Kraft(26195,"t",203,50.73,0)
-Zwischenwelle.set_Kraft(9871,"r",203,50.73,0)
+Zwischenwelle.set_Kraft(-9871,"r",203,50.73,0)
 Zwischenwelle.set_Kraft(7019,"a",203,50.73,0)
 
-Zwischenwelle.welle_darstellen()
 
 
 Zwischenwelle.lagerkräfte_berechnen()
 Zwischenwelle.verformung_berechnen()
+
+Zwischenwelle.plot()
 
 Zwischenwelle.plots_speichern()
 

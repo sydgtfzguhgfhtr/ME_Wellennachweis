@@ -9,4 +9,4 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-![](Getriebe.png)
+![](Getriebe_klein.png)
