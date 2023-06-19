@@ -1342,28 +1342,28 @@ class Welle_Absatz():
 
         # Kerbwirkungszahlen
         beta_sigma, beta_tau, _ = self.Kerbwirkungszahl()
-        self.Werte.append(str(beta_sigma))
-        self.Werte.append(str(beta_tau))
+        self.Werte.append(str(round(beta_sigma,3)))
+        self.Werte.append(str(round(beta_tau,3)))
 
         # Gesamtgrößeneinflussfaktor
         K_ges_sigma, K_ges_tau = self.Gesamtgrößeneinflussfaktor()
-        self.Werte.append(str(K_ges_sigma))
-        self.Werte.append(str(K_ges_tau))
+        self.Werte.append(str(round(K_ges_sigma,3)))
+        self.Werte.append(str(round(K_ges_tau,3)))
 
         # Bauteilwechselfestigkeiten
         sigma_bWK, tau_tWK = self.Bauteilwechselfestigkeiten()
-        self.Werte.append(str(sigma_bWK))
-        self.Werte.append(str(tau_tWK))
+        self.Werte.append(str(round(sigma_bWK,3)))
+        self.Werte.append(str(round(tau_tWK,3)))
 
         # Bauteilfließgrenzen
         sigma_bFK, tau_tFK = self.Bauteilfließgrenzen()
-        self.Werte.append(str(sigma_bFK))
-        self.Werte.append(str(tau_tFK))
+        self.Werte.append(str(round(sigma_bFK,3)))
+        self.Werte.append(str(round(tau_tFK,3)))
 
         # Gestaltfestigkeiten
         sigma_bADK, tau_tADK = self.Gestaltfestigkeit()
-        self.Werte.append(str(sigma_bADK))
-        self.Werte.append(str(tau_tADK))
+        self.Werte.append(str(round(sigma_bADK,3)))
+        self.Werte.append(str(round(tau_tADK,3)))
 
     def Sicherheiten(self):
         """Sicherheiten
@@ -1397,8 +1397,8 @@ class Welle_Absatz():
         self.Werte.append(str(S_F))
         self.Werte.append(str(S_D))
 
-        self.Werte.append(sigma_bmax)
-        self.Werte.append(tau_tmax)
+        self.Werte.append(round(sigma_bmax,3))
+        self.Werte.append(round(tau_tmax,3))
 
 
 
@@ -1433,7 +1433,7 @@ def Werte_in_CSV_speichern(name,*args:Welle_Absatz):
         W.append(Absatz.Sicherheiten()[2])
 
     csv_name = "PDFs\\"+name+".csv"
-    np.savetxt(csv_name, np.array(W), fmt='%s', delimiter=',')
+    np.savetxt(csv_name, np.array(W), fmt='%s', delimiter='\t')
 
 
 if __name__ == "__main__":
