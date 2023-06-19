@@ -454,7 +454,7 @@ class Welle:
             if z_kraft<=z:
                 result += -1*fx*r*np.cos(phi)
                 result += -1*fy*r*np.sin(phi)
-        return result
+        return result/1000
     
     def Wb(self,z):
         """Gibt das Widerstandsmoment gegen Biegung an der Stelle z in `mm^3` aus."""
