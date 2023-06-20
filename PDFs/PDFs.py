@@ -4,7 +4,6 @@ from rpy2.robjects import r
 from rpy2.robjects import pandas2ri, packages
 import rpy2.robjects.packages as rpackages
 import PyPDF4
-import numpy as np
 import pandas as pd
 from datetime import datetime
 
