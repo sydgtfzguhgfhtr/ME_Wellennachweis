@@ -5,20 +5,20 @@ Werkstoff.aus_csv_laden()
 
 Zwischenwelle = Welle("Zwischenwelle", 0, 313, "42CrMo4", "nein")
 Zwischenwelle.set_geometrie(
-    ((0,90),
-    (46,90),
-    (46,65),
-    (163,65),
-    (163,45),
+    ((0,25),
+    (46,25),
+    (46,30),
+    (163,30),
+    (163,40),
+    (243,40),
     (243,45),
-    (243,50),
+    (290,45),
     (290,50),
-    (290,90),
-    (336,90),
-    (336,80),
-    (378,80),
-    (378,70),
-    (438,70))
+    (336,50),
+    (336,30),
+    (378,30),
+    (378,25),
+    (438,25))
 )
 
 # z12
@@ -31,7 +31,7 @@ Zwischenwelle.set_Kraft(26195,"t",203,50.73,0)
 Zwischenwelle.set_Kraft(-9871,"r",203,50.73,0)
 Zwischenwelle.set_Kraft(7019,"a",203,50.73,0)
 
-
+Zwischenwelle.welle_darstellen()
 
 Zwischenwelle.lagerkräfte_berechnen()
 Zwischenwelle.verformung_berechnen()

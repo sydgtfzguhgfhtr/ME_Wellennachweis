@@ -20,7 +20,7 @@ knitr = rpackages.importr('knitr')
 
 
 
-D = pd.read_csv(r"PDFs\Antriebswelle.csv", delimiter='\t')
+D = pd.read_csv(r"PDFs\Zwischenwelle.csv", delimiter='\t')
 print(D)
 
 plot1 = "C:\\Users\\Nadine\\Documents\\Studium\\Studium\\1234567890\\ME_Wellen\\ME_Wellennachweis\\"+D.loc[0,"Welle"]+"WELLE.png"

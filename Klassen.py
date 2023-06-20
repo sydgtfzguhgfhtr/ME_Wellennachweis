@@ -542,6 +542,8 @@ class Welle:
         self.maxVerf_x_PM = self.maxVerf_x/(self.lagerabstand/1000) #mm/m
         self.maxVerf_y_PM = self.maxVerf_y/(self.lagerabstand/1000) #mm/m
 
+        self.maxVerf_ges = max((np.sqrt(self.biegung_y[z]**2+self.biegung_x[z]**2) for z in range(len(self.biegung_x))))
+        self.maxVerfPM_ges = self.maxVerf_ges/(self.lagerabstand/1000)
 
     def Spannungen(self, z):
         """Spannungen
@@ -1422,13 +1424,15 @@ class Welle_Absatz():
         self.Werte.append(self.welle.maxVerf_y)
         self.Werte.append(self.welle.maxVerf_x_PM)
         self.Werte.append(self.welle.maxVerf_y_PM)
+        self.Werte.append(self.welle.maxVerf_ges)
+        self.Werte.append(self.welle.maxVerfPM_ges)
 
         return(S_F, S_D, self.Werte)
 
 # speichert Werte in CSV um daraus pdf zu erzeugen als Berechnung
 def Werte_in_CSV_speichern(name,*args:Welle_Absatz):
     W = []
-    W.append(["Name", "Werkstoff", "z_Wert", "Welle", "beta_sigma", "beta_tau", "K_ges_sigma", "K_ges_tau", "sigma_bWK", "tau_bWK", "sigma_bFK", "tau_tFK", "sigma_bADK", "tau_tADK", "S_F", "S_D", "Biegespannung", "Torsionsspannung", "anderes","Neigung_FLX","Neigung_FLY","Neigung_LLX","Neigung_LLY","verfx","verfy","verfxPM","verfyPM"])
+    W.append(["Name", "Werkstoff", "z_Wert", "Welle", "beta_sigma", "beta_tau", "K_ges_sigma", "K_ges_tau", "sigma_bWK", "tau_bWK", "sigma_bFK", "tau_tFK", "sigma_bADK", "tau_tADK", "S_F", "S_D", "Biegespannung", "Torsionsspannung", "anderes","Neigung_FLX","Neigung_FLY","Neigung_LLX","Neigung_LLY","verfx","verfy","verfxPM","verfyPM","verfges","verfgesPM"])
     for Absatz in args:
         W.append(Absatz.Sicherheiten()[2])
 
