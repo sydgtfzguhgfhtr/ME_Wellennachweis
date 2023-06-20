@@ -7,5 +7,5 @@
 - [ ] Lager
 - [ ] Konus
 - [ ] Durchmesser ermitteln überarbeiten
-- [ ] stl (numpy)
+- [ ] stl (numpy) [Link](https://micronote.tech/2020/12/Generating-STL-Models-with-Python/)
 - [ ] idealer Durchmesser für Spannung = gleich
