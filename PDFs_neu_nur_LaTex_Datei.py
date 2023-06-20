@@ -1,11 +1,7 @@
 import pandas as pd
 from datetime import datetime
 
-
-aktuelles_datum = datetime.now()
-
-
-formatiertes_datum = aktuelles_datum.strftime("%d.%m.%Y")
+Datum = datetime.now().strftime("%d.%m.%Y")
 
 D = pd.read_csv(r"PDFs\Abtriebswelle.csv", delimiter='\t')
 print(D)
@@ -13,40 +9,64 @@ print(D)
 plot1 = "C:\\Users\\Nadine\\Documents\\Studium\\Studium\\1234567890\\ME_Wellen\\ME_Wellennachweis\\"+D.loc[0,"Welle"]+"WELLE.png"
 plot2 = D.loc[0,"Welle"]+"plot.png"
 
-erste_Seite_Welle = f"""
----
-title: Wellennachweis - {D.loc[0,"Welle"]}
-author: "Quentin Huss, Nadine Schulz"
-date: "{formatiertes_datum}"
----
+Pakete = r"""
+\documentclass[11pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[german]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{pstricks}
+\usepackage{float}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{asymptote}
+\usepackage{mathptmx}
+\usepackage{caption}
+\usepackage[left=2cm, right=2cm, top=2cm,bottom=2cm]{geometry}
+\usepackage[colorlinks=true, urlcolor=blue, linkcolor=blue]{hyperref}
+"""+r"\title{Wellennachweis - "+f"{D.loc[0,'Welle']}"+r"}"+r"""
+\author{Quentin Huss, Nadine Schulz}
+"""+r"\date{"+f"{Datum}"+r"}"+r"""
+\begin{document}
+\maketitle
 
-![]({plot1})  
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.5]{"""+f"{D.loc[0,'Welle']+'WELLE.png'}"+r"}"+r"""
+\end{figure}
 
-![]({plot2})
 
-# Verformung / Neigung  
-  
-"""+r"""
-\begin{center}
-\begin{tabular}{|lll|}
-"""+f"""
-\\hline
-maximale Verformung in x: & {round(D.loc[0,"verfx"],3)} & $\\mu m$ \\\\
-maximaler Verformungsgradient in x: & {round(D.loc[0,"verfxPM"],3)} & $mm/m$ \\\\
-maximale Verformung in y: & {round(D.loc[0,"verfy"],3)} & $\\mu m$ \\\\
-maximaler Verformungsgradient in y: & {round(D.loc[0,"verfyPM"],3)} & $mm/m$ \\\\
-maximale Verformung Betrag: & {round(D.loc[0,"verfges"])} & $\\mu m$ \\\\
-maximaler Verformungsgradient Betrag: & {round(D.loc[0,"verfgesPM"])} & $mm/m$ \\\\
-\\hline
-Neigung im Festlager x: & {round(D.loc[0,"Neigung_FLX"],7)} & rad \\\\
-Neigung im Festlager y: & {round(D.loc[0,"Neigung_FLY"],7)} & rad \\\\
-Neigung im Loslager x: & {round(D.loc[0,"Neigung_LLX"],7)} & rad \\\\
-Neigung im Loslager y: & {round(D.loc[0,"Neigung_LLY"],7)} & rad \\\\
-\\hline
-"""+r"""
-\end{tabular}
-\end{center}
+\begin{figure}[!h]
+\centering
+\includegraphics[scale=0.5]{"""+f"{D.loc[0,'Welle']+'plot.png'}"+r"}"+r"""
+\end{figure}
+
+\pagebreak
+
+\end{document}
 """
 
+Arten = []
+Geometrien = []
+Beanspruchungen = []
+Nachweis = []
+
 for i in range(len(D)):
-    pass
+    Art = r"""
+    \section{"""+f"{D.loc[i,'Art']}"+"}\n"
+    Arten.append()
+
+    Geometrie = r"""
+    \subsection{Geometrie}
+    """
+
+def string_in_txt(string, dateipfad):
+    with open(dateipfad, 'w', encoding='utf-8') as datei:
+        datei.write(string)
+    print("String erfolgreich in die Datei gespeichert.")
+
+
+# string_in_txt(Pakete,"Test.tex")
