@@ -1,6 +1,11 @@
 # Todo Liste
 - [x] Biegemomentenverläufe
-- [ ] Werkstoff mit Klasse Welle verbinden
-- [ ] Eingaben automatisieren
+- [x] Werkstoff mit Klasse Welle verbinden
+- [x] Eingaben automatisieren
 - [x] Spannungsverläufe
 - [x] Verformung
+- [ ] Lager
+- [ ] Konus
+- [ ] Durchmesser ermitteln überarbeiten
+- [ ] stl (numpy)
+- [ ] idealer Durchmesser für Spannung = gleich
