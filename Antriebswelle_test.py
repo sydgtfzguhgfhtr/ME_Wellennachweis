@@ -5,31 +5,31 @@ Werkstoff.aus_csv_laden()
 
 Antriebswelle = Welle("Antriebswelle", 342, 81, "42CrMo4", "nein")
 Antriebswelle.set_geometrie(
-    ((0, 30),
-     (60, 30),
-     (60, 50),
-     (102, 50),
-     (102, 90),
-     (148, 90),
-     (148, 100),
-     (317, 100),
-     (317, 90),
-     (367, 90),
-     (367, 50),
-     (387, 50),
-     (387, 40),
-     (463, 40))
+    ((0, 15),
+     (60, 15),
+     (60, 20),
+     (102, 20),
+     (102, 25),
+     (148, 25),
+     (148, 30),
+     (317, 30),
+     (317, 20),
+     (367, 20),
+     (367, 16),
+     (387, 16),
+     (387, 15),
+     (463, 15))
 )
 
 Antriebswelle.set_Kraft(6145, "t", 0, 38.31, 0)
 Antriebswelle.set_Kraft(2380, "r", 0, 38.31, 0)
 Antriebswelle.set_Kraft(-2237, "a", 0, 38.31, 0)
 
-# Antriebswelle.welle_darstellen()
+Antriebswelle.welle_darstellen()
 Antriebswelle.lagerkräfte_berechnen()
 Antriebswelle.verformung_berechnen()
 
-Antriebswelle.plot()
+#Antriebswelle.plot()
 
 
 
