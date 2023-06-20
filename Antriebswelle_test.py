@@ -5,12 +5,12 @@ Werkstoff.aus_csv_laden()
 
 Antriebswelle = Welle("Antriebswelle", 342, 81, "42CrMo4", "nein")
 Antriebswelle.set_geometrie(
-    ((0, 15),
-     (60, 15),
-     (60, 20),
-     (102, 20),
+    ((0, 22.5),
+     (60, 22.5),
+     (60, 25),
      (102, 25),
-     (148, 25),
+     (102, 28),
+     (148, 28),
      (148, 30),
      (317, 30),
      (317, 20),
