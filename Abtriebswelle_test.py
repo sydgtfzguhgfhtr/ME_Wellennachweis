@@ -6,18 +6,18 @@ Werkstoff.aus_csv_laden()
 Abtriebswelle = Welle("Abtriebswelle", 180, 575, "42CrMo4", "nein")
 Abtriebswelle.set_geometrie(
     (
-        (0,45),
-        (155,45),
-        (155,90),
-        (205,90),
-        (205,60),
-        (402,60),
-        (402,100),
-        (482,100),
-        (482,90),
-        (529,90),
-        (529,90),
-        (575,90)
+        (0,30),
+        (155,30),
+        (155,35),
+        (205,35),
+        (205,38),
+        (402,38),
+        (402,40),
+        (482,40),
+        (482,50),
+        (529,50),
+        (529,40),
+        (575,40)
     )
 )
 
@@ -25,7 +25,7 @@ Abtriebswelle.set_Kraft(24384,"t",442,213.785,0)
 Abtriebswelle.set_Kraft(9188,"r",442,213.785,0)
 Abtriebswelle.set_Kraft(6534,"a",442,213.785,0)
 
-
+Abtriebswelle.welle_darstellen()
 
 
 Abtriebswelle.lagerkräfte_berechnen()
