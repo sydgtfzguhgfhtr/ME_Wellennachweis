@@ -4,6 +4,7 @@
 - [x] Eingaben automatisieren
 - [x] Spannungsverläufe
 - [x] Verformung
+- [ ] Rz in PDF aufnehmen
 - [ ] Lager
 - [ ] Konus
 - [ ] Durchmesser ermitteln überarbeiten
