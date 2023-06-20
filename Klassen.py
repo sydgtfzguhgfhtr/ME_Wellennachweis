@@ -539,8 +539,8 @@ class Welle:
 
         self.maxVerf_x = max(self.biegung_x) #mm
         self.maxVerf_y = max(self.biegung_y) #mm
-        self.maxVerf_x_PM = self.maxVerf_x/(self.länge/1000) #mm/m
-        self.maxVerf_y_PM = self.maxVerf_y/(self.länge/1000) #mm/m
+        self.maxVerf_x_PM = self.maxVerf_x/(self.lagerabstand/1000) #mm/m
+        self.maxVerf_y_PM = self.maxVerf_y/(self.lagerabstand/1000) #mm/m
 
 
     def Spannungen(self, z):
