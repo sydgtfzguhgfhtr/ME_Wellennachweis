@@ -258,13 +258,16 @@ while running:
         # Was passiert wenn die Absatzart geändert wurde?
         if event == "-DRAW WELLE-":
             save_all()
-            try:
-                welle = Welle(name=wellenname,festlager_z=festlager_z,loslager_z=loslager_z,werkstoff=material,Oberflächenverfestigung=oberflächenv)
-                geometrie = [(float(punkt["Z"]),float(punkt["R"])) for punkt in punkteinput]
-                welle.set_geometrie(geometrie)
+            if welle is None:
+                try:
+                    welle = Welle(name=wellenname,festlager_z=festlager_z,loslager_z=loslager_z,werkstoff=material,Oberflächenverfestigung=oberflächenv)
+                    geometrie = [(float(punkt["Z"]),float(punkt["R"])) for punkt in punkteinput]
+                    welle.set_geometrie(geometrie)
+                    welle.welle_darstellen()
+                except:
+                    sg.PopupError("Es ist ein Fehler aufgetreten.\nBitte die Eingaben auf Vollständigkeit überprüfen!",title="Fehlermeldung")
+            else:
                 welle.welle_darstellen()
-            except:
-                sg.PopupError("Es ist ein Fehler aufgetreten.\nBitte die Eingaben auf Vollständigkeit überprüfen!",title="Fehlermeldung")
 
         if event=="-CALC ALL-":
             save_all()
