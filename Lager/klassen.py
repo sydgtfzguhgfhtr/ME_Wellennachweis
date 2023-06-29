@@ -2,6 +2,8 @@
 # Code von Nadine Schulz, Quentin Huss
 
 import numpy as np
+import csv
+import pandas as pd
 
 class Lager:
     def __init__(self,name,Innendurchmesser,Drehzahl,Radialkraft,Axialkraft,Ölviskosität,Verunreinigung,Pa=0.1) -> None:
@@ -32,7 +34,34 @@ class Lager:
         """
         Lädt per ID die Daten aus der CSV und importiert die Attribute.
         """
-        raise NotImplemented()
+        if ID <= 790:
+            Lager = pd.read_csv(r"Lager\einreihige_Rillenkugellager.csv",delimiter=",")
+            Lager = Lager[Lager["ID"]==ID]
+            print(Lager)
+            # hat sich irgendwie alles eins nach links verschoben funktioniert jetzt aber so
+            self.d = int(Lager["Nr"])
+            self.D = int(Lager["d"])
+            self.B = float(Lager["D"])
+            self.C = float(Lager["B"])
+            self.C0 = float(Lager["C"])
+            self.Pu = float(Lager["C0"])
+            try:
+                self.n_ref = float(Lager["Pu"])
+            except ValueError:
+                self.n_ref = None
+            self.n_grenz = float(Lager["Referenzdrehzahl"])
+            self.f0 = float(Lager["kr"])
+        else:
+            Lager = pd.read_csv(r"Lager\Einreihige_Zylinderrollenlager.csv",delimiter=",")
+            Lager = Lager[Lager["Nr"]==ID]
+            self.d = int(Lager["d"])
+            self.D = int(Lager["D"])
+            self.B = float(Lager["B"])
+            self.C = float(Lager["C"])
+            self.C0 = float(Lager["C0"])
+            self.Pu = float(Lager["Pu"])   
+            self.n_ref = float(Lager["Referenzdrehzahl"])
+            self.n_grenz = float(Lager["Grenzdrehzahl"]) 
     
     def kappa(self):
         kappa = self.nu/self.Betriebsviskosität()
