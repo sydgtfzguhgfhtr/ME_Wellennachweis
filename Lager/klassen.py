@@ -2,7 +2,6 @@
 # Code von Nadine Schulz, Quentin Huss
 
 import numpy as np
-import csv
 import pandas as pd
 
 class Lager:
@@ -73,15 +72,8 @@ class Lager:
         return(kappa)
     
     def aequivalente_dynamische_Belastung(self):
-        # X und Y für Rillenkugellager Übung Folie 17
-        # X und Y bei Zylinderrollenlager WLK seite 511
-        """äquivalente statische Lagerbelastung 
-          [kN]
-          Y Axiallastfaktor des Lagers
-          = 0,6 für Lager der Reihen 10, 18, 19, 2, 3, 4
-          = 0,4 für Lager der Reihen 12, 20, 22, 23, 28, 29, 30, 39
-            """
-        raise NotImplemented()
+        P = self.X*self.Fr+self.Y*self.Fa
+        return P
     
     def aequivalente_statische_Bealstung(self):
         P0 = self.X0*self.Fr+self.Y0*self.Fa
@@ -91,28 +83,33 @@ class Lager:
         fs = self.C0/self.aequivalente_statische_Bealstung()
         return fs
 
+    def erweiterte_Lebensdauer_in_Stunden(self):
+        Lmnh = (10**6/(60*self.n))*self.a1*self.a_SKF()*(self.C/self.P())**self.p
+        return(Lmnh)
+
 class Zylinderrollenlager(Lager):
     # ID ab 791
     # NUR ALS LOSLAGER VERWENDEN (sonst stimmt äquivalente dynamische Lagerbelastung nicht)
     # nur als Loslager logisch (Reibung?)
+    # sonst ist X und Y von Maßreihe abhängig (keine Ahnung wie die funktioniert)
     def __init__(self, name, di, Drehzahl, Radialkraft, Axialkraft, Ölviskosität, Verunreinigung, Pa=0.1) -> None:
         super().__init__(name, di, Drehzahl, Radialkraft, Axialkraft, Ölviskosität, Verunreinigung, Pa)
+        self.X = 1
+        self.Y = 0
         self.X0 = 1 # für statische Belastung
         self.Y0 = 0 # für statische Belastung
-        self.X = 0.56   #Folie 18
         self.p = 10/3 # Lebensdauerexponent
-    def Y_Rillenkugellager(self): # Folie 18
-        m,n = np.polyfit([0.172,0.345,0.689,1.03,1.38,2.07,3.45,5.17,6.89],[2.3,1.99,1.71,1.55,1.45,1.31,1.15,1.04,1],deg=1)
-        Y = m*((self.f0*self.Fa)/self.C0)+n
-        self.Y = Y
-        return Y
 
 class Rillenkugellager(Lager):
     # ID bis einschließlich 790
     def __init__(self, name, di, Drehzahl, Radialkraft, Axialkraft, Ölviskosität, Verunreinigung, Pa=0.1) -> None:
         super().__init__(name, di, Drehzahl, Radialkraft, Axialkraft, Ölviskosität, Verunreinigung, Pa)
-        self.X = 1  # Folie 19
-        self.Y = 0  # Folie 19
         self.X0 = 0.6   # für statische Belastung
+        self.X = 0.56   #Folie 18
         self.Y0 = 0.5   # für statische Belastung
         self.p = 3 # Lebensdauerexponent
+    def Y_Rillenkugellager(self): # Folie 18
+        m,n = np.polyfit([0.172,0.345,0.689,1.03,1.38,2.07,3.45,5.17,6.89],[2.3,1.99,1.71,1.55,1.45,1.31,1.15,1.04,1],deg=1)
+        Y = m*((self.f0*self.Fa)/self.C0)+n
+        self.Y = Y
+        return Y
