@@ -28,8 +28,13 @@ class Lager:
         raise NotImplemented()
     
     def Bezugsviskosität(self):
-        raise NotImplemented()
-    
+        dm = 0.5*(self.d+self.D)
+        if self.n < 1000:
+            nu_1 = 45000*self.n**(-0.83)*dm**(-0.5)
+        else:
+            nu_1 = 4500*self.n**(-0.5)*dm**(-0.5)
+        return nu_1
+
     def aus_CSV_laden(self,ID):
         """
         Lädt per ID die Daten aus der CSV und importiert die Attribute.
