@@ -6,10 +6,10 @@ import numpy as np
 class Lager:
     def __init__(self,name,Innendurchmesser,Drehzahl,Radialkraft,Axialkraft,Ölviskosität,Verunreinigung,Pa=0.1) -> None:
         self.name = str(name)
-        self.n = Drehzahl # Drehzahl
-        self.d = Innendurchmesser # Innendurchmesser
-        self.Fr = Radialkraft #Radialkraft
-        self.Fa = Axialkraft # Axialkraft
+        self.n = Drehzahl # Drehzahl in 1/min
+        self.d = Innendurchmesser # Innendurchmesser in mm
+        self.Fr = Radialkraft #Radialkraft in kN
+        self.Fa = Axialkraft # Axialkraft in kN
         self.a1 = (np.log(1/(1-Pa)/np.log(1/0.9)))**1/1.5 # Lebensdauerbeiwert
         self.nu = Ölviskosität # Ölviskosität
         self.eta = Verunreinigung # Grad der Verunreinigung
@@ -35,7 +35,8 @@ class Lager:
         raise NotImplemented()
     
     def kappa(self):
-        raise NotImplemented()
+        kappa = self.nu/self.Betriebsviskosität()
+        return(kappa)
     
     def aequivalente_dynamische_Belastung(self):
         # X und Y für Rillenkugellager Übung Folie 17
@@ -49,19 +50,24 @@ class Lager:
         raise NotImplemented()
     
     def aequivalente_statische_Bealstung(self):
+        P0 = self.X0*self.Fr+self.Y0*self.Fa
+        return P0
+
+    def fs(self):
         raise NotImplemented()
 
-
 class Zylinderrollenlager(Lager):
+    # ID ab 791
     def __init__(self, name, di, Drehzahl, Radialkraft, Axialkraft, Ölviskosität, Verunreinigung, Pa=0.1) -> None:
         super().__init__(name, di, Drehzahl, Radialkraft, Axialkraft, Ölviskosität, Verunreinigung, Pa)
-        self.X0 = 1
-        self.Y0 = 0
+        self.X0 = 1 # für statische Belastung
+        self.Y0 = 0 # für statische Belastung
         self.p = 10/3 # Lebensdauerexponent
 
 class Rillenkugellager(Lager):
+    # ID bis einschließlich 790
     def __init__(self, name, di, Drehzahl, Radialkraft, Axialkraft, Ölviskosität, Verunreinigung, Pa=0.1) -> None:
         super().__init__(name, di, Drehzahl, Radialkraft, Axialkraft, Ölviskosität, Verunreinigung, Pa)
-        self.X0 = 0.6
-        self.Y0 = 0.5
+        self.X0 = 0.6   # für statische Belastung
+        self.Y0 = 0.5   # für statische Belastung
         self.p = 3 # Lebensdauerexponent
