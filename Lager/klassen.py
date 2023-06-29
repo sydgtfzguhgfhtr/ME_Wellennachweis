@@ -20,11 +20,37 @@ class Lager:
         return "Lager: "+self.name
     
     def a_SKF(self):
-        raise NotImplemented()
-    
+        # darf nicht größer 50 werden
+        kappa = self.kappa()
+        if kappa > 4: kappa = 4
+        if self.ID <= 790:
+            A = 2.56705; D = 0.83; E = 1/3; F = 9.3; G = 1
+            if kappa <0.4:
+                B = 2.26492
+                C = 0.0543806
+            elif kappa < 1:
+                B = 1.99866
+                C = 0.19087
+            elif kappa <=4:
+                B = 1.99866
+                C = 0.0717391
+        else:
+            A = 1.58592; D = 1; E = 0.4; F = 9.185; G = 1
+            if kappa < 0.4:
+                B = 1.39926
+                C = 0.0543806
+            elif kappa < 1:
+                B = 1.23477
+                C = 0.19087
+            elif kappa >= 4:
+                B = 1.23477
+                C = 0.0717391
+
+        a = (1/10)*1/(1-((A-(B/(kappa**C)))**D)*(((self.eta*self.Pu)/(G*self.aequivalente_statische_Bealstung()))**E))**F
+        return a
+
     def Betriebsviskosität(self):
-        # siehe Übung Folie 36
-        raise NotImplemented()
+        return 40
     
     def Bezugsviskosität(self):
         dm = 0.5*(self.d+self.D)
@@ -38,10 +64,10 @@ class Lager:
         """
         Lädt per ID die Daten aus der CSV und importiert die Attribute.
         """
+        self.ID = ID
         if ID <= 790:
             Lager = pd.read_csv(r"Lager\einreihige_Rillenkugellager.csv",delimiter=",")
             Lager = Lager[Lager["ID"]==ID]
-            print(Lager)
             # hat sich irgendwie alles eins nach links verschoben funktioniert jetzt aber so
             self.d = int(Lager["Nr"])
             self.D = int(Lager["d"])
@@ -84,7 +110,7 @@ class Lager:
         return fs
 
     def erweiterte_Lebensdauer_in_Stunden(self):
-        Lmnh = (10**6/(60*self.n))*self.a1*self.a_SKF()*(self.C/self.P())**self.p
+        Lmnh = (10**6/(60*self.n))*self.a1*self.a_SKF()*(self.C/self.aequivalente_statische_Bealstung())**self.p
         return(Lmnh)
 
 class Zylinderrollenlager(Lager):

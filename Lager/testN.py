@@ -1,6 +1,16 @@
 from klassen import *
+import math
 
-R1 = Rillenkugellager("AA",15,1500,2,3,40,0.6)
-R1.aus_CSV_laden(12)
-print(R1.f0)
+di = 40
+n = 1500
+Fr = math.sqrt(9**2+4**2)
+Fa = 2.3
+nu = 40
+eta_C = 0.6
+
+
+for i in range(290,302):
+    R = Rillenkugellager("A",di,n,Fr,Fa,nu,eta_C)
+    R.aus_CSV_laden(i)
+    print(R.erweiterte_Lebensdauer_in_Stunden())
 
