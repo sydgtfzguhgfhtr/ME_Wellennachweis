@@ -83,7 +83,8 @@ class Lager:
         return P0
 
     def fs(self):
-        raise NotImplemented()
+        fs = self.C0/self.aequivalente_statische_Bealstung()
+        return fs
 
 class Zylinderrollenlager(Lager):
     # ID ab 791
