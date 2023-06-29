@@ -5,14 +5,14 @@ import numpy as np
 import pandas as pd
 
 class Lager:
-    def __init__(self,name,Innendurchmesser,Drehzahl,Radialkraft,Axialkraft,Ölviskosität,Betriebstemp,Verunreinigung,Pa=0.1):
+    def __init__(self,name,Innendurchmesser,Drehzahl,Radialkraft,Axialkraft,Ölviskositäten:list,Betriebstemp,Verunreinigung,Pa=0.1):
         self.name = str(name)
         self.n = Drehzahl # Drehzahl in 1/min
         self.d = Innendurchmesser # Innendurchmesser in mm
         self.Fr = Radialkraft #Radialkraft in kN
         self.Fa = Axialkraft # Axialkraft in kN
         self.a1 = (np.log(1/(1-Pa)/np.log(1/0.9)))**1/1.5 # Lebensdauerbeiwert
-        self.nu = Ölviskosität # Ölviskosität
+        self.t1,self.nu1,self.t2,self.nu2 = Ölviskositäten # Ölviskositäten. Bei bekannter Nennviskosität ist t1=40,nu1=Nennviskosität.
         self.T_bet = Betriebstemp # Betriebstemperatur
         self.eta = Verunreinigung # Grad der Verunreinigung
         self.p = None # Lebensdauerexponent
@@ -51,7 +51,9 @@ class Lager:
         return a
 
     def Betriebsviskosität(self,t,t1,nu1,t2,nu2):
-        """Interpoliert die Betriebsviskosität in `mm^2/s` aus den 2 bekannten Viskositäten `nu1` und `nu2` und den dazugehörigen Temperaturen `t1` und `t2`."""
+        """Interpoliert die Betriebsviskosität in `mm^2/s` aus den 2 bekannten Viskositäten `nu1` und `nu2` und den dazugehörigen Temperaturen `t1` und `t2`.
+        Eine der Viskositäten kann der Nennviskosität entnommen werden, welche nach Norm für 40°C ermittelt wird.
+        """
         b = -(np.log(t2/t1))/(np.log(nu1/nu2))
         a = nu1**-b*t1
         return np.e**((np.log(t)-np.log(a))/b)
@@ -97,8 +99,9 @@ class Lager:
             self.n_ref = float(Lager["Referenzdrehzahl"])
             self.n_grenz = float(Lager["Grenzdrehzahl"]) 
     
-    def kappa(self):
-        kappa = self.nu/self.Betriebsviskosität()
+    def kappa(self)->float:
+        """Viskositätsverhältnis kappa"""
+        kappa = self.Betriebsviskosität(self.T_bet,self.t1,self.nu1,self.t2,self.nu2)/self.Bezugsviskosität # siehe Skript Seite 34
         return(kappa)
     
     def aequivalente_dynamische_Belastung(self):
