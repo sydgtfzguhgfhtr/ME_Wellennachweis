@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 class Lager:
-    def __init__(self,name,Innendurchmesser,Drehzahl,Radialkraft,Axialkraft,Ölviskosität,Verunreinigung,Pa=0.1) -> None:
+    def __init__(self,name,Innendurchmesser,Drehzahl,Radialkraft,Axialkraft,Ölviskosität,Betriebstemp,Verunreinigung,Pa=0.1):
         self.name = str(name)
         self.n = Drehzahl # Drehzahl in 1/min
         self.d = Innendurchmesser # Innendurchmesser in mm
@@ -13,6 +13,7 @@ class Lager:
         self.Fa = Axialkraft # Axialkraft in kN
         self.a1 = (np.log(1/(1-Pa)/np.log(1/0.9)))**1/1.5 # Lebensdauerbeiwert
         self.nu = Ölviskosität # Ölviskosität
+        self.T_bet = Betriebstemp # Betriebstemperatur
         self.eta = Verunreinigung # Grad der Verunreinigung
         self.p = None # Lebensdauerexponent
 
@@ -49,8 +50,11 @@ class Lager:
         a = (1/10)*1/(1-((A-(B/(kappa**C)))**D)*(((self.eta*self.Pu)/(G*self.aequivalente_statische_Bealstung()))**E))**F
         return a
 
-    def Betriebsviskosität(self):
-        raise NotImplemented("Funktion Betriebsviskosität fehlt noch")
+    def Betriebsviskosität(self,t,t1,nu1,t2,nu2):
+        """Interpoliert die Betriebsviskosität in `mm^2/s` aus den 2 bekannten Viskositäten `nu1` und `nu2` und den dazugehörigen Temperaturen `t1` und `t2`."""
+        b = -(np.log(t2/t1))/(np.log(nu1/nu2))
+        a = nu1**-b*t1
+        return np.e**((np.log(t)-np.log(a))/b)
     
     def Bezugsviskosität(self):
         dm = 0.5*(self.d+self.D)
