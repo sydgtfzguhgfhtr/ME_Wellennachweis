@@ -33,17 +33,35 @@ class Lager:
         Lädt per ID die Daten aus der CSV und importiert die Attribute.
         """
         raise NotImplemented()
-
+    
+    def kappa(self):
+        raise NotImplemented()
+    
+    def aequivalente_dynamische_Belastung(self):
+        # X und Y für Rillenkugellager Übung Folie 17
+        # X und Y bei Zylinderrollenlager WLK seite 511
+        """äquivalente statische Lagerbelastung 
+          [kN]
+          Y Axiallastfaktor des Lagers
+          = 0,6 für Lager der Reihen 10, 18, 19, 2, 3, 4
+          = 0,4 für Lager der Reihen 12, 20, 22, 23, 28, 29, 30, 39
+            """
+        raise NotImplemented()
+    
+    def aequivalente_statische_Bealstung(self):
+        raise NotImplemented()
 
 
 class Zylinderrollenlager(Lager):
     def __init__(self, name, di, Drehzahl, Radialkraft, Axialkraft, Ölviskosität, Verunreinigung, Pa=0.1) -> None:
         super().__init__(name, di, Drehzahl, Radialkraft, Axialkraft, Ölviskosität, Verunreinigung, Pa)
-
+        self.X0 = 1
+        self.Y0 = 0
         self.p = 10/3 # Lebensdauerexponent
 
 class Rillenkugellager(Lager):
     def __init__(self, name, di, Drehzahl, Radialkraft, Axialkraft, Ölviskosität, Verunreinigung, Pa=0.1) -> None:
         super().__init__(name, di, Drehzahl, Radialkraft, Axialkraft, Ölviskosität, Verunreinigung, Pa)
-
+        self.X0 = 0.6
+        self.Y0 = 0.5
         self.p = 3 # Lebensdauerexponent
