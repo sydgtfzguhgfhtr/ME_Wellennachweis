@@ -50,7 +50,7 @@ class Lager:
         return a
 
     def Betriebsviskosität(self):
-        return 40
+        raise NotImplemented("Funktion Betriebsviskosität fehlt noch")
     
     def Bezugsviskosität(self):
         dm = 0.5*(self.d+self.D)
