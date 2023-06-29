@@ -36,10 +36,10 @@ Torsionswechselfestigkeit:      {self.tau_tW}
         )
     def aus_csv_laden():
         """
-        Lädt die Werkstoffdaten aus `'\\Werkstoffdaten.csv'` in `Werkstoff.Werkstoffe`.
+        Lädt die Werkstoffdaten aus `'Werkstoffdaten.csv'` in `Werkstoff.Werkstoffe`.
         Bei Dopplung werden alte Einträge mit neuen Überschrieben.
         """
-        with open("Werkstoffdaten.csv","r",encoding="utf8") as datei:
+        with open("Wellen\\Werkstoffdaten.csv","r",encoding="utf8") as datei:
             rohdaten = datei.readlines()
 
         for line in rohdaten:
