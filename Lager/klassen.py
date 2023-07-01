@@ -16,7 +16,7 @@ class Lager:
         self.Fr = Radialkraft #Radialkraft in kN
         self.Fa = Axialkraft # Axialkraft in kN
         self.a1 = (np.log(1/(1-Pa)/np.log(1/0.9)))**1/1.5 # Lebensdauerbeiwert
-        self.t1,self.nu1,self.t2,self.nu2 = Ölviskositäten # Ölviskositäten. Bei bekannter Nennviskosität ist t1=40,nu1=Nennviskosität.
+        self.t1,self.nu1,self.t2,self.nu2 = Ölviskositäten
         self.T_bet = Betriebstemp # Betriebstemperatur
         self.eta = Verunreinigung # Grad der Verunreinigung
         self.p = None # Lebensdauerexponent
