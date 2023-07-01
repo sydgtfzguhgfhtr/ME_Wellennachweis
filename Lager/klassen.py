@@ -5,10 +5,14 @@ import numpy as np
 import pandas as pd
 
 class Lager:
-    def __init__(self,name,Innendurchmesser,Drehzahl,Radialkraft,Axialkraft,Ölviskositäten:list,Betriebstemp,Verunreinigung,Pa=0.1):
+    def __init__(self,name,ID,Drehzahl,Radialkraft,Axialkraft,Ölviskositäten:list,Betriebstemp,Verunreinigung,Pa=0.1):
+        """Ölviskositäten müssen in der Form [t1,nu1,t2,nu2] angegeben werden. Sie ist den Normtabellen zu entnehmen.
+        Der Grad der Verunreinigung ist ein Wert von 0 (Sehr starke Verunreinigung) bis 1 (Größte Sauberkeit)"""
         self.name = str(name)
+        self.ID = ID
         self.n = Drehzahl # Drehzahl in 1/min
-        self.d = Innendurchmesser # Innendurchmesser in mm
+        self.d = None # Innendurchmesser in mm
+        self.D = None # Aussendurchmesser
         self.Fr = Radialkraft #Radialkraft in kN
         self.Fa = Axialkraft # Axialkraft in kN
         self.a1 = (np.log(1/(1-Pa)/np.log(1/0.9)))**1/1.5 # Lebensdauerbeiwert
@@ -16,6 +20,7 @@ class Lager:
         self.T_bet = Betriebstemp # Betriebstemperatur
         self.eta = Verunreinigung # Grad der Verunreinigung
         self.p = None # Lebensdauerexponent
+        self.aus_CSV_laden(self.ID)
 
     def __repr__(self) -> str:
         return "Lager: "+self.name
@@ -47,7 +52,7 @@ class Lager:
                 B = 1.23477
                 C = 0.0717391
 
-        a = (1/10)*1/(1-((A-(B/(kappa**C)))**D)*(((self.eta*self.Pu)/(G*self.aequivalente_statische_Bealstung()))**E))**F
+        a = (1/10)*1/(1-((A-(B/(kappa**C)))**D)*(((self.eta*self.Pu)/(G*self.aequivalente_statische_Belastung()))**E))**F
         return a
 
     def Betriebsviskosität(self,t,t1,nu1,t2,nu2):
@@ -72,7 +77,7 @@ class Lager:
         """
         self.ID = ID
         if ID <= 790:
-            Lager = pd.read_csv(r"Lager\einreihige_Rillenkugellager.csv",delimiter=",")
+            Lager = pd.read_csv(r"einreihige_Rillenkugellager.csv",delimiter=",")
             Lager = Lager[Lager["ID"]==ID]
             # hat sich irgendwie alles eins nach links verschoben funktioniert jetzt aber so
             self.d = int(Lager["Nr"])
@@ -88,7 +93,7 @@ class Lager:
             self.n_grenz = float(Lager["Referenzdrehzahl"])
             self.f0 = float(Lager["kr"])
         else:
-            Lager = pd.read_csv(r"Lager\Einreihige_Zylinderrollenlager.csv",delimiter=",")
+            Lager = pd.read_csv(r"Einreihige_Zylinderrollenlager.csv",delimiter=",")
             Lager = Lager[Lager["Nr"]==ID]
             self.d = int(Lager["d"])
             self.D = int(Lager["D"])
@@ -101,23 +106,23 @@ class Lager:
     
     def kappa(self)->float:
         """Viskositätsverhältnis kappa"""
-        kappa = self.Betriebsviskosität(self.T_bet,self.t1,self.nu1,self.t2,self.nu2)/self.Bezugsviskosität # siehe Skript Seite 34
+        kappa = self.Betriebsviskosität(self.T_bet,self.t1,self.nu1,self.t2,self.nu2)/self.Bezugsviskosität() # siehe Skript Seite 34
         return(kappa)
     
     def aequivalente_dynamische_Belastung(self):
         P = self.X*self.Fr+self.Y*self.Fa
         return P
     
-    def aequivalente_statische_Bealstung(self):
+    def aequivalente_statische_Belastung(self):
         P0 = self.X0*self.Fr+self.Y0*self.Fa
         return P0
 
     def fs(self):
-        fs = self.C0/self.aequivalente_statische_Bealstung()
+        fs = self.C0/self.aequivalente_statische_Belastung()
         return fs
 
     def erweiterte_Lebensdauer_in_Stunden(self):
-        Lmnh = (10**6/(60*self.n))*self.a1*self.a_SKF()*(self.C/self.aequivalente_statische_Bealstung())**self.p
+        Lmnh = (10**6/(60*self.n))*self.a1*self.a_SKF()*(self.C/self.aequivalente_statische_Belastung())**self.p
         return(Lmnh)
 
 class Zylinderrollenlager(Lager):
@@ -125,8 +130,8 @@ class Zylinderrollenlager(Lager):
     # NUR ALS LOSLAGER VERWENDEN (sonst stimmt äquivalente dynamische Lagerbelastung nicht)
     # nur als Loslager logisch (Reibung?)
     # sonst ist X und Y von Maßreihe abhängig (keine Ahnung wie die funktioniert)
-    def __init__(self, name, di, Drehzahl, Radialkraft, Axialkraft, Ölviskosität, Verunreinigung, Pa=0.1) -> None:
-        super().__init__(name, di, Drehzahl, Radialkraft, Axialkraft, Ölviskosität, Verunreinigung, Pa)
+    def __init__(self,name,ID,Drehzahl,Radialkraft,Axialkraft,Ölviskositäten:list,Betriebstemp,Verunreinigung,Pa=0.1) -> None:
+        super().__init__(name,ID,Drehzahl,Radialkraft,Axialkraft,Ölviskositäten,Betriebstemp,Verunreinigung,Pa=0.1)
         self.X = 1
         self.Y = 0
         self.X0 = 1 # für statische Belastung
@@ -135,8 +140,8 @@ class Zylinderrollenlager(Lager):
 
 class Rillenkugellager(Lager):
     # ID bis einschließlich 790
-    def __init__(self, name, di, Drehzahl, Radialkraft, Axialkraft, Ölviskosität, Verunreinigung, Pa=0.1) -> None:
-        super().__init__(name, di, Drehzahl, Radialkraft, Axialkraft, Ölviskosität, Verunreinigung, Pa)
+    def __init__(self,name,ID,Drehzahl,Radialkraft,Axialkraft,Ölviskositäten:list,Betriebstemp,Verunreinigung,Pa=0.1) -> None:
+        super().__init__(name,ID,Drehzahl,Radialkraft,Axialkraft,Ölviskositäten,Betriebstemp,Verunreinigung,Pa=0.1)
         self.X0 = 0.6   # für statische Belastung
         self.X = 0.56   #Folie 18
         self.Y0 = 0.5   # für statische Belastung

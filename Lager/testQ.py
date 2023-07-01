@@ -16,5 +16,11 @@ visk_680 = [22.5,120,300,55]
 visk_1000 = [27.5,120,300,60]
 visk_1500 = [35,120,300,66]
 
-test = Lager("TEST",100,20000,100,0,visk_10,90,1)
-print(test.Betriebsviskosität(90,test.t1,test.nu1,test.t2,test.nu2))
+Fr = 5760
+Fa = 830
+
+di = 50
+n = 20000
+
+Aw_A = Zylinderrollenlager("Abtriebswelle A",50,80,n,Fr,Fa,visk_1000,70,0.5)
+print(Aw_A.a_SKF())
