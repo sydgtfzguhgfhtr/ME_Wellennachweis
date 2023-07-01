@@ -144,7 +144,7 @@ class Welle:
         """
         Definiert die Wellengeometrie als Liste aus Punkten in der Form [[z1,r1],[z2,r2],...]
         """
-        self.geometrie = punkte
+        self.geometrie = sorted(punkte)
         self.z_daten,self.r_daten = zip(*self.geometrie) # Entpackt die Geometriedaten in Vektoren
         self.minL = min(self.z_daten)
         self.maxL = max(self.z_daten)
