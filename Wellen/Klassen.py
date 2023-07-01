@@ -40,7 +40,7 @@ Torsionswechselfestigkeit:      {self.tau_tW}
         Lädt die Werkstoffdaten aus `'Werkstoffdaten.csv'` in `Werkstoff.Werkstoffe`.
         Bei Dopplung werden alte Einträge mit neuen Überschrieben.
         """
-        with open(os.path.join(os.getcwd(),"Werkstoffdaten.csv"),"r",encoding="utf8") as datei:
+        with open(os.path.join(os.getcwd(),"Wellen\\Werkstoffdaten.csv"),"r",encoding="utf8") as datei:
             rohdaten = datei.readlines()
 
         for line in rohdaten:
