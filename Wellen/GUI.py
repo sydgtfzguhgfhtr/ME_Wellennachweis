@@ -1,6 +1,7 @@
 from Klassen import Welle,Werkstoff,Welle_Absatz,Werte_in_CSV_speichern
 
 import PySimpleGUI as sg
+import os
 
 sg.theme("Material2")
 
@@ -12,18 +13,17 @@ material = ""
 oberflächenv = "nein"
 festlager_z = 0
 loslager_z = 100
-Rz = 20
 n_punkte = 2 # Standardwert für die Punktzahl
 n_kräfte = 1 # Standardwert für die Kräftezahl
 lasttab = "Lager"
 add_n_p = 1
 add_n_k = 1
-csvname = "TEST"
+csvname = ""
 
 
 welle = None
 optionen_oberfl = ("nein","Nitrieren","Einsatzhärten","Karbonierhärten","Festwalzen","Kugelstrahlen","Flammhärten")
-FL_Fx,FL_Fy,FL_Fz,LL_Fx,LL_Fy = 0,0,0,0,0 
+FL_Fx,FL_Fy,FL_Fz,LL_Fx,LL_Fy = 0,0,0,0,0
 
 punkteinput = [] # Beinhaltet die Nutzerdaten für die Punkte
 punktreihe_stdwerte = {"NW":False,"Z":0,"R":0,"EXTRA":"","Rz":0,"RUNDUNGSR":0,"KERBGRUNDD":0,"NUTT":0,"NUTR":0,"NUTB":0}
@@ -233,7 +233,7 @@ while running:
     [sg.Text("Nadine Schulz und Quentin Huss"),sg.Push(),sg.Text("Angaben ohne Gewähr!")],
     [sg.HorizontalSeparator()],
 
-    [sg.Text("Name der Welle",font=(any,20))],
+    [sg.Text("Welle",font=(any,20))],
     [sg.Input(wellenname,key="-NAME-")],
 
     [sg.TabGroup([[tab_werkstoff,tab_Lagerpositionen,tab_geometrie,tab_kräfte,tab_auswertung]])],
@@ -255,6 +255,7 @@ while running:
             window.close()
             #print("FENSTER GESCHLOSSEN")
             break
+
         # Was passiert wenn die Absatzart geändert wurde?
         if event == "-DRAW WELLE-":
             save_all()
