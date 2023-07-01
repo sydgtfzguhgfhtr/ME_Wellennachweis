@@ -21,9 +21,9 @@ Antriebswelle.set_geometrie(
      (463, 15))
 )
 
-Antriebswelle.set_Kraft(6145, "t", 0, 38.31, 0)
-Antriebswelle.set_Kraft(2380, "r", 0, 38.31, 0)
-Antriebswelle.set_Kraft(-2237, "a", 0, 38.31, 0)
+Antriebswelle.set_Kraft(6145, "t", 0, -38.31, 0)
+Antriebswelle.set_Kraft(-2380, "r", 0, -38.31, 0)
+Antriebswelle.set_Kraft(-2237, "a", 0, -38.31, 0)
 
 Antriebswelle.welle_darstellen()
 Antriebswelle.lagerkräfte_berechnen()
@@ -51,7 +51,7 @@ a6 = Welle_Absatz(Antriebswelle, 387, "Absatz", 10, 5)
 p1 = Welle_Absatz(Antriebswelle, 450, "eine Passfeder", 10)
 
 Antriebswelle.plots_speichern()
-# Antriebswelle.plot()
+#Antriebswelle.plot()
 
 
 L = [z11, a1, a2, a3, a4, Rechtecknut, a5, a6, p1]
