@@ -6,6 +6,7 @@ Code geschrieben von: Nadine Schulz, Quentin Huss
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import quad
+import os
 
 class Werkstoff():
     Werkstoffe = {} # Dictionary mit allen erzeugten Werkstoffen
@@ -39,7 +40,7 @@ Torsionswechselfestigkeit:      {self.tau_tW}
         Lädt die Werkstoffdaten aus `'Werkstoffdaten.csv'` in `Werkstoff.Werkstoffe`.
         Bei Dopplung werden alte Einträge mit neuen Überschrieben.
         """
-        with open("Werkstoffdaten.csv","r",encoding="utf8") as datei:
+        with open(os.path.join(os.getcwd(),"Werkstoffdaten.csv"),"r",encoding="utf8") as datei:
             rohdaten = datei.readlines()
 
         for line in rohdaten:
@@ -248,7 +249,7 @@ class Welle:
         ax[1,1].set_title("Biegemoment um Y")
         ax[1,1].grid()
 
-        ax[0,0].invert_yaxis() # Achse invertieren
+        ax[1,0].invert_yaxis() # Achse invertieren
 
         plt.show()
         
