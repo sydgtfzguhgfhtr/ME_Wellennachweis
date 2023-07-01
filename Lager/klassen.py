@@ -137,6 +137,8 @@ class Zylinderrollenlager(Lager):
         self.X0 = 1 # für statische Belastung
         self.Y0 = 0 # für statische Belastung
         self.p = 10/3 # Lebensdauerexponent
+        if self.ID<791:
+            raise ValueError("Die ID gehört nicht zu einem Zylinderrollenlager. IDs überprüfen!")
 
 class Rillenkugellager(Lager):
     # ID bis einschließlich 790
@@ -146,6 +148,9 @@ class Rillenkugellager(Lager):
         self.X = 0.56   #Folie 18
         self.Y0 = 0.5   # für statische Belastung
         self.p = 3 # Lebensdauerexponent
+        if self.ID>791:
+            raise ValueError("Die ID gehört nicht zu einem Rillenkugellager. IDs überprüfen!")
+        
     def Y_Rillenkugellager(self): # Folie 18
         m,n = np.polyfit([0.172,0.345,0.689,1.03,1.38,2.07,3.45,5.17,6.89],[2.3,1.99,1.71,1.55,1.45,1.31,1.15,1.04,1],deg=1)
         Y = m*((self.f0*self.Fa)/self.C0)+n
