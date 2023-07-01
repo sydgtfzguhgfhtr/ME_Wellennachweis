@@ -41,9 +41,8 @@ Torsionswechselfestigkeit:      {self.tau_tW}
         Bei Dopplung werden alte Einträge mit neuen Überschrieben.
         """
         pfad = os.path.join(os.getcwd(),"Wellen\\Werkstoffdaten.csv")
-        pfad = pfad.replace("\\Wellen","",1)
         if pfad.count("\\Wellen")>1:
-            pfad.replace("\\Wellen","",1)
+            pfad = pfad.replace("\\Wellen","",1)
         with open(pfad,"r",encoding="utf8") as datei:
             rohdaten = datei.readlines()
 
