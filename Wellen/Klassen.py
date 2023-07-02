@@ -570,6 +570,94 @@ class Welle:
             print("|",i,": ",str(round(fx,3)).center(10),"|",str(round(fy,3)).center(10),"|",str(round(fz,3)).center(10),"|",str(round(z,3)).center(10),"|",sep="")
             print("-"*48)
 
+    def plots_alles(self):
+
+        max_z = max(self.z_daten)
+        min_z = min(self.z_daten)
+
+        zrange = np.linspace(min_z,max_z,1000)
+        rrange = np.array(tuple(map(self.radius,zrange)))
+
+        _,z_kräfte,_,_,_,_,_=zip(*self.belastungen)
+        max_z_k = max(z_kräfte)
+        max_z = max(self.z_daten)
+        min_z = min(self.z_daten)
+        min_z_k = min(z_kräfte)
+
+        zrange = np.linspace(min_z,max_z,1000)
+        z_range_k = np.linspace(min_z_k,max_z_k,1000)
+        rrange = np.fromiter(map(self.radius,zrange),float,len(zrange))
+
+        l = np.arange(start=0,step=1,stop=self.länge)
+
+        MB_Darstellung,ax = plt.subplots(3,2,constrained_layout=True,num=self.name+" Belastungsplot")
+        MB_Darstellung.set_size_inches(15,10)
+
+        # Mbx Biegemomentenverlauf
+        mbx_daten = np.fromiter(map(self.Mbx,self.z_range),float,len(self.z_range))
+        ax[0,0].plot(self.z_range,mbx_daten)
+        ax[0,0].fill_between(self.z_range,0,mbx_daten,alpha=0.3)
+        ax[0,0].set_xlabel("$z\\,[mm]$")
+        ax[0,0].set_ylabel("$Mb_x\\,[Nm]$")
+        ax[0,0].set_title("Biegemoment um X")
+        ax[0,0].grid()
+
+        # Mby Biegemomentenverlauf
+        mby_daten = np.fromiter(map(self.Mby,self.z_range),float,len(self.z_range))
+        ax[0,1].plot(self.z_range,mby_daten)
+        ax[0,1].fill_between(self.z_range,0,mby_daten,alpha=0.3)
+        ax[0,1].set_xlabel("$z\\,[mm]$")
+        ax[0,1].set_ylabel("$Mb_y\\,[Nm]$")
+        ax[0,1].set_title("Biegemoment um Y")
+        ax[0,1].grid()
+
+
+        Mt = tuple(map(lambda x: self.Mt(x), self.z_range))
+
+        ax[1,0].plot(self.z_range,Mt)
+        ax[1,0].fill_between(self.z_range,0,Mt,alpha=0.3)
+        ax[1,0].set_xlabel("$z\\,[mm]$")
+        ax[1,0].set_ylabel("$M_t\\,[Nm]$")
+        ax[1,0].set_title("Torsionsmoment")
+        ax[1,0].grid()
+
+        sigma_x = tuple(map(lambda x: self.Spannungen(x)[0], self.z_range))
+        sigma_y = tuple(map(lambda x: self.Spannungen(x)[1], self.z_range))
+        tau = tuple(map(lambda x: self.Spannungen(x)[2], self.z_range))
+
+        ax[1,1].plot(sigma_x, label=r"$\sigma_x$")
+        ax[1,1].plot(sigma_y, label=r"$\sigma_y$")
+        ax[1,1].plot(tau, label=r"$\tau$")
+        ax[1,1].set_title(r"Spannungen in $\dfrac{N}{mm^{2}}$")
+        ax[1,1].legend()
+        ax[1,1].grid(True)
+        ax[1,1].set_ylabel(r"Spannung in $\dfrac{N}{mm^{2}}$")
+        ax[1,1].set_xlabel("x in mm")
+
+
+
+        ax[2,0].plot(self.biegung_x, label="Verformung in x")
+        ax[2,0].plot(self.biegung_y, label = "Verformung in y")
+        ax[2,0].set_title(r"Verformung in mm")
+        ax[2,0].legend()
+        ax[2,0].grid(True)
+        ax[2,0].set_ylabel(r"Verformung in mm")
+        ax[2,0].set_xlabel("x in mm")
+
+        ax[2,1].plot(self.neigung_x, label="Neigung x")
+        ax[2,1].plot(self.neigung_y, label = "Neigung y")
+        ax[2,1].set_title(r"Neigung in rad")
+        ax[2,1].legend()
+        ax[2,1].grid(True)
+        ax[2,1].set_ylabel(r"Neigung in rad")
+        ax[2,1].set_xlabel("x in mm")
+
+        MB_Darstellung.set_size_inches(11.69291,8.267717)
+
+        name1 = self.name+"plot.png"
+        MB_Darstellung.show()
+
+
     def plots_speichern(self):
 
         max_z = max(self.z_daten)
