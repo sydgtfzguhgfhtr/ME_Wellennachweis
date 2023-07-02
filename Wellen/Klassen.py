@@ -480,13 +480,13 @@ class Welle:
         def F_ers_x():
             def integfuncx(z):
                 return q_ers_x(z)*(länge-z)
-            integral,_ = quad(integfuncx,minl,maxl,epsabs=1e-5,limit=100,full_output=0)
+            integral = quad(integfuncx,minl,maxl,epsabs=1e-5,limit=100,full_output=1)[0]
             F_ers = 1/länge * integral
             return (F_ers)*1000 # N/mm^2
         def F_ers_y():
             def integfuncy(z):
                 return q_ers_y(z)*(länge-z)
-            integral,_ = quad(integfuncy,minl,maxl,epsabs=1e-5,limit=100,full_output=0)
+            integral = quad(integfuncy,minl,maxl,epsabs=1e-5,limit=100,full_output=1)[0]
             F_ers = 1/länge * integral
             return (F_ers)*1000 # N/mm^2
         
@@ -501,20 +501,20 @@ class Welle:
         def Biegung_x(z):
             def integfuncx(s):
                 return q_ers_x(s)*(z-s)
-            integral,_ = quad(integfuncx,minl,z,epsabs=1e-5,full_output=0)
+            integral = quad(integfuncx,minl,z,epsabs=1e-5,full_output=1)[0]
             return 1/E*(F_ex*z-integral*1000)
 
         def Biegung_y(z):
             def integfuncy(s):
                 return q_ers_y(s)*(z-s)
-            integral,_ = quad(integfuncy,minl,z,epsabs=1e-5,full_output=0)
+            integral = quad(integfuncy,minl,z,epsabs=1e-5,full_output=1)[0]
             return 1/E*(F_ey*z-integral*1000)
         
         def Neigung_x(z):
-            integral,_ = quad(q_ers_x,minl,z,epsabs=1e-5,full_output=0)
+            integral = quad(q_ers_x,minl,z,epsabs=1e-5,full_output=1)[0]
             return 1/E * (F_ex-integral*1000)
         def Neigung_y(z):
-            integral,_ = quad(q_ers_y,minl,z,epsabs=1e-5,full_output=0)
+            integral = quad(q_ers_y,minl,z,epsabs=1e-5,full_output=1)[0]
             return 1/E * (F_ey-integral*1000)
 
         self.biegung_x = np.fromiter(map(Biegung_x,z_range),float,self.len_z_range)
@@ -738,6 +738,9 @@ class Welle_Absatz():
             self.t = t
             self.r = r
             self.b = b
+
+    def __repr__(self) -> str:
+        return self.Art+" bei "+str(self.z_Koordinate)
 
     def K1(self, B_oder_S):
         """Einflussfaktor K1

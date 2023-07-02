@@ -48,11 +48,13 @@ class Lager:
             elif kappa < 1:
                 B = 1.23477
                 C = 0.19087
-            elif kappa >= 4:
+            elif kappa <= 4:
                 B = 1.23477
                 C = 0.0717391
 
         a = (1/10)*1/(1-((A-(B/(kappa**C)))**D)*(((self.eta*self.Pu)/(G*self.aequivalente_statische_Belastung()))**E))**F
+        if a>50:
+            a=50
         return a
 
     def Betriebsviskosität(self,t,t1,nu1,t2,nu2):
@@ -77,7 +79,10 @@ class Lager:
         """
         self.ID = ID
         if ID <= 790:
-            Lager = pd.read_csv(r"einreihige_Rillenkugellager.csv",delimiter=",")
+            try:
+                Lager = pd.read_csv(r"einreihige_Rillenkugellager.csv",delimiter=",")
+            except FileNotFoundError:
+                Lager = pd.read_csv(r"Lager\einreihige_Rillenkugellager.csv",delimiter=",")
             Lager = Lager[Lager["ID"]==ID]
             # hat sich irgendwie alles eins nach links verschoben funktioniert jetzt aber so
             self.d = int(Lager["Nr"])
@@ -93,7 +98,10 @@ class Lager:
             self.n_grenz = float(Lager["Referenzdrehzahl"])
             self.f0 = float(Lager["kr"])
         else:
-            Lager = pd.read_csv(r"Einreihige_Zylinderrollenlager.csv",delimiter=",")
+            try:
+                Lager = pd.read_csv(r"Einreihige_Zylinderrollenlager.csv",delimiter=",")
+            except FileNotFoundError:
+                Lager = pd.read_csv(r"Lager\Einreihige_Zylinderrollenlager.csv",delimiter=",")
             Lager = Lager[Lager["Nr"]==ID]
             self.d = int(Lager["d"])
             self.D = int(Lager["D"])
