@@ -632,7 +632,7 @@ class Welle:
         ax[1,1].legend()
         ax[1,1].grid(True)
         ax[1,1].set_ylabel(r"Spannung in $\dfrac{N}{mm^{2}}$")
-        ax[1,1].set_xlabel("x in mm")
+        ax[1,1].set_xlabel("z in mm")
 
 
 
@@ -642,7 +642,7 @@ class Welle:
         ax[2,0].legend()
         ax[2,0].grid(True)
         ax[2,0].set_ylabel(r"Verformung in mm")
-        ax[2,0].set_xlabel("x in mm")
+        ax[2,0].set_xlabel("z in mm")
 
         ax[2,1].plot(self.neigung_x, label="Neigung x")
         ax[2,1].plot(self.neigung_y, label = "Neigung y")
@@ -650,7 +650,7 @@ class Welle:
         ax[2,1].legend()
         ax[2,1].grid(True)
         ax[2,1].set_ylabel(r"Neigung in rad")
-        ax[2,1].set_xlabel("x in mm")
+        ax[2,1].set_xlabel("z in mm")
 
         MB_Darstellung.set_size_inches(11.69291,8.267717)
 
@@ -720,7 +720,7 @@ class Welle:
         ax[1,1].legend()
         ax[1,1].grid(True)
         ax[1,1].set_ylabel(r"Spannung in $\dfrac{N}{mm^{2}}$")
-        ax[1,1].set_xlabel("x in mm")
+        ax[1,1].set_xlabel("z in mm")
 
 
 
@@ -730,7 +730,7 @@ class Welle:
         ax[2,0].legend()
         ax[2,0].grid(True)
         ax[2,0].set_ylabel(r"Verformung in mm")
-        ax[2,0].set_xlabel("x in mm")
+        ax[2,0].set_xlabel("z in mm")
 
         ax[2,1].plot(self.neigung_x, label="Neigung x")
         ax[2,1].plot(self.neigung_y, label = "Neigung y")
@@ -738,7 +738,7 @@ class Welle:
         ax[2,1].legend()
         ax[2,1].grid(True)
         ax[2,1].set_ylabel(r"Neigung in rad")
-        ax[2,1].set_xlabel("x in mm")
+        ax[2,1].set_xlabel("z in mm")
 
         MB_Darstellung.set_size_inches(11.69291,8.267717)
 
