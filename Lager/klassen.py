@@ -91,7 +91,7 @@ class Lager:
             self.C = float(Lager["B"])
             self.C0 = float(Lager["C"])
             self.Pu = float(Lager["C0"])
-            self.Kurzzeichen = str(Lager["Kurzzeichen_einseitig_abgedichtet"])
+            self.Kurzzeichen = Lager.loc[ID,"Gewicht_kg"]
             try:
                 self.n_ref = float(Lager["Pu"])
             except ValueError:
