@@ -595,6 +595,7 @@ class Welle:
 
         # Mbx Biegemomentenverlauf
         mbx_daten = np.fromiter(map(self.Mbx,self.z_range),float,len(self.z_range))
+        MB_Darstellung.suptitle(f'Welle "{self.name}"',fontsize=18)
         ax[0,0].plot(self.z_range,mbx_daten)
         ax[0,0].fill_between(self.z_range,0,mbx_daten,alpha=0.3)
         ax[0,0].set_xlabel("$z\\,[mm]$")
