@@ -3,7 +3,7 @@ from Klassen import *
 
 Festlager = 95
 Loslager  = 310
-B_fl = 21
+B_fl = 31
 B_ll = 20
 Fr = -3280
 Ft = 6145
@@ -34,10 +34,10 @@ Antriebswelle.set_Kraft(Ft,"t",0,-38.31, 0)
 Antriebswelle.set_Kraft(Fa,"a",0,-38.31, 0)
 Antriebswelle.lagerkräfte_berechnen()
 #%%
+Antriebswelle.welle_darstellen()
 Antriebswelle.plot()
 Antriebswelle.plot_spannungen()
-#Antriebswelle.welle_darstellen()
-
+Antriebswelle.print_Lagerkräfte()
 #%%
 Antriebswelle.verformung_berechnen()
 #%%
@@ -45,3 +45,10 @@ Antriebswelle.plot_biegung()
 Antriebswelle.plot_neigung()
 #%%
 print("maxVerf_ges = ",Antriebswelle.maxVerfPM_ges)
+
+#%%
+Werkstoff.aus_csv_laden()
+Absätze = [Welle_Absatz(Antriebswelle, geometrie[3][0], "Absatz", 20, 1),Welle_Absatz(Antriebswelle, geometrie[3][0], "Absatz", 20, 1)]
+# %%
+for i,Absatz in enumerate(Absätze):
+    print(i,":",Absatz.Sicherheiten())
