@@ -571,25 +571,6 @@ class Welle:
             print("-"*48)
 
     def plots_alles(self):
-
-        max_z = max(self.z_daten)
-        min_z = min(self.z_daten)
-
-        zrange = np.linspace(min_z,max_z,1000)
-        rrange = np.array(tuple(map(self.radius,zrange)))
-
-        _,z_kräfte,_,_,_,_,_=zip(*self.belastungen)
-        max_z_k = max(z_kräfte)
-        max_z = max(self.z_daten)
-        min_z = min(self.z_daten)
-        min_z_k = min(z_kräfte)
-
-        zrange = np.linspace(min_z,max_z,1000)
-        z_range_k = np.linspace(min_z_k,max_z_k,1000)
-        rrange = np.fromiter(map(self.radius,zrange),float,len(zrange))
-
-        l = np.arange(start=0,step=1,stop=self.länge)
-
         MB_Darstellung,ax = plt.subplots(3,2,constrained_layout=True,num=self.name+" Belastungsplot")
         MB_Darstellung.set_size_inches(15,10)
 
@@ -615,6 +596,7 @@ class Welle:
 
         Mt = tuple(map(lambda x: self.Mt(x), self.z_range))
 
+        # Torsionsmoment
         ax[1,0].plot(self.z_range,Mt)
         ax[1,0].fill_between(self.z_range,0,Mt,alpha=0.3)
         ax[1,0].set_xlabel("$z\\,[mm]$")
@@ -626,37 +608,37 @@ class Welle:
         sigma_y = tuple(map(lambda x: self.Spannungen(x)[1], self.z_range))
         tau = tuple(map(lambda x: self.Spannungen(x)[2], self.z_range))
 
-        ax[1,1].plot(sigma_x, label=r"$\sigma_x$")
-        ax[1,1].plot(sigma_y, label=r"$\sigma_y$")
-        ax[1,1].plot(tau, label=r"$\tau$")
+        # Spannungen
+        ax[1,1].plot(self.z_range,sigma_x, label=r"$\sigma_x$")
+        ax[1,1].plot(self.z_range,sigma_y, label=r"$\sigma_y$")
+        ax[1,1].plot(self.z_range,tau, label=r"$\tau$")
         ax[1,1].set_title(r"Spannungen in $\dfrac{N}{mm^{2}}$")
         ax[1,1].legend()
         ax[1,1].grid(True)
         ax[1,1].set_ylabel(r"Spannung in $\dfrac{N}{mm^{2}}$")
-        ax[1,1].set_xlabel("z in mm")
+        ax[1,1].set_xlabel("$z\\,[mm]$")
 
-
-
-        ax[2,0].plot(self.biegung_x, label="Verformung in x")
-        ax[2,0].plot(self.biegung_y, label = "Verformung in y")
+        # Verformungen
+        ax[2,0].plot(self.z_range,self.biegung_x, label="Verformung in x")
+        ax[2,0].plot(self.z_range,self.biegung_y, label = "Verformung in y")
         ax[2,0].set_title(r"Verformung in mm")
         ax[2,0].legend()
         ax[2,0].grid(True)
         ax[2,0].set_ylabel(r"Verformung in mm")
-        ax[2,0].set_xlabel("z in mm")
+        ax[2,0].set_xlabel("$z\\,[mm]$")
 
-        ax[2,1].plot(self.neigung_x, label="Neigung x")
-        ax[2,1].plot(self.neigung_y, label = "Neigung y")
+        # Neigung
+        ax[2,1].plot(self.z_range,self.neigung_x, label="Neigung x")
+        ax[2,1].plot(self.z_range,self.neigung_y, label = "Neigung y")
         ax[2,1].set_title(r"Neigung in rad")
         ax[2,1].legend()
         ax[2,1].grid(True)
         ax[2,1].set_ylabel(r"Neigung in rad")
-        ax[2,1].set_xlabel("z in mm")
+        ax[2,1].set_xlabel("$z\\,[mm]$")
 
         MB_Darstellung.set_size_inches(11.69291,8.267717)
 
-        name1 = self.name+"plot.png"
-        MB_Darstellung.show()
+        plt.show()
 
 
     def plots_speichern(self):
