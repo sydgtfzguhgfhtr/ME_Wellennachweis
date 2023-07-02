@@ -91,7 +91,7 @@ class Lager:
             self.C = float(Lager["B"])
             self.C0 = float(Lager["C"])
             self.Pu = float(Lager["C0"])
-            self.Kurzzeichen = Lager["Kurzzeichen_Lager_offen_oder_beidseitig_abgedichtet"]
+            self.Kurzzeichen = str(Lager["Kurzzeichen_einseitig_abgedichtet"])
             try:
                 self.n_ref = float(Lager["Pu"])
             except ValueError:
@@ -111,7 +111,7 @@ class Lager:
             self.C0 = float(Lager["C0"])
             self.Pu = float(Lager["Pu"])   
             self.n_ref = float(Lager["Referenzdrehzahl"])
-            self.Kurzzeichen = Lager["Kurzzeichen_Lager_mit_Standardkäfig"]
+            self.Kurzzeichen = str(Lager["Kurzzeichen_Lager_mit_Standardkäfig"])
             self.n_grenz = float(Lager["Grenzdrehzahl"]) 
     
     def kappa(self)->float:
