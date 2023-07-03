@@ -83,21 +83,20 @@ class Lager:
                 Lager = pd.read_csv(r"einreihige_Rillenkugellager.csv",delimiter=",")
             except FileNotFoundError:
                 Lager = pd.read_csv(r"Lager\einreihige_Rillenkugellager.csv",delimiter=",")
-            Lager = Lager[Lager["ID"]==ID]
             # hat sich irgendwie alles eins nach links verschoben funktioniert jetzt aber so
-            self.d = int(Lager["Nr"])
-            self.D = int(Lager["d"])
-            self.B = float(Lager["D"])
-            self.C = float(Lager["B"])
-            self.C0 = float(Lager["C"])
-            self.Pu = float(Lager["C0"])
+            self.d = float(Lager.loc[ID,"Nr"])
+            self.D = float(Lager.loc[ID,"d"])
+            self.B = float(Lager.loc[ID,"D"])
+            self.C = float(Lager.loc[ID,"B"])
+            self.C0 = float(Lager.loc[ID,"C"])
+            self.Pu =float(Lager.loc[ID,"C0"])
             self.Kurzzeichen = Lager.loc[ID,"Gewicht_kg"]
             try:
-                self.n_ref = float(Lager["Pu"])
+                self.n_ref = float(Lager.loc[ID,"Pu"])
             except ValueError:
                 self.n_ref = None
-            self.n_grenz = float(Lager["Referenzdrehzahl"])
-            self.f0 = float(Lager["kr"])
+            self.n_grenz = float(Lager.loc[ID,"Referenzdrehzahl"])
+            self.f0 = float(Lager.loc[ID,"kr"])
         else:
             try:
                 Lager = pd.read_csv(r"Einreihige_Zylinderrollenlager.csv",delimiter=",")
