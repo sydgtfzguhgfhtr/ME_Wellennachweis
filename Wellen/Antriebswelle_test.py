@@ -21,6 +21,7 @@ Antriebswelle.set_geometrie(
      (463, 15))
 )
 
+
 Antriebswelle.set_Kraft(6145, "t", 0, -38.31, 0)
 Antriebswelle.set_Kraft(-2380, "r", 0, -38.31, 0)
 Antriebswelle.set_Kraft(-2237, "a", 0, -38.31, 0)
