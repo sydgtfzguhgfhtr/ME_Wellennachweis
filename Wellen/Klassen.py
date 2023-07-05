@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import quad
 import os
+from cadquery import Workplane,exporters
 
 class Werkstoff():
     Werkstoffe = {} # Dictionary mit allen erzeugten Werkstoffen
@@ -758,6 +759,23 @@ class Welle:
         name2 = self.name+"WELLE.png"
 
         fig.savefig(name2, dpi = 300)
+
+    def export_model(self,out):
+        """
+        Exportiert das Modell der Welle an den Speicherort `out\\name.dateiendung`.  
+        Verfügbare Formate sind:  
+        - .stl (Netzdatei)  
+        - .stp (CAD Austauschformat)  
+        - .3mf (Netzdatei, moderneres Format)  
+        """
+
+        model = Workplane("front")
+        geometrie = list(self.geometrie)
+        model = model.polyline([(geometrie[0][0],0)]+geometrie+[(geometrie[-1][0],0),(0,0)])
+        model = model.close()
+        model = model.revolve(360,(0,0,0),(1,0,0))
+        exporters.export(model,out)
+
 
 class Welle_Absatz():
     """einzelne nachzuweisende Wellenabsätze
