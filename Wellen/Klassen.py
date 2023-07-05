@@ -762,6 +762,14 @@ class Welle:
 
         fig.savefig(name2, dpi = 300)
 
+    def generate3D(self):
+        model = Workplane("front")
+        geometrie = list(self.geometrie)
+        model = model.polyline([(geometrie[0][0],0)]+geometrie+[(geometrie[-1][0],0),(0,0)])
+        model = model.close()
+        model = model.revolve(360,(0,0,0),(1,0,0))
+        return model
+
     def export_model(self,out):
         """
         Exportiert das Modell der Welle an den Speicherort `out\\name.dateiendung`.  
@@ -770,13 +778,7 @@ class Welle:
         - .stp (CAD Austauschformat)  
         - .3mf (Netzdatei, moderneres Format)  
         """
-
-        model = Workplane("front")
-        geometrie = list(self.geometrie)
-        model = model.polyline([(geometrie[0][0],0)]+geometrie+[(geometrie[-1][0],0),(0,0)])
-        model = model.close()
-        model = model.revolve(360,(0,0,0),(1,0,0))
-        exporters.export(model,out)
+        exporters.export(self.generate3D(),out)
 
 
 class Welle_Absatz():
