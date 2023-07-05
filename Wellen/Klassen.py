@@ -7,8 +7,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import quad
 import os
-from cadquery import Workplane,exporters
-
+try:
+    from cadquery import Workplane,exporters
+except ModuleNotFoundError:
+    print("Warnung: Module 'cadquery' nicht gefunden. 3D Export ist nicht verfügbar.")
 class Werkstoff():
     Werkstoffe = {} # Dictionary mit allen erzeugten Werkstoffen
 
