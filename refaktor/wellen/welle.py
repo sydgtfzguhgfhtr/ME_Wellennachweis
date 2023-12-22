@@ -381,8 +381,8 @@ class Welle:
         ax[1].plot(self.z_range,sigmay,label="$\\sigma_y$")
         ax[1].plot(self.z_range,tau,label="$\\tau$")
 
-        ax[1].set_xlabel("$z\\,[mm]$")
-        ax[1].set_ylabel("$\sigma,\tau \\,[N/mm^2]$")
+        ax[1].set_xlabel("$z\\;[mm]$")
+        ax[1].set_ylabel("$\\sigma,\\tau \\;[N/mm^2]$")
         ax[1].set_title("Spannungen")
         ax[1].legend()
         ax[0].grid()
@@ -569,8 +569,8 @@ class Welle:
         tau = tuple(map(lambda x: self.Spannungen(x)[2], self.z_range))
 
         # Spannungen
-        ax[1,1].plot(self.z_range,sigma_x, label=r"$\sigma_x$")
-        ax[1,1].plot(self.z_range,sigma_y, label=r"$\sigma_y$")
+        ax[1,1].plot(self.z_range,sigma_x, label="$\\sigma_x$")
+        ax[1,1].plot(self.z_range,sigma_y, label="$\\sigma_y$")
         ax[1,1].plot(self.z_range,tau, label=r"$\tau$")
         ax[1,1].set_title(r"Spannungen in $\dfrac{N}{mm^{2}}$")
         ax[1,1].legend()
@@ -656,8 +656,8 @@ class Welle:
         sigma_y = tuple(map(lambda x: self.Spannungen(x)[1], self.z_range))
         tau = tuple(map(lambda x: self.Spannungen(x)[2], self.z_range))
 
-        ax[1,1].plot(sigma_x, label=r"$\sigma_x$")
-        ax[1,1].plot(sigma_y, label=r"$\sigma_y$")
+        ax[1,1].plot(sigma_x, label="$\\sigma_x$")
+        ax[1,1].plot(sigma_y, label="$\\sigma_y$")
         ax[1,1].plot(tau, label=r"$\tau$")
         ax[1,1].set_title(r"Spannungen in $\dfrac{N}{mm^{2}}$")
         ax[1,1].legend()
