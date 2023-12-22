@@ -1,2 +1,2 @@
-from me2.lager.lagerklassen import *
-from me2.lager.lagerdaten import *
+from .lagerdaten import *
+from .lagerklassen import *
